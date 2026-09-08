@@ -1,0 +1,190 @@
+{
+  "tool": "inspectra",
+  "version": "1.0.0",
+  "target": "http://127.0.0.1:57204",
+  "started_at": "2026-09-08T12:01:49.179619+00:00",
+  "finished_at": "2026-09-08T12:01:50.166825+00:00",
+  "duration_seconds": 0.987206,
+  "posture_score": 4.0,
+  "grade": "F",
+  "summary": {
+    "total": 13,
+    "info": 5,
+    "low": 4,
+    "medium": 4,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Werkzeug/3.1.8 Python/3.11.9, nginx/1.24.0'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Werkzeug/3.1.8 Python/3.11.9, nginx/1.24.0"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure."
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:57204: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:57204 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS."
+    },
+    {
+      "rule_id": "HDR-001",
+      "title": "Missing security header: Strict-Transport-Security",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Strict-Transport-Security response header was not present on 127.0.0.1.",
+      "why_it_matters": "HSTS tells browsers to only connect over HTTPS for a set period, protecting users from protocol-downgrade and cookie-hijacking attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Strict-Transport-Security: max-age=31536000; includeSubDomains on every HTTPS response."
+    },
+    {
+      "rule_id": "HDR-002",
+      "title": "Missing security header: Content-Security-Policy",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time)."
+    },
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required)."
+    },
+    {
+      "rule_id": "HDR-004",
+      "title": "Missing security header: X-Content-Type-Options",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The X-Content-Type-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without nosniff, browsers may guess the MIME type of a response, which can turn an upload into an executable script.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Content-Type-Options: nosniff on all responses."
+    },
+    {
+      "rule_id": "HDR-005",
+      "title": "Missing security header: Referrer-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Referrer-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Referrer-Policy controls how much of the previous URL is leaked to other sites, protecting sensitive query strings and paths.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Referrer-Policy: strict-origin-when-cross-origin (or no-referrer for highly sensitive applications)."
+    },
+    {
+      "rule_id": "HDR-006",
+      "title": "Missing security header: Permissions-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Permissions-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Permissions-Policy restricts which browser features (camera, microphone, geolocation) a page and its frames may use.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Permissions-Policy with a restrictive default, e.g. Permissions-Policy: camera=(), microphone=(), geolocation=()."
+    },
+    {
+      "rule_id": "HDR-007",
+      "title": "Missing security header: Cross-Origin-Resource-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Cross-Origin-Resource-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CORP stops other origins from loading this site's resources, reducing cross-origin data leakage.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required."
+    },
+    {
+      "rule_id": "HDR-008",
+      "title": "Header should be removed: X-Powered-By",
+      "category": "security_headers",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The X-Powered-By header is present on 127.0.0.1.",
+      "why_it_matters": "The X-Powered-By header reveals the framework and often its version, giving attackers a head start on known vulnerabilities.",
+      "evidence": [
+        "X-Powered-By: PHP/7.4.3"
+      ],
+      "recommendation": "Remove the 'X-Powered-By' response header (or disable the framework option that adds it) to reduce information disclosure."
+    },
+    {
+      "rule_id": "FPR-001",
+      "title": "Technologies identified",
+      "category": "fingerprinting",
+      "severity": "info",
+      "confidence": "medium",
+      "description": "Identified the following technologies on 127.0.0.1: Nginx 1.24.0, PHP 7.4.3.",
+      "why_it_matters": "Known technologies help prioritize patching and reveal the stack an attacker would study first.",
+      "evidence": [
+        "Server: Werkzeug/3.1.8 Python/3.11.9, nginx/1.24.0",
+        "X-Powered-By: PHP/7.4.3"
+      ],
+      "recommendation": "Keep all identified components patched and disable version disclosure where possible."
+    },
+    {
+      "rule_id": "ROB-002",
+      "title": "robots.txt disallows crawler access to paths",
+      "category": "robots",
+      "severity": "info",
+      "confidence": "high",
+      "description": "robots.txt disallows 2 path(s) from crawlers.",
+      "why_it_matters": "Disallowed paths are excluded from search engines, not from attackers. Anything listed here should be reviewed for exposure.",
+      "evidence": [
+        "/admin",
+        "/private"
+      ],
+      "recommendation": "Review the disallowed paths: sensitive content should be protected by authentication, not just robots.txt."
+    },
+    {
+      "rule_id": "ROB-003",
+      "title": "Sitemap referenced in robots.txt",
+      "category": "robots",
+      "severity": "info",
+      "confidence": "high",
+      "description": "robots.txt references 1 sitemap location(s).",
+      "why_it_matters": "Sitemaps expose the site structure to crawlers (and to anyone reading robots.txt).",
+      "evidence": [
+        "https://example.com/sitemap.xml"
+      ],
+      "recommendation": "Confirm the sitemap does not list sensitive or unpublished URLs."
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+[
+  {
+    "name": "Nginx",
+    "category": "web_server",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "nginx" }]
+  },
+  {
+    "name": "Apache",
+    "category": "web_server",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "apache" }]
+  },
+  {
+    "name": "Microsoft IIS",
+    "category": "web_server",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "microsoft-iis" }]
+  },
+  {
+    "name": "Cloudflare",
+    "category": "cdn",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "cloudflare" }]
+  },
+  {
+    "name": "GitHub Pages",
+    "category": "hosting",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "github\\.com" }]
+  },
+  {
+    "name": "Netlify",
+    "category": "hosting",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "netlify" }]
+  },
+  {
+    "name": "Vercel",
+    "category": "hosting",
+    "patterns": [{ "type": "header", "name": "Server", "pattern": "vercel" }]
+  },
+  {
+    "name": "WordPress",
+    "category": "cms",
+    "patterns": [
+      { "type": "generator", "pattern": "wordpress" },
+      { "type": "body", "pattern": "wp-content|wp-includes" }
+    ]
+  },
+  {
+    "name": "Drupal",
+    "category": "cms",
+    "patterns": [
+      { "type": "generator", "pattern": "drupal" },
+      { "type": "body", "pattern": "/sites/default/files" }
+    ]
+  },
+  {
+    "name": "Joomla",
+    "category": "cms",
+    "patterns": [
+      { "type": "generator", "pattern": "joomla" },
+      { "type": "body", "pattern": "/media/system/js/" }
+    ]
+  },
+  {
+    "name": "Django",
+    "category": "framework",
+    "patterns": [
+      { "type": "header", "name": "Server", "pattern": "wsgiserver|django" },
+      { "type": "cookie", "pattern": "csrftoken" },
+      { "type": "body", "pattern": "csrfmiddlewaretoken" }
+    ]
+  },
+  {
+    "name": "Flask",
+    "category": "framework",
+    "patterns": [
+      { "type": "cookie", "pattern": "^session$" },
+      { "type": "body", "pattern": "flask" }
+    ]
+  },
+  {
+    "name": "Express",
+    "category": "framework",
+    "patterns": [{ "type": "header", "name": "X-Powered-By", "pattern": "express" }]
+  },
+  {
+    "name": "Laravel",
+    "category": "framework",
+    "patterns": [{ "type": "cookie", "pattern": "laravel_session" }]
+  },
+  {
+    "name": "Ruby on Rails",
+    "category": "framework",
+    "patterns": [
+      { "type": "header", "name": "X-Powered-By", "pattern": "phusion|ruby" },
+      { "type": "cookie", "pattern": "_session" }
+    ]
+  },
+  {
+    "name": "PHP",
+    "category": "language",
+    "patterns": [
+      { "type": "header", "name": "X-Powered-By", "pattern": "php" },
+      { "type": "generator", "pattern": "php" }
+    ]
+  },
+  {
+    "name": "ASP.NET",
+    "category": "framework",
+    "patterns": [
+      { "type": "header", "name": "X-Powered-By", "pattern": "asp\\.net" },
+      { "type": "cookie", "pattern": "aspsession" }
+    ]
+  },
+  {
+    "name": "Java (JSESSIONID)",
+    "category": "language",
+    "patterns": [{ "type": "cookie", "pattern": "jsessionid" }]
+  },
+  {
+    "name": "Spring Boot",
+    "category": "framework",
+    "patterns": [
+      { "type": "body", "pattern": "whitelabel error page" },
+      { "type": "cookie", "pattern": "jsessionid" }
+    ]
+  },
+  {
+    "name": "Apache Tomcat",
+    "category": "application_server",
+    "patterns": [
+      { "type": "header", "name": "Server", "pattern": "tomcat" },
+      { "type": "body", "pattern": "apache tomcat" }
+    ]
+  },
+  {
+    "name": "Jenkins",
+    "category": "ci_cd",
+    "patterns": [{ "type": "header", "name": "X-Jenkins", "pattern": "." }]
+  },
+  {
+    "name": "Jupyter",
+    "category": "application",
+    "patterns": [
+      { "type": "header", "name": "Server", "pattern": "tornadoserver" },
+      { "type": "body", "pattern": "jupyter" }
+    ]
+  },
+  {
+    "name": "phpMyAdmin",
+    "category": "application",
+    "patterns": [{ "type": "body", "pattern": "phpmyadmin" }]
+  },
+  {
+    "name": "Grafana",
+    "category": "application",
+    "patterns": [{ "type": "body", "pattern": "grafana" }]
+  }
+]
