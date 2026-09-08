@@ -7,14 +7,6 @@ across reports and is easy to review.
 from __future__ import annotations
 
 
-def missing_header(name: str, example: str) -> str:
-    """Advice for a missing or weak security header."""
-    return (
-        f"Add the {name!r} response header. Example value: {example!r}. "
-        "Test the change in a staging environment before deploying."
-    )
-
-
 def remove_header(name: str) -> str:
     """Advice for a header that should not be present."""
     return (
@@ -46,8 +38,3 @@ def restrict_service(service: str, port: int) -> str:
         "VPN rules, or replace it with a secure alternative (SFTP instead of "
         "FTP, SSH instead of Telnet)."
     )
-
-
-def review_dns(record: str) -> str:
-    """Advice for DNS records that may be missing or unexpected."""
-    return f"Review the {record} DNS records for this domain and confirm they are intentional."

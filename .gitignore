@@ -18,6 +18,8 @@ htmlcov/
 
 # Scan output (generated reports)
 inspectra-report/
+demo-output/
+*.log
 *.log
 
 # OS noise

@@ -41,7 +41,7 @@ Inspectra enforces this at three levels:
    timeouts everywhere.
 3. **No offensive features** — the roadmap deliberately excludes
    exploitation, brute force and attack tooling. See
-   [roadmap/architecture-notes.md](roadmap/architecture-notes.md).
+   [roadmap.md](roadmap.md), "Rejected (on purpose)".
 
 ## Good-Faith Testing Checklist
 

@@ -4,8 +4,8 @@
 > Inspect. Observe. Assess. Explain. Report. **Never exploit.**
 
 This document is the single source of truth for Inspectra's design. Keep it
-current when the architecture changes; the documents in
-[`roadmap/`](roadmap/) are planning-only and never affect the V1 codebase.
+current when the architecture changes; [`roadmap.md`](roadmap.md) is
+planning-only and never affects the released codebase.
 
 ## 1. Product Vision
 
@@ -111,7 +111,7 @@ D ≥ 60, F below.
 
 | Decision | Choice | Rationale / trade-off |
 |----------|--------|----------------------|
-| Interface | CLI + HTML report | One command, no server to run; web dashboard deferred (see `roadmap/v2-roadmap.md`) |
+| Interface | CLI + HTML report | One command, no server to run; web dashboard deferred (see `roadmap.md`) |
 | Concurrency | Sync + no threads | Simpler to reason about and test; Nmap dominates scan time anyway (async = v2) |
 | Port scanning | Nmap via python-nmap | Battle-tested output; requires a system install (documented per-OS) |
 | Models | Dataclasses, not pydantic | Zero magic, zero dependency |

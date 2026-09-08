@@ -7,27 +7,39 @@ shared, archived or attached to an email and always renders correctly.
 from __future__ import annotations
 
 from pathlib import Path
-
-from jinja2 import Environment, PackageLoader, select_autoescape
+from typing import TYPE_CHECKING
 
 from inspectra.models import ScanResult, Severity
 from inspectra.utils import format_ist
+
+if TYPE_CHECKING:
+    from jinja2 import Environment
 
 SEVERITY_ORDER = ["high", "medium", "low", "info"]
 GOOD_GRADES = {"A+", "A", "B"}
 BAD_GRADES = {"D", "F"}
 
-_env = Environment(
-    loader=PackageLoader("inspectra.report", "templates"),
-    autoescape=select_autoescape(["html", "xml"]),
-    trim_blocks=True,
-    lstrip_blocks=True,
-)
+_env: Environment | None = None
+
+
+def _get_env() -> Environment:
+    """Build the Jinja environment on first use (defers the jinja2 import)."""
+    global _env
+    if _env is None:
+        from jinja2 import Environment, PackageLoader, select_autoescape
+
+        _env = Environment(
+            loader=PackageLoader("inspectra.report", "templates"),
+            autoescape=select_autoescape(["html", "xml"]),
+            trim_blocks=True,
+            lstrip_blocks=True,
+        )
+    return _env
 
 
 def render(result: ScanResult) -> str:
     """Render a :class:`ScanResult` as a self-contained HTML document."""
-    template = _env.get_template("report.html.j2")
+    template = _get_env().get_template("report.html.j2")
     findings = sorted(
         result.findings,
         key=lambda finding: (SEVERITY_ORDER.index(finding.severity.value), finding.rule_id),

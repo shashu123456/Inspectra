@@ -14,8 +14,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from inspectra import __version__
-from inspectra.models import ScanOptions, ScanResult, Severity
-from inspectra.orchestrator import ScanAborted, run_scan
+from inspectra.models import ScanResult, Severity
 from inspectra.report import html_report, json_report, markdown_report
 from inspectra.utils import TargetValidationError, format_ist, normalize_target
 
@@ -117,6 +116,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if target.is_private:
         console.print("[dim]Note: target is a private/local address — home-lab testing.[/]")
 
+    # Imported lazily: keeps `inspectra --version` fast by deferring the
+    # heavy scan stack (httpx, dnspython, cryptography).
+    from inspectra.models import ScanOptions
+    from inspectra.orchestrator import ScanAborted, run_scan
+
     options = ScanOptions(
         output_dir=args.output_dir,
         report_format=args.report_format,
@@ -125,8 +129,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         skip_ports=args.skip_ports,
         directories=args.directories,
         directory_wordlist=args.directory_wordlist,
-        yes=args.yes,
-        verbose=args.verbose,
     )
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

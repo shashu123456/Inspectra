@@ -84,8 +84,6 @@ class ScanOptions:
     skip_ports: bool = False
     directories: bool = False
     directory_wordlist: str | None = None
-    yes: bool = False
-    verbose: bool = False
 
 
 @dataclass(slots=True)

@@ -81,6 +81,6 @@ Use the issue templates. For security issues in Inspectra itself, see
 
 ## Roadmap Policy
 
-Ideas that don't fit V1 belong in `docs/roadmap/` as planning documents,
-not in the codebase. Propose the move in your issue if that's where your
-idea belongs.
+Ideas that don't fit the current release belong in
+[`docs/roadmap.md`](docs/roadmap.md), not in the codebase. Propose the
+addition in your issue if that's where your idea belongs.

@@ -11,7 +11,7 @@ from inspectra.analysis import risk
 from inspectra.checks import CheckError, FatalCheckError, ordered_checks
 from inspectra.checks.context import ScanContext
 from inspectra.models import ScanMetadata, ScanOptions, ScanResult, Target
-from inspectra.network import build_client
+from inspectra.utils import truncate
 
 logger = logging.getLogger("inspectra")
 
@@ -37,6 +37,8 @@ def run_scan(
     result = ScanResult(target=target, metadata=metadata)
     context = ScanContext(options=options)
 
+    from inspectra.network import build_client  # lazy: keeps CLI startup fast
+
     with build_client() as client:
         context.client = client
         for name, check in ordered_checks(options.directories):
@@ -51,6 +53,8 @@ def run_scan(
             except Exception as exc:  # defensive: never let one check kill a scan
                 logger.warning("Check '%s' failed unexpectedly: %s", name, exc)
 
+    for finding in result.findings:
+        finding.evidence = [truncate(line) for line in finding.evidence]
     risk.apply(result)
     result.metadata.finished_at = datetime.now(UTC)
     result.metadata.duration_seconds = (result.metadata.finished_at - started).total_seconds()

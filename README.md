@@ -156,10 +156,23 @@ inspectra/
 │   ├── report/             # json / markdown / html renderers
 │   └── data/               # versioned rules, fingerprints, wordlist
 ├── tests/                  # pytest suite (local fixture server, no internet)
-├── docs/                   # architecture, usage, safety
-│   └── roadmap/            # v2/v3 + future features (planning only)
-└── examples/sample-report/ # committed sample output
+├── demo/                   # live demo: fixture site + in-browser scan UI
+├── docs/                   # architecture, usage, safety, roadmap
+├── examples/sample-report/ # committed sample output (md + html + json)
+└── scripts/                # report-regeneration helper
 ```
+
+## Technologies
+
+| | |
+|---|---|
+| [httpx](https://www.python-httpx.org/) | HTTP client (timeouts, redirect control) |
+| [dnspython](https://www.dnspython.org/) | DNS record resolution |
+| [python-nmap](https://pypi.org/project/python-nmap/) | Nmap integration for port discovery |
+| [cryptography](https://cryptography.io/) | X.509 certificate parsing |
+| [rich](https://rich.readthedocs.io/) | Terminal UI: progress, colours, summary tables |
+| [Jinja2](https://jinja.palletsprojects.com/) | HTML report templating |
+| pytest · mypy · ruff | Test suite, strict type checking, lint + format |
 
 ## Development
 
@@ -177,16 +190,14 @@ ruff check . && ruff format --check . && mypy && pytest
 | [docs/architecture.md](docs/architecture.md) | The single source of truth for the design |
 | [docs/usage.md](docs/usage.md) | CLI reference, options, examples |
 | [docs/safety.md](docs/safety.md) | Ethics, legal guidance, authorized-use checklist |
-| [docs/roadmap/v2-roadmap.md](docs/roadmap/v2-roadmap.md) | Next version (planning only) |
-| [docs/roadmap/v3-roadmap.md](docs/roadmap/v3-roadmap.md) | Long-term direction (planning only) |
-| [docs/roadmap/future-features.md](docs/roadmap/future-features.md) | Idea parking lot |
-| [docs/roadmap/architecture-notes.md](docs/roadmap/architecture-notes.md) | Decision records |
+| [docs/roadmap.md](docs/roadmap.md) | Release history and future direction (planning only) |
+| [CHANGELOG.md](CHANGELOG.md) | Notable changes per release |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a check |
 
 ## Roadmap
 
 V1 is feature-frozen by design; every future idea lives in
-[`docs/roadmap/`](docs/roadmap/) as planning documents. Highlights for v2:
+[`docs/roadmap.md`](docs/roadmap.md). Highlights for v2:
 async engine, plugin system, cookie/CORS checks, passive subdomain
 enumeration via certificate transparency, and a read-only web dashboard.
 
