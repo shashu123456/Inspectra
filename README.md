@@ -93,19 +93,23 @@ Port discovery uses [Nmap](https://nmap.org). Without it, run with
 ## Example
 
 ```console
-$ inspectra scan example.com --yes --format html
-Scan complete — example.com
+$ inspectra scan <fixture-target> --yes --skip-ports --format html
+Scan complete — 127.0.0.1
 ┌───────────────┬───────┐
 │ Severity      │ Count │
 ├───────────────┼───────┤
 │ HIGH          │ 0     │
-│ MEDIUM        │ 2     │
-│ LOW           │ 3     │
-│ INFO          │ 9     │
-│ Posture score │ 82.4 / 100 (B) │
+│ MEDIUM        │ 4     │
+│ LOW           │ 4     │
+│ INFO          │ 5     │
+│ Posture score │ 4.0 / 100 (F) │
 └───────────────┴───────┘
-Reports written to /home/user/inspectra-report
+Reports written to …/inspectra-report
 ```
+
+(Transcript from the committed sample: a deliberately misconfigured
+fixture site — hence the F grade. See
+[`examples/sample-report/`](examples/sample-report/).)
 
 A full sample — `report.md`, `report.html` and `report.json` — is committed
 under [`examples/sample-report/`](examples/sample-report/).
