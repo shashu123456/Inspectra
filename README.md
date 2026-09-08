@@ -75,6 +75,20 @@ inspectra-report/
 └── inspectra.log
 ```
 
+All report timestamps are displayed in **Indian Standard Time**
+(`Asia/Kolkata`, UTC+05:30).
+
+### Live demo (no install needed to look around)
+
+```bash
+python demo/server.py
+# open http://127.0.0.1:9000/api/demo-page
+```
+
+The demo hosts a harmless, deliberately misconfigured fixture site and a
+page that runs **real Inspectra scans** against it, rendering findings
+in-browser with links to the full HTML/Markdown/JSON reports.
+
 <details>
 <summary><strong>Installing Nmap (recommended)</strong></summary>
 

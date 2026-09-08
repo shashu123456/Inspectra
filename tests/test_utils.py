@@ -2,9 +2,17 @@
 
 from __future__ import annotations
 
+from datetime import UTC
+
 import pytest
 
-from inspectra.utils import TargetValidationError, is_private_address, normalize_target, truncate
+from inspectra.utils import (
+    TargetValidationError,
+    format_ist,
+    is_private_address,
+    normalize_target,
+    truncate,
+)
 
 
 def test_normalize_domain_lowercases_and_strips_dot() -> None:
@@ -64,3 +72,17 @@ def test_is_private_address() -> None:
 def test_truncate() -> None:
     assert truncate("short") == "short"
     assert truncate("x" * 100, limit=10) == "xxxxxxxxx…"
+
+
+def test_format_ist_converts_utc_to_ist() -> None:
+    from datetime import datetime
+
+    utc_dt = datetime(2026, 9, 8, 12, 0, 0, tzinfo=UTC)
+    assert format_ist(utc_dt) == "2026-09-08 17:30:00 IST"
+
+
+def test_format_ist_treats_naive_as_utc() -> None:
+    from datetime import datetime
+
+    naive = datetime(2026, 9, 8, 12, 0, 0)
+    assert format_ist(naive) == "2026-09-08 17:30:00 IST"

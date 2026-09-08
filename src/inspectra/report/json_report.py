@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from inspectra.models import Finding, ScanResult, Severity
+from inspectra.utils import IST_LABEL, format_ist
 
 
 def render(result: ScanResult) -> dict:
@@ -19,6 +20,8 @@ def render(result: ScanResult) -> dict:
         "version": result.metadata.version,
         "target": result.target.input,
         "started_at": result.metadata.started_at.isoformat(),
+        "started_at_ist": format_ist(result.metadata.started_at),
+        "timezone_display": IST_LABEL,
         "finished_at": (
             result.metadata.finished_at.isoformat() if result.metadata.finished_at else None
         ),

@@ -11,6 +11,7 @@ from pathlib import Path
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from inspectra.models import ScanResult, Severity
+from inspectra.utils import format_ist
 
 SEVERITY_ORDER = ["high", "medium", "low", "info"]
 GOOD_GRADES = {"A+", "A", "B"}
@@ -38,6 +39,7 @@ def render(result: ScanResult) -> str:
         result=result,
         findings=findings,
         summary=summary,
+        started_display=format_ist(result.metadata.started_at),
         grade_class=_grade_class(result.grade or "F"),
     )
 

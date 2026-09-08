@@ -17,7 +17,7 @@ from inspectra import __version__
 from inspectra.models import ScanOptions, ScanResult, Severity
 from inspectra.orchestrator import ScanAborted, run_scan
 from inspectra.report import html_report, json_report, markdown_report
-from inspectra.utils import TargetValidationError, normalize_target
+from inspectra.utils import TargetValidationError, format_ist, normalize_target
 
 CONFIG_DIR = Path.home() / ".config" / "inspectra"
 CONFIG_FILE = CONFIG_DIR / "config.json"
@@ -205,5 +205,9 @@ def _print_summary(result: ScanResult, output_dir: Path) -> None:
     for severity in (Severity.HIGH, Severity.MEDIUM, Severity.LOW, Severity.INFO):
         table.add_row(severity.value.upper(), str(result.count_by_severity(severity)))
     table.add_row("Posture score", f"{result.posture_score:.1f} / 100 ({result.grade})")
+    table.add_row(
+        "Completed (IST)",
+        format_ist(result.metadata.finished_at or result.metadata.started_at),
+    )
     console.print(table)
     console.print(f"Reports written to [cyan]{output_dir.resolve()}[/]")

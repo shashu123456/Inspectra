@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspectra — Live Project Demo</title>
+<style>
+  :root {
+    --bg: #0f172a; --panel: #1e293b; --panel2: #243449; --text: #e2e8f0;
+    --muted: #94a3b8; --border: #334155; --accent: #38bdf8;
+    --high: #ef4444; --medium: #f59e0b; --low: #eab308; --info: #38bdf8; --good: #22c55e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { margin: 0 0 .25rem; font-size: 1.8rem; }
+  h1 span { color: var(--muted); font-weight: 400; }
+  .tagline { color: var(--muted); margin: 0 0 1.5rem; }
+  .tagline b { color: var(--accent); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; }
+  .card h3 { margin: 0 0 .35rem; font-size: .95rem; color: var(--accent); }
+  .card p { margin: 0; font-size: .85rem; color: var(--muted); }
+
+  .scanbox { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+  .btn {
+    display: inline-block; background: var(--accent); color: #082f49; font-weight: 700;
+    border: none; border-radius: 8px; padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer;
+  }
+  .btn:disabled { opacity: .5; cursor: wait; }
+  .status { margin-left: 1rem; color: var(--muted); font-size: .9rem; }
+  .spinner { display: none; }
+  .spinner.on { display: inline-block; }
+  .spinner::after { content: "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"; animation: spin 1s steps(10) infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .score-card { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
+  .score { font-size: 2.4rem; font-weight: 700; }
+  .grade { font-size: 2rem; font-weight: 800; border: 2px solid; border-radius: 10px; padding: .15rem .6rem; }
+  .grade.bad { color: var(--high); border-color: var(--high); }
+  .grade.warn { color: var(--medium); border-color: var(--medium); }
+  .grade.good { color: var(--good); border-color: var(--good); }
+  .chip { background: var(--panel2); border: 1px solid var(--border); border-radius: 999px; padding: .3rem .75rem; font-size: .85rem; }
+  .sev-high { color: var(--high); } .sev-medium { color: var(--medium); }
+  .sev-low { color: var(--low); } .sev-info { color: var(--info); }
+
+  .finding { background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--border);
+             border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: .9rem; }
+  .finding.sev-high { border-left-color: var(--high); }
+  .finding.sev-medium { border-left-color: var(--medium); }
+  .finding.sev-low { border-left-color: var(--low); }
+  .finding.sev-info { border-left-color: var(--info); }
+  .finding h3 { margin: 0 0 .5rem; font-size: 1rem; }
+  .badge { display: inline-block; font-size: .7rem; font-weight: 700; border: 1px solid currentColor; border-radius: 6px; padding: .1rem .45rem; }
+  .finding dl { display: grid; grid-template-columns: 9.5rem 1fr; gap: .3rem .75rem; margin: 0; }
+  .finding dt { color: var(--muted); font-size: .85rem; }
+  .finding dd { margin: 0; font-size: .9rem; }
+  details { margin-top: .5rem; } summary { color: var(--muted); cursor: pointer; font-size: .85rem; }
+  pre { background: #0b1220; border: 1px solid var(--border); border-radius: 8px; padding: .75rem; overflow-x: auto; font-size: .78rem; color: #cbd5e1; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+  th, td { border: 1px solid var(--border); padding: .4rem .6rem; text-align: left; }
+  th { background: var(--panel2); }
+  code { background: var(--panel2); padding: .1rem .3rem; border-radius: 4px; font-size: .8rem; }
+
+  .hidden { display: none; }
+  .links a { color: var(--accent); margin-right: 1rem; }
+  footer { margin-top: 2rem; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Inspectra <span>— Live Project Demo</span></h1>
+  <p class="tagline">
+    <b>Inspect.</b> Observe. Assess. Explain. Report. <b>Never exploit.</b><br>
+    This page runs <strong>real scans</strong> with the real tool against a harmless, deliberately
+    misconfigured fixture site hosted by this same server.
+  </p>
+
+  <div class="grid">
+    <div class="card"><h3>8 check modules</h3><p>dns · ports · http · tls · headers · fingerprint · robots · directories</p></div>
+    <div class="card"><h3>Explainable findings</h3><p>Every finding: what / why / evidence / confidence / severity / recommendation</p></div>
+    <div class="card"><h3>3 report formats</h3><p>Markdown (default) · self-contained HTML · JSON API</p></div>
+    <div class="card"><h3>Quality gates</h3><p>89 tests · 90% coverage · strict mypy · ruff · CI 3.11/3.12</p></div>
+  </div>
+
+  <div class="scanbox">
+    <h2 style="margin-top:0; font-size:1.2rem">▶ Run a live scan</h2>
+    <button class="btn" id="scanBtn">Run live scan</button>
+    <span class="spinner" id="spin"></span>
+    <span class="status" id="status">Scans http://127.0.0.1:9000 (the fixture target above) using the real Inspectra pipeline.</span>
+
+    <div id="results" class="hidden">
+      <div class="score-card">
+        <div><span class="score" id="score">—</span><small style="color:var(--muted)"> / 100</small></div>
+        <div class="grade" id="grade">—</div>
+        <div>
+          <span class="chip sev-high" id="chip-high"></span>
+          <span class="chip sev-medium" id="chip-medium"></span>
+          <span class="chip sev-low" id="chip-low"></span>
+          <span class="chip sev-info" id="chip-info"></span>
+        </div>
+      </div>
+      <p class="status" id="meta"></p>
+      <div id="findings"></div>
+      <p class="links">
+        Full reports from this scan:
+        <a href="/api/report/html" target="_blank">HTML report</a>
+        <a href="/api/report/md" target="_blank">Markdown report</a>
+        <a href="/api/report/json" target="_blank">JSON report</a>
+        <a href="/" target="_blank">The scan target itself</a>
+      </p>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.2rem">The eight checks</h2>
+  <table>
+    <tr><th>Check</th><th>Rule IDs</th><th>What it observes</th></tr>
+    <tr><td><code>dns</code></td><td>DNS-001…004</td><td>A/AAAA/CNAME/MX/NS/TXT records, fail-fast on NXDOMAIN</td></tr>
+    <tr><td><code>ports</code></td><td>PRT-001…003</td><td>Nmap port discovery + service detection, sensitive-service flags</td></tr>
+    <tr><td><code>http</code></td><td>HTP-001…004</td><td>HTTP→HTTPS redirects, chains, error states, server disclosure</td></tr>
+    <tr><td><code>tls</code></td><td>TLS-001…008</td><td>Cert expiry, self-signed, hostname mismatch, protocol versions</td></tr>
+    <tr><td><code>headers</code></td><td>HDR-001…009</td><td>9 security-header rules (HSTS, CSP, XFO, XCTO, …)</td></tr>
+    <tr><td><code>fingerprint</code></td><td>FPR-001</td><td>24 tech signatures: headers, cookies, meta-generator, body</td></tr>
+    <tr><td><code>robots</code></td><td>ROB-001…003</td><td>robots.txt directives, disallowed paths, sitemaps</td></tr>
+    <tr><td><code>directories</code></td><td>DIR-001…002</td><td>Opt-in, rate-limited path observation (150-path wordlist)</td></tr>
+  </table>
+
+  <h2 style="font-size:1.2rem; margin-top:2rem">How to run it yourself (CLI)</h2>
+  <pre>.venv\Scripts\inspectra scan example.com --format html
+.venv\Scripts\inspectra scan 192.168.1.1:8443 --ports 80,443,8443
+.venv\Scripts\inspectra scan example.com --skip-ports        # no Nmap needed
+.venv\Scripts\python demo\server.py                          # this demo</pre>
+
+  <footer>
+    Inspectra v1.0.0 — MIT licensed. A passive security assessment framework:
+    it observes, assesses, explains and reports; it never exploits.
+    Only scan systems you own or are authorized to test.
+  </footer>
+</div>
+
+<script>
+const btn = document.getElementById("scanBtn");
+const spin = document.getElementById("spin");
+const status = document.getElementById("status");
+const results = document.getElementById("results");
+const findings = document.getElementById("findings");
+
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => (
+  {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+btn.addEventListener("click", async () => {
+  btn.disabled = true;
+  spin.classList.add("on");
+  status.textContent = "Running the real Inspectra pipeline (dns → http → tls → headers → fingerprint → robots)…";
+  try {
+    const res = await fetch("/api/scan");
+    const data = await res.json();
+    render(data);
+    status.textContent = "Scan complete — reports are saved and linked below.";
+  } catch (err) {
+    status.textContent = "Scan failed: " + err;
+  } finally {
+    btn.disabled = false;
+    spin.classList.remove("on");
+  }
+});
+
+function render(data) {
+  results.classList.remove("hidden");
+  document.getElementById("score").textContent = (data.posture_score ?? 0).toFixed(1);
+  const grade = document.getElementById("grade");
+  grade.textContent = data.grade ?? "?";
+  grade.className = "grade " + (["A+","A","B"].includes(data.grade) ? "good" : ["D","F"].includes(data.grade) ? "bad" : "warn");
+  const s = data.summary || {};
+  document.getElementById("chip-high").textContent = "High " + (s.high ?? 0);
+  document.getElementById("chip-medium").textContent = "Medium " + (s.medium ?? 0);
+  document.getElementById("chip-low").textContent = "Low " + (s.low ?? 0);
+  document.getElementById("chip-info").textContent = "Info " + (s.info ?? 0);
+  document.getElementById("meta").textContent =
+    "Target " + (data.target ?? "?") + " · started " + (data.started_at_ist ?? "?") +
+    " · duration " + (data.duration_seconds ?? 0).toFixed(1) + "s · exit code " + data.exit_code;
+
+  const order = { high: 0, medium: 1, low: 2, info: 3 };
+  const items = [...(data.findings || [])].sort((a, b) =>
+    (order[a.severity] - order[b.severity]) || a.rule_id.localeCompare(b.rule_id));
+  findings.innerHTML = items.map((f) => `
+    <article class="finding sev-${esc(f.severity)}">
+      <h3><span class="badge">${esc(f.severity.toUpperCase())}</span> ${esc(f.rule_id)} — ${esc(f.title)}</h3>
+      <dl>
+        <dt>What was observed</dt><dd>${esc(f.description)}</dd>
+        <dt>Why it matters</dt><dd>${esc(f.why_it_matters)}</dd>
+        <dt>Confidence</dt><dd>${esc(f.confidence)}</dd>
+        <dt>Recommendation</dt><dd>${esc(f.recommendation)}</dd>
+      </dl>
+      ${f.evidence && f.evidence.length ? `
+        <details><summary>Evidence (${f.evidence.length})</summary>
+          <pre>${esc(f.evidence.join("\\n"))}</pre></details>` : ""}
+    </article>`).join("");
+}
+</script>
+</body>
+</html>

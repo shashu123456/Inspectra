@@ -5,10 +5,15 @@ from __future__ import annotations
 import ipaddress
 import json
 import re
+from datetime import UTC, datetime, timedelta, timezone
 from importlib.resources import files
 from typing import Any
 
 from inspectra.models import Target
+
+#: Indian Standard Time (UTC+05:30, no DST) — the display timezone for reports.
+IST_TIMEZONE = timezone(timedelta(hours=5, minutes=30), name="IST")
+IST_LABEL = "Asia/Kolkata (UTC+05:30)"
 
 _HOSTNAME_RE = re.compile(
     r"^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$"
@@ -91,6 +96,17 @@ def load_text_lines(name: str) -> list[str]:
         return [
             line.strip() for line in handle if line.strip() and not line.lstrip().startswith("#")
         ]
+
+
+def format_ist(dt: datetime) -> str:
+    """Format a datetime for display in Indian Standard Time.
+
+    Naive datetimes are assumed to be UTC. Storage stays UTC (ISO-8601);
+    only human-facing output is converted.
+    """
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=UTC)
+    return dt.astimezone(IST_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S IST")
 
 
 def truncate(text: str, limit: int = 500) -> str:

@@ -1,10 +1,12 @@
 {
   "tool": "inspectra",
   "version": "1.0.0",
-  "target": "http://127.0.0.1:57204",
-  "started_at": "2026-09-08T12:01:49.179619+00:00",
-  "finished_at": "2026-09-08T12:01:50.166825+00:00",
-  "duration_seconds": 0.987206,
+  "target": "http://127.0.0.1:33695",
+  "started_at": "2026-09-08T13:06:35.055519+00:00",
+  "started_at_ist": "2026-09-08 18:36:35 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-09-08T13:06:35.522639+00:00",
+  "duration_seconds": 0.46712,
   "posture_score": 4.0,
   "grade": "F",
   "summary": {
@@ -34,10 +36,10 @@
       "category": "tls",
       "severity": "medium",
       "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:57204: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "description": "Could not establish a TLS connection to 127.0.0.1:33695: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
       "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
       "evidence": [
-        "TLS handshake to 127.0.0.1:57204 failed"
+        "TLS handshake to 127.0.0.1:33695 failed"
       ],
       "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS."
     },

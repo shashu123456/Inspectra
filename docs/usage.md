@@ -41,6 +41,25 @@ Output lands in `./inspectra-report/`:
 | `report.json` | Machine-readable results for tooling |
 | `inspectra.log` | Structured scan log |
 
+Timestamps in all human-facing reports are shown in **Indian Standard Time**
+(`Asia/Kolkata`, UTC+05:30, e.g. `2026-09-08 18:24:53 IST`). The JSON report
+additionally stores the raw UTC ISO-8601 timestamps (`started_at`) alongside
+the display value (`started_at_ist`), so tooling stays timezone-safe.
+
+## Live demo
+
+A self-contained demo server hosts a harmless, deliberately misconfigured
+fixture site and a page that runs **real scans** against it:
+
+```bash
+.venv\Scripts\python demo\server.py
+# then open http://127.0.0.1:9000/api/demo-page
+```
+
+`GET /api/scan` runs a real scan and returns the JSON report;
+`/api/report/html`, `/api/report/md` and `/api/report/json` serve the last
+scan's reports.
+
 ## Command Reference
 
 ```

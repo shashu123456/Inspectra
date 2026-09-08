@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inspectra Report — http://127.0.0.1:57204</title>
+<title>Inspectra Report — http://127.0.0.1:33695</title>
 <style>
   :root {
     --bg: #0f172a;
@@ -99,8 +99,8 @@
   <header>
     <h1>Inspectra <span>Security Assessment Report</span></h1>
     <p class="meta">
-      Target: <code>http://127.0.0.1:57204</code> ·
-      2026-09-08 12:01 UTC ·
+      Target: <code>http://127.0.0.1:33695</code> ·
+      2026-09-08 18:36:35 IST ·
       inspectra 1.0.0
     </p>
   </header>
@@ -151,12 +151,12 @@
   <article class="finding sev-medium">
     <h3><span class="badge">MEDIUM</span> TLS-001 — HTTPS not available</h3>
     <dl>
-      <dt>What was observed</dt><dd>Could not establish a TLS connection to 127.0.0.1:57204: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)</dd>
+      <dt>What was observed</dt><dd>Could not establish a TLS connection to 127.0.0.1:33695: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)</dd>
       <dt>Why it matters</dt><dd>Without HTTPS, all traffic — including credentials — is transmitted in plaintext.</dd>
       <dt>Confidence</dt><dd>High</dd>
       <dt>Recommendation</dt><dd>Enable TLS on the server and redirect HTTP traffic to HTTPS.</dd>
     </dl>
-    <details><summary>Evidence (1)</summary><pre>TLS handshake to 127.0.0.1:57204 failed</pre></details>
+    <details><summary>Evidence (1)</summary><pre>TLS handshake to 127.0.0.1:33695 failed</pre></details>
   </article>
   <article class="finding sev-low">
     <h3><span class="badge">LOW</span> HDR-004 — Missing security header: X-Content-Type-Options</h3>

@@ -100,7 +100,7 @@
     <h1>Inspectra <span>Security Assessment Report</span></h1>
     <p class="meta">
       Target: <code>{{ result.target.input }}</code> ·
-      {{ result.metadata.started_at.strftime('%Y-%m-%d %H:%M UTC') }} ·
+      {{ started_display }} ·
       {{ result.metadata.tool }} {{ result.metadata.version }}
     </p>
   </header>

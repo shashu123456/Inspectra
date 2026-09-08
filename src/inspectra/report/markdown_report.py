@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from inspectra.models import Finding, ScanResult, Severity
+from inspectra.utils import format_ist
 
 SEVERITY_ORDER = [Severity.HIGH, Severity.MEDIUM, Severity.LOW, Severity.INFO]
 
@@ -21,7 +22,7 @@ def render(result: ScanResult) -> str:
         "# Inspectra Security Assessment Report",
         "",
         f"**Target:** `{result.target.input}`",
-        f"**Date:** {result.metadata.started_at:%Y-%m-%d %H:%M UTC}",
+        f"**Date:** {format_ist(result.metadata.started_at)}",
         f"**Tool:** {result.metadata.tool} {result.metadata.version}",
         f"**Duration:** {result.metadata.duration_seconds:.1f}s",
         "",
