@@ -1,0 +1,77 @@
+[
+  {
+    "id": "HDR-001",
+    "name": "Strict-Transport-Security",
+    "severity_when_missing": "medium",
+    "severity_when_weak": "low",
+    "pattern": "max-age\\s*=\\s*[1-9]",
+    "explanation": "HSTS tells browsers to only connect over HTTPS for a set period, protecting users from protocol-downgrade and cookie-hijacking attacks.",
+    "recommendation": "Set Strict-Transport-Security: max-age=31536000; includeSubDomains on every HTTPS response."
+  },
+  {
+    "id": "HDR-002",
+    "name": "Content-Security-Policy",
+    "severity_when_missing": "medium",
+    "severity_when_weak": "low",
+    "pattern": "default-src|script-src|object-src",
+    "explanation": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+    "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time)."
+  },
+  {
+    "id": "HDR-003",
+    "name": "X-Frame-Options",
+    "severity_when_missing": "medium",
+    "severity_when_weak": "low",
+    "pattern": "DENY|SAMEORIGIN",
+    "explanation": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+    "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required)."
+  },
+  {
+    "id": "HDR-004",
+    "name": "X-Content-Type-Options",
+    "severity_when_missing": "low",
+    "severity_when_weak": "low",
+    "pattern": "nosniff",
+    "explanation": "Without nosniff, browsers may guess the MIME type of a response, which can turn an upload into an executable script.",
+    "recommendation": "Set X-Content-Type-Options: nosniff on all responses."
+  },
+  {
+    "id": "HDR-005",
+    "name": "Referrer-Policy",
+    "severity_when_missing": "low",
+    "severity_when_weak": "low",
+    "pattern": "no-referrer|same-origin|strict-origin|no-referrer-when-downgrade",
+    "explanation": "Referrer-Policy controls how much of the previous URL is leaked to other sites, protecting sensitive query strings and paths.",
+    "recommendation": "Set Referrer-Policy: strict-origin-when-cross-origin (or no-referrer for highly sensitive applications)."
+  },
+  {
+    "id": "HDR-006",
+    "name": "Permissions-Policy",
+    "severity_when_missing": "low",
+    "explanation": "Permissions-Policy restricts which browser features (camera, microphone, geolocation) a page and its frames may use.",
+    "recommendation": "Set Permissions-Policy with a restrictive default, e.g. Permissions-Policy: camera=(), microphone=(), geolocation=()."
+  },
+  {
+    "id": "HDR-007",
+    "name": "Cross-Origin-Resource-Policy",
+    "severity_when_missing": "low",
+    "severity_when_weak": "low",
+    "pattern": "same-origin|cross-origin",
+    "explanation": "CORP stops other origins from loading this site's resources, reducing cross-origin data leakage.",
+    "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required."
+  },
+  {
+    "id": "HDR-008",
+    "name": "X-Powered-By",
+    "severity_when_present": "info",
+    "explanation": "The X-Powered-By header reveals the framework and often its version, giving attackers a head start on known vulnerabilities.",
+    "recommendation": "Remove the X-Powered-By header (or disable the framework option that adds it)."
+  },
+  {
+    "id": "HDR-009",
+    "name": "X-XSS-Protection",
+    "severity_when_present": "low",
+    "explanation": "X-XSS-Protection is deprecated: modern browsers ignore it, and in some configurations it can introduce vulnerabilities. Content-Security-Policy is the replacement.",
+    "recommendation": "Remove the X-XSS-Protection header and rely on Content-Security-Policy instead."
+  }
+]
