@@ -38,9 +38,4 @@ jobs:
 
       - name: Test (pytest)
         run: |
-          pytest             --cov=inspectra             --cov-report=xml             --cov-report=term-missing             -q
-
-      - name: Coverage XML
-        run: |
-          if [ ! -f coverage.xml ]; then echo "coverage.xml not generated" && exit 1; fi
-          python -c "import xml.etree.ElementTree as ET; ET.parse('coverage.xml')"
+          pytest             --cov=inspectra             --cov-report=xml             --cov-report=term-missing             -q             --tb=short

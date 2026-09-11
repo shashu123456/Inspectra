@@ -1,7 +1,7 @@
 # Inspectra Security Assessment Report
 
-**Target:** `http://127.0.0.1:33695`
-**Date:** 2026-09-08 18:36:34 IST
+**Target:** `http://127.0.0.1:1189`
+**Date:** 2026-09-11 01:03:14 IST
 **Tool:** inspectra 1.0.0
 **Duration:** 0.6s
 
@@ -53,11 +53,11 @@
 
 - **Category:** tls
 - **Confidence:** High
-- **What was observed:** Could not establish a TLS connection to 127.0.0.1:33695: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)
+- **What was observed:** Could not establish a TLS connection to 127.0.0.1:1189: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)
 - **Why it matters:** Without HTTPS, all traffic — including credentials — is transmitted in plaintext.
 - **Recommendation:** Enable TLS on the server and redirect HTTP traffic to HTTPS.
 - **Evidence:**
-  - `TLS handshake to 127.0.0.1:33695 failed`
+  - `TLS handshake to 127.0.0.1:1189 failed`
 
 ### [LOW] HDR-004 — Missing security header: X-Content-Type-Options
 

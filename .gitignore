@@ -15,12 +15,17 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.cache/
 
 # Scan output (generated reports)
 inspectra-report/
 demo-output/
-*.log
-*.log
+
+# Local scratch
+tmp/
+
+# Locally regenerated sample reports (committed copy lives in examples/sample-report/)
+sample-output/
 
 # OS noise
 .DS_Store
