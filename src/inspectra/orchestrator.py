@@ -64,7 +64,10 @@ def run_scan(
     try:
         if options.replay_dir:
             # Replayer has no context manager; run directly.
+            # Skip checks that need raw sockets (dns, ports, tls) in replay mode.
             for name, check in ordered_checks(options.directories):
+                if name in ("dns", "ports", "tls"):
+                    continue
                 if progress is not None:
                     progress(name)
                 try:

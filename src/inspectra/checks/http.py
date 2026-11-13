@@ -65,18 +65,21 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
     client = context.client or build_client()
     allow_private = context.options.allow_private if context.options else False
     authorized = context.options.authorized if context.options else False
-    response, scheme = _fetch_primary(client, target, allow_private, authorized)
+    replay_dir = context.options.replay_dir if context.options else None
+    response, scheme = _fetch_primary(client, target, allow_private, authorized, replay_dir)
     context.http_response = response
     target.scheme = scheme
 
     findings: list[Finding] = []
     if scheme == "https":
-        findings.extend(_check_https_redirect(client, target, allow_private, authorized))
+        findings.extend(
+            _check_https_redirect(client, target, allow_private, authorized, replay_dir)
+        )
     findings.extend(_transport_findings(response))
     server = response.headers.get("server")
     if server:
         findings.append(_server_header(server))
-    _fetch_robots(client, target, context, allow_private, authorized)
+    _fetch_robots(client, target, context, allow_private, authorized, replay_dir)
     return findings
 
 
@@ -85,11 +88,12 @@ def _fetch_primary(
     target: Target,
     allow_private: bool = False,
     authorized: bool = False,
+    replay_dir: str | None = None,
 ) -> tuple[httpx.Response, str]:
     """Fetch the target, trying the preferred scheme first and the other as fallback.
 
-    Validates the initial target for SSRF safety (returns a pinned IP), then
-    manually follows redirects with per-hop validation and re-pinning.
+    Validates the initial target for SSRF safety (unless in replay mode),
+    then manually follows redirects with per-hop validation.
     """
     schemes = [target.scheme]
     other = "http" if target.scheme == "https" else "https"
@@ -99,9 +103,13 @@ def _fetch_primary(
         url = _url_for(target, scheme)
         try:
             # Validate initial target for SSRF safety; get pinned IP.
-            pinned_ip = validate_target(target.hostname, allow_private, authorized)
+            # Skip validation in replay mode (no DNS lookups allowed).
+            if replay_dir:
+                pinned_ip = target.hostname  # use hostname directly in replay
+            else:
+                pinned_ip = validate_target(target.hostname, allow_private, authorized)
             response = _follow_redirects(
-                client, url, target.hostname, pinned_ip, allow_private, authorized
+                client, url, target.hostname, pinned_ip, allow_private, authorized, replay_dir
             )
             return response, scheme
         except httpx.RequestError as exc:
@@ -121,6 +129,7 @@ def _follow_redirects(
     pinned_ip: str,
     allow_private: bool,
     authorized: bool,
+    replay_dir: str | None = None,
     max_hops: int = MAX_REDIRECT_HOPS,
 ) -> httpx.Response:
     """Manually follow HTTP redirects with per-hop SSRF validation and re-pinning.
@@ -146,7 +155,11 @@ def _follow_redirects(
             next_parsed = urlparse(next_url)
             next_hostname = next_parsed.hostname or current_hostname
             # Re-resolve and re-pin the redirect target's IP.
-            current_ip = validate_target(next_hostname, allow_private, authorized)
+            # Skip validation in replay mode.
+            if replay_dir:
+                current_ip = next_hostname
+            else:
+                current_ip = validate_target(next_hostname, allow_private, authorized)
             current_hostname = next_hostname
             current_url = next_url
         else:
@@ -160,10 +173,14 @@ def _check_https_redirect(
     target: Target,
     allow_private: bool = False,
     authorized: bool = False,
+    replay_dir: str | None = None,
 ) -> list[Finding]:
     """Verify that plain HTTP redirects to HTTPS when HTTPS is available."""
     try:
-        pinned_ip = validate_target(target.hostname, allow_private, authorized)
+        if replay_dir:
+            pinned_ip = target.hostname
+        else:
+            pinned_ip = validate_target(target.hostname, allow_private, authorized)
         response = _pinned_get(client, _url_for(target, "http"), target.hostname, pinned_ip)
     except httpx.RequestError:
         return []  # plain HTTP unavailable; nothing to redirect
@@ -265,10 +282,14 @@ def _fetch_robots(
     context: ScanContext,
     allow_private: bool = False,
     authorized: bool = False,
+    replay_dir: str | None = None,
 ) -> None:
     """Fetch robots.txt so the robots check can analyze it without re-fetching."""
     try:
-        pinned_ip = validate_target(target.hostname, allow_private, authorized)
+        if replay_dir:
+            pinned_ip = target.hostname
+        else:
+            pinned_ip = validate_target(target.hostname, allow_private, authorized)
         response = _pinned_get(
             client,
             f"{_url_for(target, target.scheme)}/robots.txt",

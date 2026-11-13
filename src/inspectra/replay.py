@@ -99,6 +99,7 @@ class FixtureStore:
         }
 
         fixture_path = self.directory / f"{key}.json"
+        self.directory.mkdir(parents=True, exist_ok=True)
         fixture_path.write_text(
             json.dumps(record, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
