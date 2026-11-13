@@ -79,6 +79,7 @@ def test_replay_determinism(tmp_path, fixture_server, target) -> None:
         save_fixtures=str(record_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     run_scan(target, options_record)
 
@@ -95,6 +96,7 @@ def test_replay_determinism(tmp_path, fixture_server, target) -> None:
         replay_dir=str(replay_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     result1 = run_scan(target, options_replay)
     result2 = run_scan(target, options_replay)
@@ -116,6 +118,7 @@ def test_replay_offline_proof(tmp_path, fixture_server, target) -> None:
         save_fixtures=str(record_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     run_scan(target, options_record)
 
@@ -132,6 +135,7 @@ def test_replay_offline_proof(tmp_path, fixture_server, target) -> None:
         replay_dir=str(replay_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     with (
         patch("socket.socket.connect", side_effect=AssertionError("no network")),
@@ -152,6 +156,7 @@ def test_evidence_hash_present(tmp_path, fixture_server, target) -> None:
         save_fixtures=str(record_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     result = run_scan(target, options)
     for finding in result.findings:
@@ -203,6 +208,7 @@ def test_replay_committed_fixtures(tmp_path, target) -> None:
         replay_dir=str(fixtures_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     result = run_scan(fixed_target, options)
     assert result.findings  # replay produced findings
@@ -229,6 +235,7 @@ def test_replay_determinism_from_committed_fixtures(tmp_path, target) -> None:
         replay_dir=str(fixtures_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     result1 = run_scan(fixed_target, options)
     result2 = run_scan(fixed_target, options)
@@ -323,6 +330,7 @@ def test_replay_missing_response_exits_2(tmp_path, fixture_server, target) -> No
         save_fixtures=str(record_dir),
         allow_private=True,
         authorized=True,
+        skip_ports=True,
     )
     run_scan(target, options_record)
 
