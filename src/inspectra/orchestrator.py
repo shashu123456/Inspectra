@@ -7,6 +7,7 @@ import json
 import logging
 from collections.abc import Callable
 from datetime import UTC, datetime
+from pathlib import Path
 
 from inspectra import __version__
 from inspectra.analysis import risk
@@ -15,7 +16,7 @@ from inspectra.checks import CheckError, FatalCheckError, ordered_checks
 from inspectra.checks.context import ScanContext
 from inspectra.models import ScanMetadata, ScanOptions, ScanResult, Target
 from inspectra.redact import redact_evidence
-from inspectra.replay import FixtureStore, Recorder, Replayer
+from inspectra.replay import FixtureStore, Recorder, Replayer, ReplayMissError
 from inspectra.utils import truncate
 
 logger = logging.getLogger("inspectra")
@@ -43,9 +44,30 @@ def run_scan(
     context = ScanContext(options=options)
 
     # M4: replay mode never opens a socket; record mode wraps the client.
+    # Validate the replay directory before any check runs: a missing or empty
+    # fixture dir means the scan cannot produce meaningful results and must
+    # fail fast instead of going green with zero findings.
     store: FixtureStore | None = None
     if options.replay_dir:
-        store = FixtureStore(options.replay_dir)
+        replay_dir = Path(options.replay_dir)
+        if not replay_dir.is_dir():
+            raise ScanAborted(
+                f"Replay directory not found: {replay_dir}. "
+                "Run with --save-fixtures first to create fixtures."
+            )
+        index_path = replay_dir / "index.json"
+        if not index_path.is_file():
+            raise ScanAborted(
+                f"No fixture index in replay directory: {replay_dir}. "
+                "Run with --save-fixtures first to create fixtures."
+            )
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        if not index:
+            raise ScanAborted(
+                f"Replay directory is empty: {replay_dir}. "
+                "Run with --save-fixtures first to create fixtures."
+            )
+        store = FixtureStore(replay_dir)
         context.client = Replayer(store)
     elif options.save_fixtures:
         from inspectra.network import build_client  # lazy: keeps CLI startup fast
@@ -74,6 +96,11 @@ def run_scan(
                     result.findings.extend(check(target, context))
                 except FatalCheckError as exc:
                     raise ScanAborted(str(exc)) from exc
+                except ReplayMissError as exc:
+                    raise ScanAborted(
+                        f"No replay fixture for {exc.url}. "
+                        "Run with --save-fixtures first to create fixtures."
+                    ) from exc
                 except CheckError as exc:
                     logger.warning("Check '%s' skipped: %s", name, exc)
                 except Exception as exc:  # defensive: never let one check kill a scan

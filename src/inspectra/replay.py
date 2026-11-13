@@ -123,7 +123,10 @@ class FixtureStore:
             raise ReplayMissError(url)
         entry = self.index[key]
         fixture_path = self.directory / entry["file"]
-        return cast(dict[str, Any], json.loads(fixture_path.read_text(encoding="utf-8")))
+        try:
+            return cast(dict[str, Any], json.loads(fixture_path.read_text(encoding="utf-8")))
+        except FileNotFoundError as exc:
+            raise ReplayMissError(url) from exc
 
 
 class Recorder:
