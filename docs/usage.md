@@ -68,7 +68,7 @@ inspectra scan TARGET [options]
 
 | Option | Description |
 |--------|-------------|
-| `--format {markdown,html}` | Human-readable report format (default: `markdown`) |
+| `--format {markdown,html,json,sarif}` | Human-readable report format (default: `markdown`) |
 | `--output-dir DIR` | Report directory (default: `inspectra-report/`) |
 | `--ports 80,443,8080` | Explicit port list for Nmap |
 | `--top-ports N` | Scan the N most common ports (default: 1000) |
@@ -78,6 +78,8 @@ inspectra scan TARGET [options]
 | `--yes` | Accept the authorization agreement without prompting |
 | `--verbose` | Enable debug logging |
 | `inspectra --version` | Show the version |
+| `--save-fixtures DIR` | Record every HTTP request/response to DIR for later replay |
+| `--replay DIR` | Replay all HTTP requests from DIR fixtures (offline, no network) |
 
 ## Examples
 
@@ -135,17 +137,32 @@ entirely from disk with zero network I/O. Two runs against the same fixtures
 produce byte-identical reports (modulo timestamps), so CI can diff scans and
 detect regressions without touching the network.
 
-```bash
-# Record all HTTP traffic to a fixtures directory
-inspectra scan example.com --save-fixtures ./my-fixtures
+### Record
 
-# Replay from recorded fixtures (offline — no network)
-inspectra scan example.com --replay ./my-fixtures --format json
+```bash
+inspectra scan http://127.0.0.1:9999 --allow-private --authorized --yes \
+  --save-fixtures tests/fixtures/replay
 ```
 
-`--save-fixtures` and `--replay` are mutually exclusive. `--replay` implies
-offline mode: no sockets are opened, no DNS lookups are made, and checks that
-require raw sockets (DNS, port discovery, TLS) are skipped.
+`--save-fixtures` records every HTTP request/response pair. The scan still
+hits the network during recording.
+
+### Replay
+
+```bash
+inspectra scan http://127.0.0.1:9999 --replay tests/fixtures/replay \
+  --format json -o report.json --yes --allow-private --authorized
+```
+
+`--replay` implies offline mode: no sockets are opened, no DNS lookups are
+made, and checks that require raw sockets (DNS, port discovery, TLS) are
+skipped. Only HTTP-layer checks (headers, schema, robots, fingerprinting)
+are replayed — a replayed report is a subset of a live one.
+
+`--format json` prints a human-readable summary to stdout; use `-o report.json`
+to write the machine-readable JSON report to a file.
+
+`--save-fixtures` and `--replay` are mutually exclusive.
 
 ### Replay in CI
 
@@ -156,9 +173,14 @@ Commit a fixture set to your repository and replay it on every push:
 inspectra scan https://example.com --save-fixtures tests/fixtures/replay
 
 # Replay in CI (no network)
-inspectra scan https://example.com --replay tests/fixtures/replay --format json > report.json
+inspectra scan https://example.com --replay tests/fixtures/replay \
+  --format json -o report.json --yes --allow-private --authorized
+
 diff report.json report.json.prev  # empty = no regression
 ```
+
+Empty or missing fixture directories cause exit code 2 — a CI pipeline that
+loses its fixtures will fail closed, not green.
 
 ## Safety Notes
 
