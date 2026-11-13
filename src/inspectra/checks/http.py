@@ -27,7 +27,6 @@ MAX_REDIRECT_HOPS = 5
 
 
 def _pinned_url(
-    hostname: str,
     pinned_ip: str,
     scheme: str,
     port: int | None,
@@ -49,10 +48,13 @@ def _pinned_get(
 
     SNI is only set for HTTPS URLs; for HTTP we set the Host header and let
     httpx use plain TCP (avoiding spurious TLS handshakes on HTTP servers).
+    The query string is preserved and the Host header keeps any non-default port.
     """
     parsed = urlparse(url)
-    pinned = _pinned_url(hostname, pinned_ip, parsed.scheme, parsed.port, parsed.path)
-    kwargs: dict = {"headers": {"Host": hostname}}
+    path = f"{parsed.path or '/'}?{parsed.query}" if parsed.query else (parsed.path or "/")
+    pinned = _pinned_url(pinned_ip, parsed.scheme, parsed.port, path)
+    host_header = parsed.netloc.rsplit("@", 1)[-1]
+    kwargs: dict = {"headers": {"Host": host_header}}
     if parsed.scheme == "https":
         kwargs["extensions"] = {"sni_hostname": hostname}
     return client.get(pinned, **kwargs)

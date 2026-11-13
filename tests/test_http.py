@@ -41,3 +41,83 @@ def test_http_check_unreachable_raises(target, scan_options) -> None:
             assert exc.__class__.__name__ == "CheckError"
         else:
             raise AssertionError("expected CheckError for unreachable target")
+
+
+# --- P1: Query string preserved in pinned URL ---
+def test_pinned_url_preserves_query() -> None:
+    """Pinned URL keeps the query string, not just the path."""
+    pinned = http._pinned_url("93.184.216.34", "https", 8443, "/a/b?token=1&x=2")
+    assert pinned == "https://93.184.216.34:8443/a/b?token=1&x=2"
+
+
+def test_pinned_url_no_query_unchanged() -> None:
+    """Pinned URL without query works as before."""
+    pinned = http._pinned_url("93.184.216.34", "https", 443, "/a/b")
+    assert pinned == "https://93.184.216.34:443/a/b"
+
+
+# --- P2: Host header includes non-default port ---
+def test_pinned_get_host_header_includes_port() -> None:
+    """Host header includes the port when it's non-default."""
+    captured = {}
+
+    class FakeResponse:
+        def __init__(self) -> None:
+            self.is_redirect = False
+
+    class FakeClient:
+        def get(self, url, *, headers, extensions=None):
+            captured["url"] = url
+            captured["headers"] = headers
+            captured["extensions"] = extensions
+            return FakeResponse()
+
+    client = FakeClient()
+    url = "https://example.com:8443/a/b?token=abc123"
+    http._pinned_get(client, url, "example.com", "93.184.216.34")
+
+    assert captured["url"] == "https://93.184.216.34:8443/a/b?token=abc123"
+    assert captured["headers"]["Host"] == "example.com:8443"
+    assert captured["extensions"]["sni_hostname"] == "example.com"
+
+
+def test_pinned_get_host_header_default_port() -> None:
+    """Host header drops the port when it's the default (80/443)."""
+    captured = {}
+
+    class FakeResponse:
+        def __init__(self) -> None:
+            self.is_redirect = False
+
+    class FakeClient:
+        def get(self, url, *, headers, extensions=None):
+            captured["url"] = url
+            captured["headers"] = headers
+            return FakeResponse()
+
+    client = FakeClient()
+    url = "https://example.com/a/b"
+    http._pinned_get(client, url, "example.com", "93.184.216.34")
+
+    assert captured["url"] == "https://93.184.216.34/a/b"
+    assert captured["headers"]["Host"] == "example.com"
+
+
+def test_pinned_get_query_preserved_in_request() -> None:
+    """The full URL including query string is used for the pinned request."""
+    captured = {}
+
+    class FakeResponse:
+        def __init__(self) -> None:
+            self.is_redirect = False
+
+    class FakeClient:
+        def get(self, url, *, headers, extensions=None):
+            captured["url"] = url
+            return FakeResponse()
+
+    client = FakeClient()
+    url = "http://example.com/search?q=hello+world&lang=en"
+    http._pinned_get(client, url, "example.com", "93.184.216.34")
+
+    assert captured["url"] == "http://93.184.216.34/search?q=hello+world&lang=en"
