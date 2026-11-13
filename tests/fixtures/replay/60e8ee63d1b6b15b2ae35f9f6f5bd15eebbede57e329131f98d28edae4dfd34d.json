@@ -1,0 +1,16 @@
+{
+  "body_b64": "VXNlci1hZ2VudDogKgpEaXNhbGxvdzogL3ByaXZhdGU=",
+  "elapsed_ms": 15.886,
+  "headers": {
+    "connection": "close",
+    "content-length": "32",
+    "content-type": "text/plain; charset=utf-8",
+    "date": "Fri, 13 Nov 2026 17:23:29 GMT",
+    "server": "Werkzeug/3.1.8 Python/3.11.9"
+  },
+  "key": "60e8ee63d1b6b15b2ae35f9f6f5bd15eebbede57e329131f98d28edae4dfd34d",
+  "method": "GET",
+  "recorded_at": "2026-11-13T17:23:29.036114+00:00",
+  "status": 200,
+  "url": "http://127.0.0.1:9999/robots.txt"
+}

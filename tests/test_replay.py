@@ -11,13 +11,14 @@ Covers:
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from unittest.mock import patch
 
 import httpx
 import pytest
 
 from inspectra.cli import main
-from inspectra.models import ScanOptions
+from inspectra.models import ScanOptions, Target
 from inspectra.orchestrator import run_scan
 from inspectra.replay import FixtureStore, ReplayMissError
 
@@ -181,3 +182,27 @@ def test_cli_save_fixtures_and_replay_exclusive(
                 str(tmp_path / "fx2"),
             ]
         )
+
+
+# --- Committed fixture replay ---
+
+
+def test_replay_committed_fixtures(tmp_path, target) -> None:
+    """Replay from committed fixtures works offline."""
+    fixtures_dir = Path(__file__).parent / "fixtures" / "replay"
+    assert fixtures_dir.exists(), "committed fixtures missing"
+
+    # Committed fixtures were recorded on port 9999
+    fixed_target = Target(
+        input="http://127.0.0.1:9999",
+        hostname="127.0.0.1",
+        port=9999,
+        scheme="http",
+    )
+    options = ScanOptions(
+        replay_dir=str(fixtures_dir),
+        allow_private=True,
+        authorized=True,
+    )
+    result = run_scan(fixed_target, options)
+    assert result.findings  # replay produced findings

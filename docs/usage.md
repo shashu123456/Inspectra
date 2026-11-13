@@ -128,6 +128,38 @@ point of the tool.
 | `1` | Scan completed, findings present |
 | `2` | Scan failed or authorization declined |
 
+## Deterministic Replay (M4)
+
+Record every HTTP request/response to a fixtures directory, then replay scans
+entirely from disk with zero network I/O. Two runs against the same fixtures
+produce byte-identical reports (modulo timestamps), so CI can diff scans and
+detect regressions without touching the network.
+
+```bash
+# Record all HTTP traffic to a fixtures directory
+inspectra scan example.com --save-fixtures ./my-fixtures
+
+# Replay from recorded fixtures (offline — no network)
+inspectra scan example.com --replay ./my-fixtures --format json
+```
+
+`--save-fixtures` and `--replay` are mutually exclusive. `--replay` implies
+offline mode: no sockets are opened, no DNS lookups are made, and checks that
+require raw sockets (DNS, port discovery, TLS) are skipped.
+
+### Replay in CI
+
+Commit a fixture set to your repository and replay it on every push:
+
+```bash
+# Record once (locally)
+inspectra scan https://example.com --save-fixtures tests/fixtures/replay
+
+# Replay in CI (no network)
+inspectra scan https://example.com --replay tests/fixtures/replay --format json > report.json
+diff report.json report.json.prev  # empty = no regression
+```
+
 ## Safety Notes
 
 Inspectra performs **passive** assessment only. It never exploits, never

@@ -1,0 +1,16 @@
+{
+  "body_b64": "PGh0bWw+PGJvZHk+SGVsbG88L2JvZHk+PC9odG1sPg==",
+  "elapsed_ms": 98.699,
+  "headers": {
+    "connection": "close",
+    "content-length": "31",
+    "content-type": "text/plain; charset=utf-8",
+    "date": "Fri, 13 Nov 2026 17:23:27 GMT",
+    "server": "Werkzeug/3.1.8 Python/3.11.9, test/1.0"
+  },
+  "key": "107b5723ce35838ea43887ffc9376a0ec84f2fe57bdd5f9a7f125061ccf63ecc",
+  "method": "GET",
+  "recorded_at": "2026-11-13T17:23:27.338873+00:00",
+  "status": 200,
+  "url": "http://127.0.0.1:9999/"
+}
