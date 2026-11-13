@@ -27,6 +27,10 @@ See [docs/safety.md](docs/safety.md) for the full ethics and legal guidance.
 
 ---
 
+This is **inspectra-cli**. An unrelated package named `inspectra` exists on PyPI (an AI code-review tool). Installing this project provides the `inspectra` and `inspectra-cli` commands.
+
+---
+
 ## What Is Inspectra?
 
 Inspectra is a single-command CLI tool that performs safe, passive security assessments on authorized targets and produces professional, **explainable** reports.
