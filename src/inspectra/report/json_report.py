@@ -15,7 +15,7 @@ from inspectra.utils import IST_LABEL, format_ist
 
 def render(result: ScanResult) -> dict:
     """Serialize a :class:`ScanResult` into a JSON-serializable dictionary."""
-    return {
+    data = {
         "tool": result.metadata.tool,
         "version": result.metadata.version,
         "target": result.target.input,
@@ -31,6 +31,17 @@ def render(result: ScanResult) -> dict:
         "summary": _summary(result),
         "findings": [_finding(finding) for finding in result.findings],
     }
+
+    if getattr(result, "_baseline_summary", None):
+        data["baseline"] = result._baseline_summary
+
+    # Emit scope/redaction metadata when set (M3).
+    if result.scope:
+        data["scope"] = result.scope
+    if result.redaction:
+        data["redaction"] = result.redaction
+
+    return data
 
 
 def _summary(result: ScanResult) -> dict:
@@ -54,6 +65,7 @@ def _finding(finding: Finding) -> dict:
         "why_it_matters": finding.why_it_matters,
         "evidence": finding.evidence,
         "recommendation": finding.recommendation,
+        "fingerprint": finding.fingerprint,
     }
 
 
