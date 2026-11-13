@@ -7,15 +7,15 @@ from inspectra.checks.context import ScanContext
 from inspectra.network import build_client
 
 
-def _run_headers(fixture_server, target) -> list:
+def _run_headers(fixture_server, target, scan_options) -> list:
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         return headers.run(target, context)
 
 
-def test_missing_headers_reported(fixture_server, target) -> None:
-    findings = _run_headers(fixture_server, target)
+def test_missing_headers_reported(fixture_server, target, scan_options) -> None:
+    findings = _run_headers(fixture_server, target, scan_options)
     rule_ids = {finding.rule_id for finding in findings}
     # HSTS, CSP and X-Frame-Options are absent on the fixture server.
     assert "HDR-001" in rule_ids
@@ -27,7 +27,7 @@ def test_missing_headers_reported(fixture_server, target) -> None:
     assert "HDR-009" not in rule_ids
 
 
-def test_present_headers_do_not_find(fixture_server, target) -> None:
+def test_present_headers_do_not_find(fixture_server, target, scan_options) -> None:
     fixture_server.expect_oneshot_request("/").respond_with_data(
         b"<html></html>",
         status=200,
@@ -41,7 +41,7 @@ def test_present_headers_do_not_find(fixture_server, target) -> None:
             "Cross-Origin-Resource-Policy": "same-origin",
         },
     )
-    findings = _run_headers(fixture_server, target)
+    findings = _run_headers(fixture_server, target, scan_options)
     rule_ids = {finding.rule_id for finding in findings}
     assert "HDR-001" not in rule_ids
     assert "HDR-002" not in rule_ids
@@ -52,13 +52,13 @@ def test_present_headers_do_not_find(fixture_server, target) -> None:
     assert "HDR-007" not in rule_ids
 
 
-def test_weak_header_value_reported(fixture_server, target) -> None:
+def test_weak_header_value_reported(fixture_server, target, scan_options) -> None:
     fixture_server.expect_oneshot_request("/").respond_with_data(
         b"<html></html>",
         status=200,
         headers={"Strict-Transport-Security": "max-age=0"},
     )
-    findings = _run_headers(fixture_server, target)
+    findings = _run_headers(fixture_server, target, scan_options)
     hsts = [finding for finding in findings if finding.rule_id == "HDR-001"]
     assert any("Weak" in finding.title for finding in hsts)
 

@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 from pytest_httpserver import HTTPServer
 
-from inspectra.models import Target
+from inspectra.models import ScanOptions, Target
 
 INDEX_HTML = b"""<!doctype html>
 <html>
@@ -72,3 +72,9 @@ def fake_home(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "CONFIG_DIR", config_dir)
     monkeypatch.setattr(cli, "CONFIG_FILE", config_dir / "config.json")
     return home
+
+
+@pytest.fixture
+def scan_options() -> ScanOptions:
+    """ScanOptions with private targets allowed (for localhost fixture testing)."""
+    return ScanOptions(allow_private=True, authorized=True)

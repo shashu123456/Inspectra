@@ -12,10 +12,12 @@ from inspectra.network import build_client
 WORDLIST = "/admin\n/.git/config\n/health\n/missing\n"
 
 
-def test_directories_finds_accessible_paths(fixture_server, target, tmp_path: Path) -> None:
+def test_directories_finds_accessible_paths(
+    fixture_server, target, tmp_path: Path, scan_options
+) -> None:
     wordlist = tmp_path / "wordlist.txt"
     wordlist.write_text(WORDLIST, encoding="utf-8")
-    options = ScanOptions(directory_wordlist=str(wordlist))
+    options = ScanOptions(directory_wordlist=str(wordlist), allow_private=True, authorized=True)
     with build_client() as client:
         context = ScanContext(client=client, options=options)
         http.run(target, context)
@@ -44,9 +46,9 @@ def test_directories_without_http_context_returns_empty(target) -> None:
     assert directories.run(target, ScanContext()) == []
 
 
-def test_directories_uses_default_wordlist(fixture_server, target) -> None:
+def test_directories_uses_default_wordlist(fixture_server, target, scan_options) -> None:
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         findings = directories.run(target, context)
     # With the default wordlist the fixture serves several paths (robots.txt, admin...).

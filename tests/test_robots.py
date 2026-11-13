@@ -23,9 +23,9 @@ def test_parse_robots_ignores_comments_and_blank_lines() -> None:
     assert info.disallowed == ["/tmp"]
 
 
-def test_robots_check_finds_disallowed_and_sitemap(fixture_server, target) -> None:
+def test_robots_check_finds_disallowed_and_sitemap(fixture_server, target, scan_options) -> None:
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         findings = robots.run(target, context)
 
@@ -36,10 +36,10 @@ def test_robots_check_finds_disallowed_and_sitemap(fixture_server, target) -> No
     assert "/admin" in disallowed.evidence
 
 
-def test_robots_check_missing_file(fixture_server, target) -> None:
+def test_robots_check_missing_file(fixture_server, target, scan_options) -> None:
     fixture_server.expect_oneshot_request("/robots.txt").respond_with_data(b"", status=404)
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         findings = robots.run(target, context)
     assert any(finding.rule_id == "ROB-001" for finding in findings)

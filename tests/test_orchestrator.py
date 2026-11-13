@@ -10,7 +10,7 @@ from inspectra.orchestrator import ScanAborted, run_scan
 
 
 def test_full_scan_against_fixture(fixture_server, target) -> None:
-    options = ScanOptions(skip_ports=True)
+    options = ScanOptions(skip_ports=True, allow_private=True, authorized=True)
     seen: list[str] = []
     result = run_scan(target, options, progress=seen.append)
 
@@ -32,7 +32,7 @@ def test_failing_check_degrades_gracefully(fixture_server, target, monkeypatch) 
         raise RuntimeError("unexpected explosion")
 
     monkeypatch.setitem(ALL_CHECKS, "headers", boom)
-    result = run_scan(target, ScanOptions(skip_ports=True))
+    result = run_scan(target, ScanOptions(skip_ports=True, allow_private=True, authorized=True))
     assert result.findings  # other checks still produced findings
 
 
@@ -42,11 +42,11 @@ def test_fatal_check_aborts_scan(fixture_server, target, monkeypatch) -> None:
 
     monkeypatch.setitem(ALL_CHECKS, "http", fatal)
     with pytest.raises(ScanAborted):
-        run_scan(target, ScanOptions(skip_ports=True))
+        run_scan(target, ScanOptions(skip_ports=True, allow_private=True, authorized=True))
 
 
 def test_posture_score_reflects_findings(fixture_server, target) -> None:
-    result = run_scan(target, ScanOptions(skip_ports=True))
+    result = run_scan(target, ScanOptions(skip_ports=True, allow_private=True, authorized=True))
     expected_penalty = sum(
         {Severity.INFO: 0, Severity.LOW: 12, Severity.MEDIUM: 24, Severity.HIGH: 36}[f.severity]
         * {Confidence.LOW: 0.3, Confidence.MEDIUM: 0.6, Confidence.HIGH: 1.0}[f.confidence]

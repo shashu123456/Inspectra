@@ -20,10 +20,12 @@ TEST_SIGNATURES = [
 ]
 
 
-def test_fingerprint_detects_technologies(fixture_server, target, monkeypatch) -> None:
+def test_fingerprint_detects_technologies(
+    fixture_server, target, scan_options, monkeypatch
+) -> None:
     monkeypatch.setattr(fingerprint, "load_json", lambda name: TEST_SIGNATURES)
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         findings = fingerprint.run(target, context)
 
@@ -35,10 +37,12 @@ def test_fingerprint_detects_technologies(fixture_server, target, monkeypatch) -
     assert any("InspectraTest/1.2.3" in line for line in finding.evidence)
 
 
-def test_fingerprint_without_matches_returns_empty(fixture_server, target, monkeypatch) -> None:
+def test_fingerprint_without_matches_returns_empty(
+    fixture_server, target, scan_options, monkeypatch
+) -> None:
     monkeypatch.setattr(fingerprint, "load_json", lambda name: [])
     with build_client() as client:
-        context = ScanContext(client=client)
+        context = ScanContext(client=client, options=scan_options)
         http.run(target, context)
         assert fingerprint.run(target, context) == []
 
