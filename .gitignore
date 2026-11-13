@@ -28,6 +28,9 @@ tmp/
 # Locally regenerated sample reports (committed copy lives in examples/sample-report/)
 sample-output/
 
+# Secrets (API tokens, credentials) — never commit
+.secrets/
+
 # OS noise
 .DS_Store
 Thumbs.db

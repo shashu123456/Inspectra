@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "inspectra"
+name = "inspectra-cli"
 description = "An open-source, explainable security assessment framework for safe and authorized security analysis."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -11,9 +11,10 @@ license = { text = "MIT" }
 authors = [{ name = "Inspectra contributors" }]
 keywords = ["security", "vulnerability-assessment", "security-audit", "cli", "python"]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
   "Intended Audience :: Information Technology",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
@@ -31,7 +32,7 @@ dependencies = [
   "python-nmap>=0.7.1",
   "rich>=13.7.0",
 ]
-version = "1.0.0"
+version = "2.0.0"
 
 [project.optional-dependencies]
 dev = [
@@ -44,6 +45,7 @@ dev = [
 
 [project.scripts]
 inspectra = "inspectra.cli:main"
+inspectra-cli = "inspectra.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inspectra"]

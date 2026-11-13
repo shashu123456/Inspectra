@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 
+from inspectra import __version__
 from inspectra.models import Confidence, Finding, ScanMetadata, ScanResult, Severity, Target
 from inspectra.report.sarif_report import render
 
@@ -56,7 +57,7 @@ def test_sarif_schema_fields() -> None:
     run = data["runs"][0]
     driver = run["tool"]["driver"]
     assert driver["name"] == "Inspectra"
-    assert driver["version"] == "1.0.0"
+    assert driver["version"] == __version__
     assert driver["informationUri"] == "https://github.com/shashu123456/inspectra"
     assert len(driver["rules"]) == 2
 
