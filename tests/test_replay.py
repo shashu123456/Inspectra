@@ -206,3 +206,152 @@ def test_replay_committed_fixtures(tmp_path, target) -> None:
     )
     result = run_scan(fixed_target, options)
     assert result.findings  # replay produced findings
+
+
+# --- D3: Determinism diff helper ---
+
+
+def test_replay_determinism_from_committed_fixtures(tmp_path, target) -> None:
+    """Two replay runs from committed fixtures produce identical JSON
+    after stripping volatile fields."""
+    from inspectra.report import json_report
+
+    fixtures_dir = Path(__file__).parent / "fixtures" / "replay"
+    assert fixtures_dir.exists(), "committed fixtures missing"
+
+    fixed_target = Target(
+        input="http://127.0.0.1:9999",
+        hostname="127.0.0.1",
+        port=9999,
+        scheme="http",
+    )
+    options = ScanOptions(
+        replay_dir=str(fixtures_dir),
+        allow_private=True,
+        authorized=True,
+    )
+    result1 = run_scan(fixed_target, options)
+    result2 = run_scan(fixed_target, options)
+
+    json1 = _strip_volatile(json_report.render(result1))
+    json2 = _strip_volatile(json_report.render(result2))
+    assert json1 == json2, "Two replay runs must produce identical reports"
+
+
+def test_replay_missing_dir_exits_2(tmp_path, target) -> None:
+    """Replay from a missing directory exits 2 with a clear error."""
+    missing_dir = tmp_path / "does-not-exist"
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--replay",
+            str(missing_dir),
+        ]
+    )
+    assert code == 2
+
+
+def test_replay_empty_dir_exits_2(tmp_path, target) -> None:
+    """Replay from an empty directory exits 2."""
+    empty_dir = tmp_path / "empty"
+    empty_dir.mkdir()
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--replay",
+            str(empty_dir),
+        ]
+    )
+    assert code == 2
+
+
+def test_replay_dir_without_index_exits_2(tmp_path, target) -> None:
+    """Replay from a directory without index.json exits 2."""
+    no_index_dir = tmp_path / "no-index"
+    no_index_dir.mkdir()
+    (no_index_dir / "somefile.json").write_text("{}")
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--replay",
+            str(no_index_dir),
+        ]
+    )
+    assert code == 2
+
+
+def test_replay_empty_index_exits_2(tmp_path, target) -> None:
+    """Replay from a directory with an empty index.json exits 2."""
+    empty_index_dir = tmp_path / "empty-index"
+    empty_index_dir.mkdir()
+    (empty_index_dir / "index.json").write_text("{}")
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--replay",
+            str(empty_index_dir),
+        ]
+    )
+    assert code == 2
+
+
+def test_replay_missing_response_exits_2(tmp_path, fixture_server, target) -> None:
+    """Replay when a required request has no fixture exits 2."""
+    # Record from the live server first
+    record_dir = tmp_path / "recorded"
+    options_record = ScanOptions(
+        save_fixtures=str(record_dir),
+        allow_private=True,
+        authorized=True,
+    )
+    run_scan(target, options_record)
+
+    # Copy fixtures but delete one response file
+    replay_dir = tmp_path / "replayed"
+    replay_dir.mkdir()
+    import shutil
+
+    for f in record_dir.iterdir():
+        shutil.copy(f, replay_dir / f.name)
+
+    # Delete one fixture file but leave index.json referencing it
+    index_path = replay_dir / "index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    if index:
+        first_key = next(iter(index))
+        missing_file = replay_dir / index[first_key]["file"]
+        missing_file.unlink()
+
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--replay",
+            str(replay_dir),
+        ]
+    )
+    assert code == 2
