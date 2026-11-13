@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 import httpx
 
@@ -19,7 +20,7 @@ class ScanContext:
     response so the headers and fingerprint checks do not re-fetch).
     """
 
-    client: httpx.Client | None = None
+    client: Any = None
     options: ScanOptions | None = None
     http_response: httpx.Response | None = None
     robots_response: httpx.Response | None = None

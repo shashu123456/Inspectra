@@ -94,6 +94,7 @@ def _build_results(findings: list[Finding]) -> list[dict]:
             "properties": {
                 "confidence": finding.confidence.value,
                 "category": finding.category,
+                "evidenceHash": finding.evidence_hash,
             },
         }
         if location is not None:

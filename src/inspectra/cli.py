@@ -139,6 +139,18 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="PATH",
         help="Compare against a baseline file at PATH; only new findings count toward fail-on.",
     )
+    scan.add_argument(
+        "--save-fixtures",
+        dest="save_fixtures",
+        metavar="DIR",
+        help="Record every HTTP request/response to DIR for later replay.",
+    )
+    scan.add_argument(
+        "--replay",
+        dest="replay_dir",
+        metavar="DIR",
+        help="Replay all HTTP requests from DIR fixtures (offline, no network).",
+    )
     return parser
 
 
@@ -164,6 +176,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Treat empty --baseline string as absent (F2).
     if args.baseline == "":
         args.baseline = None
+
+    # M4: --save-fixtures and --replay are mutually exclusive.
+    if args.save_fixtures and args.replay_dir:
+        build_parser().error("--save-fixtures and --replay are mutually exclusive.")
 
     if not _confirm_authorization(args.yes):
         console.print("[yellow]Scan cancelled: authorization not confirmed.[/]")
@@ -210,6 +226,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         allow_private=args.allow_private,
         authorized=args.authorized,
         no_redact=args.no_redact,
+        save_fixtures=args.save_fixtures,
+        replay_dir=args.replay_dir,
     )
     output_dir = None
     if not args.output_path:

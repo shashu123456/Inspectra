@@ -66,6 +66,7 @@ def _finding(finding: Finding) -> dict:
         "evidence": finding.evidence,
         "recommendation": finding.recommendation,
         "fingerprint": finding.fingerprint,
+        "evidence_hash": finding.evidence_hash,
     }
 
 

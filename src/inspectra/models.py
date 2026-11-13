@@ -51,6 +51,7 @@ class Finding:
     evidence: list[str] = field(default_factory=list)
     fingerprint: str | None = None
     _baseline_status: str | None = None
+    evidence_hash: str | None = None
 
 
 @dataclass(slots=True)
@@ -93,6 +94,8 @@ class ScanOptions:
     allow_private: bool = False
     authorized: bool = False
     no_redact: bool = False
+    save_fixtures: str | None = None
+    replay_dir: str | None = None
 
 
 @dataclass(slots=True)
