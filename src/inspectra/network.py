@@ -26,8 +26,7 @@ def build_client() -> httpx.Client:
     """
     return httpx.Client(
         timeout=DEFAULT_TIMEOUT,
-        follow_redirects=True,
-        max_redirects=MAX_REDIRECTS,
+        follow_redirects=False,
         trust_env=False,
         headers={"User-Agent": USER_AGENT},
     )

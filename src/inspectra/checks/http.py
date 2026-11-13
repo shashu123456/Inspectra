@@ -1,8 +1,16 @@
-"""HTTP analysis check: fetches the primary page and robots.txt."""
+"""HTTP analysis check: fetches the primary page and robots.txt.
+
+All connections are IP-pinned: the target hostname is resolved once via
+``safety.validate_target`` and every subsequent request connects to that IP
+with the original hostname sent as the ``Host`` header and as the TLS SNI
+name. This prevents DNS rebinding between validation and connect. Every
+redirect hop is re-resolved and re-pinned the same way.
+"""
 
 from __future__ import annotations
 
 import re
+from urllib.parse import urljoin, urlparse
 
 import httpx
 
@@ -11,31 +19,76 @@ from inspectra.checks import CheckError
 from inspectra.checks.context import ScanContext
 from inspectra.models import Confidence, Finding, Severity, Target
 from inspectra.network import build_client
+from inspectra.safety import validate_redirect, validate_target
 
 SERVER_VERSION_RE = re.compile(r"\d+(?:\.\d+)+")
 MAX_REDIRECT_EVIDENCE = 6
+MAX_REDIRECT_HOPS = 5
+
+
+def _pinned_url(
+    hostname: str,
+    pinned_ip: str,
+    scheme: str,
+    port: int | None,
+    path: str = "/",
+) -> str:
+    """Build a URL that connects to ``pinned_ip`` but keeps ``hostname`` in Host/SNI."""
+    port_part = f":{port}" if port else ""
+    path_part = path if path else "/"
+    return f"{scheme}://{pinned_ip}{port_part}{path_part}"
+
+
+def _pinned_get(
+    client: httpx.Client,
+    url: str,
+    hostname: str,
+    pinned_ip: str,
+) -> httpx.Response:
+    """GET ``url`` connecting to ``pinned_ip`` with Host + SNI set to ``hostname``.
+
+    SNI is only set for HTTPS URLs; for HTTP we set the Host header and let
+    httpx use plain TCP (avoiding spurious TLS handshakes on HTTP servers).
+    """
+    parsed = urlparse(url)
+    pinned = _pinned_url(hostname, pinned_ip, parsed.scheme, parsed.port, parsed.path)
+    kwargs: dict = {"headers": {"Host": hostname}}
+    if parsed.scheme == "https":
+        kwargs["extensions"] = {"sni_hostname": hostname}
+    return client.get(pinned, **kwargs)
 
 
 def run(target: Target, context: ScanContext) -> list[Finding]:
     """Fetch the target over HTTP(S), store responses, and report observations."""
     client = context.client or build_client()
-    response, scheme = _fetch_primary(client, target)
+    allow_private = context.options.allow_private if context.options else False
+    authorized = context.options.authorized if context.options else False
+    response, scheme = _fetch_primary(client, target, allow_private, authorized)
     context.http_response = response
     target.scheme = scheme
 
     findings: list[Finding] = []
     if scheme == "https":
-        findings.extend(_check_https_redirect(client, target))
+        findings.extend(_check_https_redirect(client, target, allow_private, authorized))
     findings.extend(_transport_findings(response))
     server = response.headers.get("server")
     if server:
         findings.append(_server_header(server))
-    _fetch_robots(client, target, context)
+    _fetch_robots(client, target, context, allow_private, authorized)
     return findings
 
 
-def _fetch_primary(client: httpx.Client, target: Target) -> tuple[httpx.Response, str]:
-    """Fetch the target, trying the preferred scheme first and the other as fallback."""
+def _fetch_primary(
+    client: httpx.Client,
+    target: Target,
+    allow_private: bool = False,
+    authorized: bool = False,
+) -> tuple[httpx.Response, str]:
+    """Fetch the target, trying the preferred scheme first and the other as fallback.
+
+    Validates the initial target for SSRF safety (returns a pinned IP), then
+    manually follows redirects with per-hop validation and re-pinning.
+    """
     schemes = [target.scheme]
     other = "http" if target.scheme == "https" else "https"
     schemes.append(other)
@@ -43,7 +96,12 @@ def _fetch_primary(client: httpx.Client, target: Target) -> tuple[httpx.Response
     for scheme in schemes:
         url = _url_for(target, scheme)
         try:
-            return client.get(url), scheme
+            # Validate initial target for SSRF safety; get pinned IP.
+            pinned_ip = validate_target(target.hostname, allow_private, authorized)
+            response = _follow_redirects(
+                client, url, target.hostname, pinned_ip, allow_private, authorized
+            )
+            return response, scheme
         except httpx.RequestError as exc:
             last_error = exc
     raise CheckError(f"Could not reach {target.hostname} over HTTP or HTTPS: {last_error}")
@@ -54,10 +112,57 @@ def _url_for(target: Target, scheme: str) -> str:
     return f"{scheme}://{target.hostname}{port}"
 
 
-def _check_https_redirect(client: httpx.Client, target: Target) -> list[Finding]:
+def _follow_redirects(
+    client: httpx.Client,
+    url: str,
+    hostname: str,
+    pinned_ip: str,
+    allow_private: bool,
+    authorized: bool,
+    max_hops: int = MAX_REDIRECT_HOPS,
+) -> httpx.Response:
+    """Manually follow HTTP redirects with per-hop SSRF validation and re-pinning.
+
+    httpx is configured with follow_redirects=False, so we handle redirects
+    ourselves. Each hop is re-resolved and re-pinned via safety.validate_target
+    to prevent DNS rebinding across hops.
+    """
+    current_url = url
+    current_hostname = hostname
+    current_ip = pinned_ip
+    for hop in range(1, max_hops + 1):
+        response = _pinned_get(client, current_url, current_hostname, current_ip)
+        if response.is_redirect:
+            location = response.headers.get("location")
+            if not location:
+                return response
+            next_url = urljoin(current_url, location)
+            # Validate this redirect hop before following it.
+            next_url = validate_redirect(
+                next_url, current_url.split("://")[0], allow_private, authorized, hop, max_hops
+            )
+            next_parsed = urlparse(next_url)
+            next_hostname = next_parsed.hostname or current_hostname
+            # Re-resolve and re-pin the redirect target's IP.
+            current_ip = validate_target(next_hostname, allow_private, authorized)
+            current_hostname = next_hostname
+            current_url = next_url
+        else:
+            return response
+    # If we exhausted max hops, return the last response (may still be a redirect).
+    return _pinned_get(client, current_url, current_hostname, current_ip)
+
+
+def _check_https_redirect(
+    client: httpx.Client,
+    target: Target,
+    allow_private: bool = False,
+    authorized: bool = False,
+) -> list[Finding]:
     """Verify that plain HTTP redirects to HTTPS when HTTPS is available."""
     try:
-        response = client.get(_url_for(target, "http"))
+        pinned_ip = validate_target(target.hostname, allow_private, authorized)
+        response = _pinned_get(client, _url_for(target, "http"), target.hostname, pinned_ip)
     except httpx.RequestError:
         return []  # plain HTTP unavailable; nothing to redirect
     if response.url.scheme == "https":
@@ -152,9 +257,22 @@ def _server_header(server: str) -> Finding:
     )
 
 
-def _fetch_robots(client: httpx.Client, target: Target, context: ScanContext) -> None:
+def _fetch_robots(
+    client: httpx.Client,
+    target: Target,
+    context: ScanContext,
+    allow_private: bool = False,
+    authorized: bool = False,
+) -> None:
     """Fetch robots.txt so the robots check can analyze it without re-fetching."""
     try:
-        context.robots_response = client.get(f"{_url_for(target, target.scheme)}/robots.txt")
+        pinned_ip = validate_target(target.hostname, allow_private, authorized)
+        response = _pinned_get(
+            client,
+            f"{_url_for(target, target.scheme)}/robots.txt",
+            target.hostname,
+            pinned_ip,
+        )
+        context.robots_response = response
     except httpx.RequestError:
         context.robots_response = None

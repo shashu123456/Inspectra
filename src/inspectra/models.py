@@ -49,6 +49,8 @@ class Finding:
     why_it_matters: str
     recommendation: str
     evidence: list[str] = field(default_factory=list)
+    fingerprint: str | None = None
+    _baseline_status: str | None = None
 
 
 @dataclass(slots=True)
@@ -84,6 +86,13 @@ class ScanOptions:
     skip_ports: bool = False
     directories: bool = False
     directory_wordlist: str | None = None
+    fail_on: str = "high"
+    save_baseline: str | None = None
+    baseline: str | None = None
+    output_path: str | None = None
+    allow_private: bool = False
+    authorized: bool = False
+    no_redact: bool = False
 
 
 @dataclass(slots=True)
@@ -107,6 +116,9 @@ class ScanResult:
     metadata: ScanMetadata = field(default_factory=ScanMetadata)
     posture_score: float | None = None
     grade: str | None = None
+    _baseline_summary: dict | None = None
+    scope: dict | None = None
+    redaction: dict | None = None
 
     def count_by_severity(self, severity: Severity) -> int:
         """Count findings at the given severity."""
