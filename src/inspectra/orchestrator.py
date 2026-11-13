@@ -8,9 +8,11 @@ from datetime import UTC, datetime
 
 from inspectra import __version__
 from inspectra.analysis import risk
+from inspectra.baseline import fingerprint_for
 from inspectra.checks import CheckError, FatalCheckError, ordered_checks
 from inspectra.checks.context import ScanContext
 from inspectra.models import ScanMetadata, ScanOptions, ScanResult, Target
+from inspectra.redact import redact_evidence
 from inspectra.utils import truncate
 
 logger = logging.getLogger("inspectra")
@@ -55,7 +57,14 @@ def run_scan(
 
     for finding in result.findings:
         finding.evidence = [truncate(line) for line in finding.evidence]
+        evidence_text = finding.evidence[0] if finding.evidence else None
+        finding.fingerprint = fingerprint_for(
+            finding.rule_id, result.target.base_url, evidence_text
+        )
     risk.apply(result)
+    if not options.no_redact:
+        for finding in result.findings:
+            finding.evidence = redact_evidence(finding.evidence)
     result.metadata.finished_at = datetime.now(UTC)
     result.metadata.duration_seconds = (result.metadata.finished_at - started).total_seconds()
     return result
