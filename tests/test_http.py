@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import httpx
+
 from inspectra.checks import http
 from inspectra.checks.context import ScanContext
 from inspectra.models import Target
@@ -121,3 +123,37 @@ def test_pinned_get_query_preserved_in_request() -> None:
     http._pinned_get(client, url, "example.com", "93.184.216.34")
 
     assert captured["url"] == "http://93.184.216.34/search?q=hello+world&lang=en"
+
+
+# --- Non-blocking leftover: redirect hop preserves its own query string ---
+def test_redirect_hop_preserves_query() -> None:
+    """A 302 Location with a query string survives urljoin -> _pinned_get on
+    the next hop (page=2 and token=SECRET kept)."""
+    captured = {}
+
+    class FakeResponse:
+        def __init__(self, url: str, status: int) -> None:
+            self.url = httpx.URL(url)
+            self.status_code = status
+            self.headers = {}
+            self.is_redirect = status in {301, 302, 307, 308}
+
+    class FakeClient:
+        def get(self, url, *, headers, extensions=None):
+            captured["url"] = url
+            captured["headers"] = headers
+            return FakeResponse("http://example.com/page?page=2&token=SECRET", 200)
+
+    client = FakeClient()
+    first_url = "http://example.com/page?a=1"
+    # Simulate what _follow_redirects does: validate_redirect -> _pinned_get
+    resp1 = FakeResponse(first_url, 302)
+    resp1.headers["location"] = "/page?page=2&token=SECRET"
+    assert resp1.is_redirect
+
+    next_url = str(httpx.URL(first_url).join(resp1.headers["location"]))
+    # _pinned_get pins the IP and preserves the query string
+    http._pinned_get(client, next_url, "example.com", "93.184.216.34")
+
+    assert captured["url"] == "http://93.184.216.34/page?page=2&token=SECRET"
+    assert captured["headers"]["Host"] == "example.com"

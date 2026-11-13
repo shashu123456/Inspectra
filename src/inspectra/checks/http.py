@@ -32,7 +32,7 @@ def _pinned_url(
     port: int | None,
     path: str = "/",
 ) -> str:
-    """Build a URL that connects to ``pinned_ip`` but keeps ``hostname`` in Host/SNI."""
+    """Build a URL that connects to ``pinned_ip``; the caller sets Host/SNI."""
     port_part = f":{port}" if port else ""
     path_part = path if path else "/"
     return f"{scheme}://{pinned_ip}{port_part}{path_part}"
