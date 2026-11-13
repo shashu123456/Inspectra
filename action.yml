@@ -1,0 +1,32 @@
+name: Inspectra Scan
+description: Run Inspectra passive security scan and upload SARIF to GitHub Code Scanning
+inputs:
+  target:
+    description: Target URL or hostname to scan
+    required: true
+  fail-on:
+    description: Minimum severity for new findings to fail the scan (none|low|medium|high)
+    default: "high"
+    required: false
+  baseline:
+    description: Path to baseline JSON file for diff comparison
+    default: ""
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - run: python -m pip install --quiet "$GITHUB_ACTION_PATH"
+      shell: bash
+    - run: |
+        BASELINE_ARGS=""
+        if [ -n "${{ inputs.baseline }}" ]; then
+          BASELINE_ARGS="--baseline ${{ inputs.baseline }}"
+        fi
+        inspectra scan "${{ inputs.target }}" --format sarif -o inspectra.sarif --fail-on "${{ inputs.fail-on }}" $BASELINE_ARGS
+      shell: bash
+    - uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: inspectra.sarif

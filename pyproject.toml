@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "inspectra"
 description = "An open-source, explainable security assessment framework for safe and authorized security analysis."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Inspectra contributors" }]
 keywords = ["security", "vulnerability-assessment", "security-audit", "cli", "python"]
@@ -31,7 +31,7 @@ dependencies = [
   "python-nmap>=0.7.1",
   "rich>=13.7.0",
 ]
-dynamic = ["version"]
+version = "1.0.0"
 
 [project.optional-dependencies]
 dev = [
@@ -44,9 +44,6 @@ dev = [
 
 [project.scripts]
 inspectra = "inspectra.cli:main"
-
-[tool.hatch.version]
-path = "src/inspectra/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inspectra"]
@@ -78,4 +75,5 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 addopts = "-q --cov=inspectra --cov-report=term-missing"
