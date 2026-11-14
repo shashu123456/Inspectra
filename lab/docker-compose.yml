@@ -1,0 +1,127 @@
+version: "3.8"
+
+services:
+  target1:
+    image: python:3.11-slim
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./targets/target1:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target2:
+    image: python:3.11-slim
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./targets/target2:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target3:
+    image: python:3.11-slim
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./targets/target3:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target4:
+    image: python:3.11-slim
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./targets/target4:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target5:
+    image: python:3.11-slim
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./targets/target5:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target6:
+    image: python:3.11-slim
+    ports:
+      - "8006:8006"
+    volumes:
+      - ./targets/target6:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target7:
+    image: python:3.11-slim
+    ports:
+      - "8007:8007"
+    volumes:
+      - ./targets/target7:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target8:
+    image: python:3.11-slim
+    ports:
+      - "8008:8008"
+    volumes:
+      - ./targets/target8:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target9:
+    image: python:3.11-slim
+    ports:
+      - "8009:8009"
+      - "3306:3306"
+    volumes:
+      - ./targets/target9:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target10:
+    image: python:3.11-slim
+    ports:
+      - "8010:8010"
+    volumes:
+      - ./targets/target10:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target11:
+    image: python:3.11-slim
+    ports:
+      - "8011:8011"
+    volumes:
+      - ./targets/target11:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+  target12:
+    image: python:3.11-slim
+    ports:
+      - "8012:8012"
+    volumes:
+      - ./targets/target12:/app:ro
+    command: python /app/server.py
+    networks:
+      - bench
+
+networks:
+  bench:
+    driver: bridge

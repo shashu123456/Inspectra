@@ -1,0 +1,62 @@
+{
+  "target1": {
+    "name": "Missing HSTS",
+    "port": 8001,
+    "expected_findings": ["HDR-001", "HTP-003", "PRT-003"]
+  },
+  "target2": {
+    "name": "Missing CSP",
+    "port": 8002,
+    "expected_findings": ["HDR-002", "HTP-003", "PRT-003"]
+  },
+  "target3": {
+    "name": "Missing X-Frame-Options",
+    "port": 8003,
+    "expected_findings": ["HDR-003", "HTP-003", "PRT-003"]
+  },
+  "target4": {
+    "name": "Self-signed certificate",
+    "port": 8004,
+    "expected_findings": ["TLS-001", "HTP-003", "PRT-003"]
+  },
+  "target5": {
+    "name": "TLS 1.0 enabled",
+    "port": 8005,
+    "expected_findings": ["TLS-002", "HTP-003", "PRT-003"]
+  },
+  "target6": {
+    "name": "Server banner disclosure",
+    "port": 8006,
+    "expected_findings": ["HTP-003", "PRT-003"]
+  },
+  "target7": {
+    "name": "Exposed .git directory",
+    "port": 8007,
+    "expected_findings": ["DIR-001", "HTP-003", "PRT-003"]
+  },
+  "target8": {
+    "name": "Directory listing enabled",
+    "port": 8008,
+    "expected_findings": ["DIR-001", "HTP-003", "PRT-003"]
+  },
+  "target9": {
+    "name": "Open port 3306",
+    "port": 8009,
+    "expected_findings": ["PRT-003", "HTP-003"]
+  },
+  "target10": {
+    "name": "robots.txt with secret path",
+    "port": 8010,
+    "expected_findings": ["ROB-002", "HTP-003", "PRT-003"]
+  },
+  "target11": {
+    "name": "Default page fingerprint",
+    "port": 8011,
+    "expected_findings": ["FP-001", "HTP-003", "PRT-003"]
+  },
+  "target12": {
+    "name": "Verbose error messages",
+    "port": 8012,
+    "expected_findings": ["HTP-004", "HTP-003", "PRT-003"]
+  }
+}

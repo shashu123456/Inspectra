@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Target 3: Missing X-Frame-Options header."""
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import sys
+
+PORT = 8003
+
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html")
+        self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        self.send_header("Content-Security-Policy", "default-src 'self'")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Permissions-Policy", "camera=()")
+        self.send_header("Cross-Origin-Resource-Policy", "same-origin")
+        # NOTE: No X-Frame-Options header (HDR-003)
+        self.end_headers()
+        self.wfile.write(b"<html><body><h1>Target 3: Missing X-Frame-Options</h1></body></html>")
+
+    def log_message(self, format, *args):
+        sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+
+
+if __name__ == "__main__":
+    server = HTTPServer(("0.0.0.0", PORT), Handler)
+    print(f"Target 3 running on port {PORT} (missing X-Frame-Options)")
+    server.serve_forever()
