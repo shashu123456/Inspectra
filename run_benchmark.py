@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run benchmark scans against all targets sequentially."""
+
 import json
 import subprocess
 from pathlib import Path
@@ -27,20 +28,29 @@ results = {}
 for name, port in targets.items():
     url = f"http://127.0.0.1:{port}/"
     print(f"\nScanning {name} on port {port}...")
-    
+
     try:
         proc = subprocess.run(
             [
-                ".venv\\Scripts\\python.exe", "-m", "inspectra",
-                "scan", url,
-                "--yes", "--skip-ports",
-                "--allow-private", "--authorized",
-                "--format", "json",
-                "-o", str(RESULTS_DIR / f"{name}.json")
+                ".venv\\Scripts\\python.exe",
+                "-m",
+                "inspectra",
+                "scan",
+                url,
+                "--yes",
+                "--skip-ports",
+                "--allow-private",
+                "--authorized",
+                "--format",
+                "json",
+                "-o",
+                str(RESULTS_DIR / f"{name}.json"),
             ],
-            capture_output=True, text=True, timeout=60
+            capture_output=True,
+            text=True,
+            timeout=60,
         )
-        
+
         if proc.returncode == 0:
             try:
                 data = json.loads((RESULTS_DIR / f"{name}.json").read_text())
@@ -100,8 +110,10 @@ total_time = 0
 
 for name, r in sorted(results.items()):
     if r["status"] == "success":
-        print(f"  {name:10s}: score={r['posture_score']}, grade={r['grade']}, "
-              f"findings={r['findings_count']}, rules={r['rule_ids']}")
+        print(
+            f"  {name:10s}: score={r['posture_score']}, grade={r['grade']}, "
+            f"findings={r['findings_count']}, rules={r['rule_ids']}"
+        )
     else:
         print(f"  {name:10s}: {r['status']} - {r.get('error', 'N/A')[:80]}")
 
