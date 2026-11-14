@@ -5,9 +5,7 @@ results to expected.json. Produces a markdown report and per-target JSON results
 from __future__ import annotations
 
 import json
-import os
 import subprocess
-import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -41,9 +39,7 @@ def start_docker_compose() -> None:
 def stop_docker_compose() -> None:
     """Stop the docker-compose services."""
     print("Stopping docker-compose services...")
-    run_command(
-        ["docker-compose", "-f", str(DOCKER_COMPOSE), "down"], timeout=60
-    )
+    run_command(["docker-compose", "-f", str(DOCKER_COMPOSE), "down"], timeout=60)
 
 
 def scan_target(target_name: str, port: int) -> dict:
@@ -147,9 +143,11 @@ def generate_markdown(results: list[dict]) -> str:
         )
 
     lines.append("")
-    lines.append("| **Total** | **{}** | **{}** | **{}** | **{}** | **{:.0f}** |".format(
-        total_expected, total_detected, total_missed, total_fp, total_time
-    ))
+    total_line = (
+        f"| **Total** | **{total_expected}** | **{total_detected}** | "
+        f"**{total_missed}** | **{total_fp}** | **{total_time:.0f}** |"
+    )
+    lines.append(total_line)
     lines.append("")
     lines.append("## Detection Rate")
     if total_expected > 0:
@@ -174,9 +172,18 @@ def generate_markdown(results: list[dict]) -> str:
         p95_time = 0
         p95_ok = False
 
-    lines.append(f"- P95 runtime: {p95_time:.0f}ms (threshold: <15000ms) - {'PASS' if p95_ok else 'FAIL'}")
-    lines.append(f"- False positives: {total_fp} (threshold: <=2) - {'PASS' if fp_ok else 'FAIL'}")
-    lines.append(f"- Detection rate: {rate:.1f}% (threshold: >=85%) - {'PASS' if detection_rate_ok else 'FAIL'}")
+    p95_line = (
+        f"- P95 runtime: {p95_time:.0f}ms (threshold: <15000ms) - {'PASS' if p95_ok else 'FAIL'}"
+    )
+    lines.append(p95_line)
+    fp_line = f"- False positives: {total_fp} (threshold: <=2) - {'PASS' if fp_ok else 'FAIL'}"
+    lines.append(fp_line)
+    rate_line = (
+        f"- Detection rate: {rate:.1f}% "
+        f"(threshold: >=85%) - "
+        f"{'PASS' if detection_rate_ok else 'FAIL'}"
+    )
+    lines.append(rate_line)
 
     all_pass = detection_rate_ok and fp_ok and p95_ok
     lines.append("")
@@ -225,8 +232,10 @@ def main() -> None:
             r["false_positives"] = false_positives
 
             status = "PASS" if missed_count == 0 and len(false_positives) == 0 else "FAIL"
-            print(f"  {target_name}: expected={exp_count}, detected={det_count}, "
-                  f"missed={missed_count}, fp={false_positives} [{status}]")
+            print(
+                f"  {target_name}: expected={exp_count}, detected={det_count}, "
+                f"missed={missed_count}, fp={false_positives} [{status}]"
+            )
 
         # Step 4: Generate markdown report
         md = generate_markdown(results)

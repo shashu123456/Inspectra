@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Target 3: Missing X-Frame-Options header."""
-from http.server import HTTPServer, BaseHTTPRequestHandler
+
 import sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = 8003
 
 
 class Handler(BaseHTTPRequestHandler):
+    server_version = ""
+
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -16,12 +19,12 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
         self.send_header("Permissions-Policy", "camera=()")
         self.send_header("Cross-Origin-Resource-Policy", "same-origin")
-        # NOTE: No X-Frame-Options header (HDR-003)
         self.end_headers()
         self.wfile.write(b"<html><body><h1>Target 3: Missing X-Frame-Options</h1></body></html>")
 
     def log_message(self, format, *args):
-        sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+        msg = f"{self.address_string()} - - [{self.log_date_time_string()}] {format % args}\n"
+        sys.stderr.write(msg)
 
 
 if __name__ == "__main__":

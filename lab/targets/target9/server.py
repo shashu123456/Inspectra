@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """Target 9: HTTP server on port 8009 + TCP server on port 3306."""
-from http.server import HTTPServer, BaseHTTPRequestHandler
+
 import socket
-import threading
 import sys
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 HTTP_PORT = 8009
 TCP_PORT = 3306
 
 
 class Handler(BaseHTTPRequestHandler):
+    server_version = ""
+
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -17,7 +20,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(b"<html><body><h1>Target 9: Open port 3306</h1></body></html>")
 
     def log_message(self, format, *args):
-        sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+        msg = f"{self.address_string()} - - [{self.log_date_time_string()}] {format % args}\n"
+        sys.stderr.write(msg)
 
 
 def run_http_server():

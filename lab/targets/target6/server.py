@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Target 6: Server banner disclosure."""
-from http.server import HTTPServer, BaseHTTPRequestHandler
+
 import sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = 8006
 
@@ -16,7 +17,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(b"<html><body><h1>Target 6: Server banner disclosed</h1></body></html>")
 
     def log_message(self, format, *args):
-        sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+        msg = f"{self.address_string()} - - [{self.log_date_time_string()}] {format % args}\n"
+        sys.stderr.write(msg)
 
 
 if __name__ == "__main__":

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Target 11: Default page (fingerprinting target)."""
-from http.server import HTTPServer, BaseHTTPRequestHandler
+
 import sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = 8011
 
 
 class Handler(BaseHTTPRequestHandler):
+    server_version = ""
+
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -18,7 +21,8 @@ class Handler(BaseHTTPRequestHandler):
 </body></html>""")
 
     def log_message(self, format, *args):
-        sys.stderr.write("%s - - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), format % args))
+        msg = f"{self.address_string()} - - [{self.log_date_time_string()}] {format % args}\n"
+        sys.stderr.write(msg)
 
 
 if __name__ == "__main__":

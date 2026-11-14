@@ -8,8 +8,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
-
 LAB_DIR = Path(__file__).resolve().parent.parent / "lab"
 EXPECTED_FILE = LAB_DIR / "expected.json"
 DOCKER_COMPOSE_FILE = LAB_DIR / "docker-compose.yml"
@@ -30,9 +28,7 @@ def test_expected_json_has_expected_findings() -> None:
     """Every target in expected.json must have expected_findings."""
     data = json.loads(EXPECTED_FILE.read_text())
     for target_name, info in data.items():
-        assert "expected_findings" in info, (
-            f"Target {target_name} missing 'expected_findings'"
-        )
+        assert "expected_findings" in info, f"Target {target_name} missing 'expected_findings'"
         assert len(info["expected_findings"]) > 0, (
             f"Target {target_name} has empty expected_findings"
         )
