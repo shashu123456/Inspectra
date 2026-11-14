@@ -1,0 +1,174 @@
+{
+  "tool": "inspectra",
+  "version": "2.0.0",
+  "target": "http://127.0.0.1:8006",
+  "started_at": "2026-11-14T11:33:42.851457+00:00",
+  "started_at_ist": "2026-11-14 17:03:42 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-11-14T11:33:45.082301+00:00",
+  "duration_seconds": 2.230844,
+  "posture_score": 4.0,
+  "grade": "F",
+  "summary": {
+    "total": 10,
+    "info": 2,
+    "low": 4,
+    "medium": 4,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'nginx/1.18.0 Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: nginx/1.18.0 Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "5e8c85fdb9af8757561d9afd85b1cabf8954380dd30fa5ec1f77873c8f0e7c65",
+      "evidence_hash": "d0736607f0ff9e40"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8006: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8006 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "43f8b80eb7e039cd3b86cc90f5b5c04cce64c0fcc7fc7ecc32153d86ef3ff05e",
+      "evidence_hash": "8d151d5998835e06"
+    },
+    {
+      "rule_id": "HDR-001",
+      "title": "Missing security header: Strict-Transport-Security",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Strict-Transport-Security response header was not present on 127.0.0.1.",
+      "why_it_matters": "HSTS tells browsers to only connect over HTTPS for a set period, protecting users from protocol-downgrade and cookie-hijacking attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Strict-Transport-Security: max-age=31536000; includeSubDomains on every HTTPS response.",
+      "fingerprint": "9f61f557fe3c615c11d8ca2458505b6d27c0d48a056301163a577b129c7dd555",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-002",
+      "title": "Missing security header: Content-Security-Policy",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).",
+      "fingerprint": "08cb611fa69a6cc3dc6e8defdeda7ff915c1ad01ff0b36c6805404fcd0461a65",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
+      "fingerprint": "611dcfa4efb442e0c0d0748ff24b1041f93e3a2cd3c6d69e1569356beeb5709e",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-004",
+      "title": "Missing security header: X-Content-Type-Options",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The X-Content-Type-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without nosniff, browsers may guess the MIME type of a response, which can turn an upload into an executable script.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Content-Type-Options: nosniff on all responses.",
+      "fingerprint": "8c449b3efa795c9569a84374f916be632daed3eee2ce0e545a97ca7995bc9f2e",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-005",
+      "title": "Missing security header: Referrer-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Referrer-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Referrer-Policy controls how much of the previous URL is leaked to other sites, protecting sensitive query strings and paths.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Referrer-Policy: strict-origin-when-cross-origin (or no-referrer for highly sensitive applications).",
+      "fingerprint": "eb09e150f4cef23451a8318dbeaeb5afb31bcb565c4a2388f63f94db09839632",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-006",
+      "title": "Missing security header: Permissions-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Permissions-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Permissions-Policy restricts which browser features (camera, microphone, geolocation) a page and its frames may use.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Permissions-Policy with a restrictive default, e.g. Permissions-Policy: camera=(), microphone=(), geolocation=().",
+      "fingerprint": "068d475fa826963044b478311046c46b3796fd24e050165a460b3765f8329d5f",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-007",
+      "title": "Missing security header: Cross-Origin-Resource-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Cross-Origin-Resource-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CORP stops other origins from loading this site's resources, reducing cross-origin data leakage.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required.",
+      "fingerprint": "8f4d51b95f508ab98c3e6d532db5ff9d4ad59b44d44b6ee2a0a3665308fb89f2",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "FPR-001",
+      "title": "Technologies identified",
+      "category": "fingerprinting",
+      "severity": "info",
+      "confidence": "medium",
+      "description": "Identified the following technologies on 127.0.0.1: Nginx 1.18.0.",
+      "why_it_matters": "Known technologies help prioritize patching and reveal the stack an attacker would study first.",
+      "evidence": [
+        "Server: nginx/1.18.0 Python/3.11.9"
+      ],
+      "recommendation": "Keep all identified components patched and disable version disclosure where possible.",
+      "fingerprint": "db95d5d86cc8f610eae47fc9865c1bf951d465ba1880d9a090985f3f27ff977a",
+      "evidence_hash": "d0736607f0ff9e40"
+    }
+  ],
+  "scope": {
+    "scope": "private-allowed"
+  }
+}

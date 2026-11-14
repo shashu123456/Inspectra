@@ -1,0 +1,69 @@
+{
+  "tool": "inspectra",
+  "version": "2.0.0",
+  "target": "http://127.0.0.1:8003",
+  "started_at": "2026-11-14T11:32:49.080042+00:00",
+  "started_at_ist": "2026-11-14 17:02:49 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-11-14T11:32:53.047482+00:00",
+  "duration_seconds": 3.96744,
+  "posture_score": 61.6,
+  "grade": "D",
+  "summary": {
+    "total": 3,
+    "info": 1,
+    "low": 0,
+    "medium": 2,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "30679ee48ce9f4730482ed8d55ac91513b6a09fb9fb50a362ddb2c4491cd4a71",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8003: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8003 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "6f1559c953755e5bbbbae1de06fd0bc3b167d298f2a2e5bb70aa1c51389f3185",
+      "evidence_hash": "fce8ba60a0c87b85"
+    },
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
+      "fingerprint": "3797905b3f72b077ea3a79a4da6e4e950d73c8d1d65e15250e4efc9c29f4b372",
+      "evidence_hash": "42f70c2ac6396335"
+    }
+  ],
+  "scope": {
+    "scope": "private-allowed"
+  }
+}

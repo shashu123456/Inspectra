@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-11-14T17:05:31.295925",
+  "results": {
+    "target1": {
+      "port": 8001,
+      "status": "success",
+      "posture_score": 61.6,
+      "grade": "D",
+      "findings_count": 3,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001"
+      ]
+    },
+    "target2": {
+      "port": 8002,
+      "status": "success",
+      "posture_score": 61.6,
+      "grade": "D",
+      "findings_count": 3,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-002"
+      ]
+    },
+    "target3": {
+      "port": 8003,
+      "status": "success",
+      "posture_score": 61.6,
+      "grade": "D",
+      "findings_count": 3,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-003"
+      ]
+    },
+    "target4": {
+      "port": 8004,
+      "status": "success",
+      "posture_score": 76.0,
+      "grade": "C",
+      "findings_count": 1,
+      "rule_ids": [
+        "TLS-001"
+      ]
+    },
+    "target5": {
+      "port": 8005,
+      "status": "success",
+      "posture_score": 76.0,
+      "grade": "C",
+      "findings_count": 1,
+      "rule_ids": [
+        "TLS-001"
+      ]
+    },
+    "target6": {
+      "port": 8006,
+      "status": "success",
+      "posture_score": 4.0,
+      "grade": "F",
+      "findings_count": 10,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "FPR-001"
+      ]
+    },
+    "target7": {
+      "port": 8007,
+      "status": "success",
+      "posture_score": 0.0,
+      "grade": "F",
+      "findings_count": 11,
+      "rule_ids": [
+        "HTP-004",
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "ROB-001"
+      ]
+    },
+    "target8": {
+      "port": 8008,
+      "status": "success",
+      "posture_score": 0.0,
+      "grade": "F",
+      "findings_count": 11,
+      "rule_ids": [
+        "HTP-004",
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "ROB-001"
+      ]
+    },
+    "target9": {
+      "port": 8009,
+      "status": "success",
+      "posture_score": 4.0,
+      "grade": "F",
+      "findings_count": 9,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007"
+      ]
+    },
+    "target10": {
+      "port": 8010,
+      "status": "success",
+      "posture_score": 4.0,
+      "grade": "F",
+      "findings_count": 10,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "ROB-002"
+      ]
+    },
+    "target11": {
+      "port": 8011,
+      "status": "success",
+      "posture_score": 4.0,
+      "grade": "F",
+      "findings_count": 9,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007"
+      ]
+    },
+    "target12": {
+      "port": 8012,
+      "status": "success",
+      "posture_score": 4.0,
+      "grade": "F",
+      "findings_count": 9,
+      "rule_ids": [
+        "HTP-003",
+        "TLS-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007"
+      ]
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "tool": "inspectra",
+  "version": "2.0.0",
+  "target": "http://127.0.0.1:8011",
+  "started_at": "2026-11-14T11:35:12.709781+00:00",
+  "started_at_ist": "2026-11-14 17:05:12 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-11-14T11:35:16.862451+00:00",
+  "duration_seconds": 4.15267,
+  "posture_score": 4.0,
+  "grade": "F",
+  "summary": {
+    "total": 9,
+    "info": 1,
+    "low": 4,
+    "medium": 4,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "f8ebbf2821c59fc8ae7e7fbbac1d70f8a24dfafc0508f09f1693187823078001",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8011: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8011 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "9718658506b2e6d37af05cab3be4993de525a8b9ea555c1add093b206ae8772f",
+      "evidence_hash": "59ae2060bfc33e67"
+    },
+    {
+      "rule_id": "HDR-001",
+      "title": "Missing security header: Strict-Transport-Security",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Strict-Transport-Security response header was not present on 127.0.0.1.",
+      "why_it_matters": "HSTS tells browsers to only connect over HTTPS for a set period, protecting users from protocol-downgrade and cookie-hijacking attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Strict-Transport-Security: max-age=31536000; includeSubDomains on every HTTPS response.",
+      "fingerprint": "197f47e3a768cac965713d5e4d16ffcf7e8d5c321e860539cc2f160f2e081716",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-002",
+      "title": "Missing security header: Content-Security-Policy",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).",
+      "fingerprint": "be278ecebcf4ba50651c40a9d322909d4446c714332d97b5e800e3fd42db0521",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
+      "fingerprint": "aac7334c016e570d813a6db3d65ada545e08dbc180a06588894f5f3cbeb3490d",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-004",
+      "title": "Missing security header: X-Content-Type-Options",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The X-Content-Type-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without nosniff, browsers may guess the MIME type of a response, which can turn an upload into an executable script.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Content-Type-Options: nosniff on all responses.",
+      "fingerprint": "6180c7c00998d37b28577b500c30c14097ba91274779703a698616d62361f4dd",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-005",
+      "title": "Missing security header: Referrer-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Referrer-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Referrer-Policy controls how much of the previous URL is leaked to other sites, protecting sensitive query strings and paths.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Referrer-Policy: strict-origin-when-cross-origin (or no-referrer for highly sensitive applications).",
+      "fingerprint": "8e3f0812091a4837acccceaf869b294234ec46229b551132974434400d02373e",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-006",
+      "title": "Missing security header: Permissions-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Permissions-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Permissions-Policy restricts which browser features (camera, microphone, geolocation) a page and its frames may use.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Permissions-Policy with a restrictive default, e.g. Permissions-Policy: camera=(), microphone=(), geolocation=().",
+      "fingerprint": "e6c478ea524198f269b81baaaae66210ea1d363587353fe006c94d9b326bfedb",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-007",
+      "title": "Missing security header: Cross-Origin-Resource-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Cross-Origin-Resource-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CORP stops other origins from loading this site's resources, reducing cross-origin data leakage.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required.",
+      "fingerprint": "e96e938d0a2472414c801908be5d62f1c9b7f19852249ee80da221056e9449e2",
+      "evidence_hash": "42f70c2ac6396335"
+    }
+  ],
+  "scope": {
+    "scope": "private-allowed"
+  }
+}

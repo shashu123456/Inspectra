@@ -1,0 +1,39 @@
+{
+  "tool": "inspectra",
+  "version": "2.0.0",
+  "target": "http://127.0.0.1:8005",
+  "started_at": "2026-11-14T11:33:20.791350+00:00",
+  "started_at_ist": "2026-11-14 17:03:20 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-11-14T11:33:35.267640+00:00",
+  "duration_seconds": 14.47629,
+  "posture_score": 76.0,
+  "grade": "C",
+  "summary": {
+    "total": 1,
+    "info": 0,
+    "low": 0,
+    "medium": 1,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8005: [WinError 10061] No connection could be made because the target machine actively refused it",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8005 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "1355683f1756b60afb5439e94d866eecc90973e587f97eeb584c43bc71732b77",
+      "evidence_hash": "d3e3fd0315a48426"
+    }
+  ],
+  "scope": {
+    "scope": "private-allowed"
+  }
+}
