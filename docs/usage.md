@@ -60,6 +60,15 @@ fixture site and a page that runs **real scans** against it:
 `/api/report/html`, `/api/report/md` and `/api/report/json` serve the last
 scan's reports.
 
+## Live sample report
+
+A static copy of a sample report is hosted on GitHub Pages:
+https://shashu123456.github.io/Inspectra/
+
+The report was generated from a passive scan of example.com and is provided
+for demonstration purposes only. Do not scan systems you do not own or are not
+explicitly authorized to test.
+
 ## Command Reference
 
 ```

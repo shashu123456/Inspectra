@@ -25,6 +25,9 @@ follow [Semantic Versioning](https://semver.org/).
 - **Evidence redaction:** header lines, URL userinfo/query tokens, and JWTs
   are redacted before any reporter serializes them. `--no-redact` disables
   with a stderr warning.
+- **Hosted sample report:** a static report and supporting files are hosted on
+  GitHub Pages at https://shashu123456.github.io/Inspectra/ for recruiter
+  review without installing anything.
 
 ### Changed
 

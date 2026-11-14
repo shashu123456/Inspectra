@@ -14,6 +14,7 @@
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230?logo=ruff&logoColor=white)](pyproject.toml)
 [![Checked with mypy](https://img.shields.io/badge/types-mypy-blue?logo=python&logoColor=white)](pyproject.toml)
 [![Security: Responsible Disclosure](https://img.shields.io/badge/security-responsible--disclosure-7a2a3a?logo=shield&logoColor=white)](SECURITY.md)
+[![Live Sample Report](https://img.shields.io/badge/sample%20report-GitHub%20Pages-blue)](https://shashu123456.github.io/Inspectra/)
 
 ---
 
