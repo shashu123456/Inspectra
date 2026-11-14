@@ -129,6 +129,8 @@ class DemoHandler(BaseHTTPRequestHandler):
             f"http://{HOST}:{PORT}",
             "--yes",
             "--skip-ports",
+            "--allow-private",
+            "--authorized",
             "--output-dir",
             str(REPORT_DIR),
         ]
