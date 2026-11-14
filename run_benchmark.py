@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Run benchmark scans against all targets sequentially."""
-import subprocess
 import json
-import time
+import subprocess
 from pathlib import Path
 
 RESULTS_DIR = Path("lab/results")
@@ -112,4 +111,4 @@ output = {
     "results": results,
 }
 RESULTS_DIR.joinpath("benchmark_results.json").write_text(json.dumps(output, indent=2))
-print(f"\nResults saved to lab/results/benchmark_results.json")
+print("\nResults saved to lab/results/benchmark_results.json")
