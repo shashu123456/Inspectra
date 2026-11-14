@@ -17,7 +17,7 @@ def test_parser_requires_command() -> None:
 def test_parser_scan_defaults() -> None:
     args = build_parser().parse_args(["scan", "example.com", "--yes"])
     assert args.target == "example.com"
-    assert args.report_format == "markdown"
+    assert args.report_format == "html"
     assert args.skip_ports is False
     assert args.top_ports == 1000
 
@@ -39,9 +39,9 @@ def test_cli_end_to_end_markdown(fixture_server, target, tmp_path, monkeypatch, 
         ]
     )
     assert code == 1  # actionable findings exist
-    report = (tmp_path / "out" / "report.md").read_text(encoding="utf-8")
+    report = (tmp_path / "out" / "report.html").read_text(encoding="utf-8")
     data = json.loads((tmp_path / "out" / "report.json").read_text(encoding="utf-8"))
-    assert "# Inspectra Security Assessment Report" in report
+    assert "<title>Inspectra Report —" in report
     assert data["target"] == target.input
     assert (tmp_path / "out" / "inspectra.log").exists()
     captured = capsys.readouterr()

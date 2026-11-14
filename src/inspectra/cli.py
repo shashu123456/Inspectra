@@ -44,7 +44,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=f"inspectra {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    scan = subparsers.add_parser("scan", help="Run a security assessment against a target.")
+    scan = subparsers.add_parser(
+        "scan",
+        help="Run a security assessment against a target.",
+        epilog=(
+            "Examples:\n"
+            "  inspectra scan example.com --yes --skip-ports --format html\n"
+            "  inspectra scan 192.168.1.1 --yes --skip-ports --allow-private --authorized\n"
+            "  inspectra scan google.com --yes --skip-ports --format json -o report.json\n"
+            "  inspectra scan example.com --yes --skip-ports --ports 80,443,8080"
+        ),
+    )
     scan.add_argument(
         "target",
         help="Domain, IP address or URL to assess (e.g. example.com).",
@@ -52,9 +62,9 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument(
         "--format",
         dest="report_format",
-        default="markdown",
+        default="html",
         help="Report format(s): markdown, html, json, sarif. "
-        "Repeat or comma-separate for multiple (default: markdown).",
+        "Repeat or comma-separate for multiple (default: html).",
     )
     scan.add_argument(
         "-o",
