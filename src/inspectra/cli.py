@@ -7,6 +7,7 @@ import json
 import logging
 import sys
 from collections.abc import Sequence
+from datetime import datetime
 from pathlib import Path
 
 from rich.console import Console
@@ -245,13 +246,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_dir.mkdir(parents=True, exist_ok=True)
         _setup_logging(args.verbose, output_dir / "inspectra.log")
 
+    # Show beautiful header banner
+    console.print()
+    console.print(Panel(
+        f"[bold blue]🔍 INSPECTRA[/bold blue]  [bold cyan]LIVE SCAN[/bold cyan]\n"
+        f"[bold]{target.hostname}[/bold]  │  [bold]{target.scheme.upper()}://{target.hostname}[/bold]\n"
+        f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST",
+        border_style="blue",
+        padding=(1, 2),
+    ))
+    console.print()
+
     try:
-        with console.status(f"[bold green]Scanning[/] {target.hostname} …") as status:
+        with console.status(f"[bold green]🔍 Scanning[/] {target.hostname} …") as status:
             result = run_scan(
                 target,
                 options,
                 progress=lambda name: status.update(
-                    f"[bold green]Scanning[/] {target.hostname} — {name} check"
+                    f"[bold green]🔍 Scanning[/] {target.hostname} — {name} check"
                 ),
             )
     except ScanAborted as exc:
