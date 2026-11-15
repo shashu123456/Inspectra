@@ -96,6 +96,8 @@ class ScanOptions:
     no_redact: bool = False
     save_fixtures: str | None = None
     replay_dir: str | None = None
+    concurrency: int = 4
+    delay: float = 0.2
 
 
 @dataclass(slots=True)
@@ -119,9 +121,10 @@ class ScanResult:
     metadata: ScanMetadata = field(default_factory=ScanMetadata)
     posture_score: float | None = None
     grade: str | None = None
-    _baseline_summary: dict | None = None
-    scope: dict | None = None
-    redaction: dict | None = None
+    _baseline_summary: dict[str, int] | None = None
+    scope: dict[str, str] | None = None
+    redaction: dict[str, str] | None = None
+    skipped: list[dict[str, str]] = field(default_factory=list)
 
     def count_by_severity(self, severity: Severity) -> int:
         """Count findings at the given severity."""

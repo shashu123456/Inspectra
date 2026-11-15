@@ -162,6 +162,20 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="DIR",
         help="Replay all HTTP requests from DIR fixtures (offline, no network).",
     )
+    scan.add_argument(
+        "--concurrency",
+        dest="concurrency",
+        type=int,
+        default=4,
+        help="Max concurrent checks per target (default: 4).",
+    )
+    scan.add_argument(
+        "--delay",
+        dest="delay",
+        type=float,
+        default=0.2,
+        help="Delay in seconds between per-host requests (default: 0.2).",
+    )
     return parser
 
 
@@ -239,6 +253,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         no_redact=args.no_redact,
         save_fixtures=args.save_fixtures,
         replay_dir=args.replay_dir,
+        concurrency=args.concurrency,
+        delay=args.delay,
     )
     output_dir = None
     if not args.output_path:
@@ -272,6 +288,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"Error: Scan aborted: {exc}", file=sys.stderr)
         return 2
 
+    if result.skipped:
+        skipped_names = ", ".join(item["check"] for item in result.skipped)
+        console.print(
+            f"Skipped (replay): {skipped_names} — these need live network access"
+        )
+
     # Set scope/redaction metadata from options (M3).
     from inspectra.redact import redaction_metadata
     from inspectra.safety import scope_metadata
@@ -299,11 +321,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         _setup_logging(args.verbose, output_dir / "inspectra.log")
         _write_reports(result, output_dir, args.report_format)
         _print_summary(result, output_dir)
-    baseline_summary = None
+    baseline_summary: dict[str, int] | None = None
     if args.save_baseline:
         from inspectra.baseline import save_baseline
 
-        baseline_findings = [
+        baseline_findings: list[dict[str, object]] = [
             {
                 "id": f.rule_id,
                 "check": f.category,
@@ -318,7 +340,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         from inspectra.baseline import classify_findings, load_baseline
 
         baseline_data = load_baseline(Path(args.baseline))
-        finding_dicts = [
+        finding_dicts: list[dict[str, object]] = [
             {
                 "rule_id": f.rule_id,
                 "severity": f.severity.value,
@@ -330,7 +352,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         result._baseline_summary = baseline_summary
         # Attach status back to findings for JSON output
         for finding, fd in zip(result.findings, finding_dicts, strict=True):
-            finding._baseline_status = fd.get("_baseline_status")
+            baseline_status = fd.get("_baseline_status")
+            finding._baseline_status = baseline_status if isinstance(baseline_status, str) else None
 
     if output_dir is not None:
         _print_summary(result, output_dir)

@@ -54,10 +54,9 @@ def _pinned_get(
     path = f"{parsed.path or '/'}?{parsed.query}" if parsed.query else (parsed.path or "/")
     pinned = _pinned_url(pinned_ip, parsed.scheme, parsed.port, path)
     host_header = parsed.netloc.rsplit("@", 1)[-1]
-    kwargs: dict = {"headers": {"Host": host_header}}
-    if parsed.scheme == "https":
-        kwargs["extensions"] = {"sni_hostname": hostname}
-    return client.get(pinned, **kwargs)
+    headers = {"Host": host_header}
+    extensions = {"sni_hostname": hostname} if parsed.scheme == "https" else None
+    return client.get(pinned, headers=headers, extensions=extensions)
 
 
 def run(target: Target, context: ScanContext) -> list[Finding]:

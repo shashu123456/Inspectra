@@ -13,9 +13,9 @@ from inspectra.models import Finding, ScanResult, Severity
 from inspectra.utils import IST_LABEL, format_ist
 
 
-def render(result: ScanResult) -> dict:
+def render(result: ScanResult) -> dict[str, object]:
     """Serialize a :class:`ScanResult` into a JSON-serializable dictionary."""
-    data = {
+    data: dict[str, object] = {
         "tool": result.metadata.tool,
         "version": result.metadata.version,
         "target": result.target.input,
@@ -40,11 +40,13 @@ def render(result: ScanResult) -> dict:
         data["scope"] = result.scope
     if result.redaction:
         data["redaction"] = result.redaction
+    if result.skipped:
+        data["skipped"] = result.skipped
 
     return data
 
 
-def _summary(result: ScanResult) -> dict:
+def _summary(result: ScanResult) -> dict[str, int]:
     return {
         "total": result.total_findings,
         "info": result.count_by_severity(Severity.INFO),
@@ -54,7 +56,7 @@ def _summary(result: ScanResult) -> dict:
     }
 
 
-def _finding(finding: Finding) -> dict:
+def _finding(finding: Finding) -> dict[str, object]:
     return {
         "rule_id": finding.rule_id,
         "title": finding.title,

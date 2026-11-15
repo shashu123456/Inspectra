@@ -30,13 +30,13 @@ def _rule_id(finding: Finding) -> str:
     return finding.rule_id
 
 
-def _build_rules(findings: list[Finding]) -> list[dict]:
+def _build_rules(findings: list[Finding]) -> list[dict[str, object]]:
     """One rule entry per unique check id, in first-seen order."""
     seen: dict[str, Finding] = {}
     for finding in findings:
         if finding.rule_id not in seen:
             seen[finding.rule_id] = finding
-    rules = []
+    rules: list[dict[str, object]] = []
     for finding in seen.values():
         rules.append(
             {
@@ -56,14 +56,14 @@ def _build_rules(findings: list[Finding]) -> list[dict]:
     return rules
 
 
-def _build_results(findings: list[Finding]) -> list[dict]:
-    results = []
+def _build_results(findings: list[Finding]) -> list[dict[str, object]]:
+    results: list[dict[str, object]] = []
     for index, finding in enumerate(findings):
         # Build physical location from evidence if a URL/path exists.
         location = None
         if finding.evidence:
             evidence_text = finding.evidence[0]
-            region: dict = {"startLine": 1, "snippet": {"text": evidence_text[:200]}}
+            region: dict[str, object] = {"startLine": 1, "snippet": {"text": evidence_text[:200]}}
             # If the evidence looks like a URL, put it as artifactLocation.
             if evidence_text.startswith(("http://", "https://")):
                 location = {
@@ -78,7 +78,7 @@ def _build_results(findings: list[Finding]) -> list[dict]:
                         "region": region,
                     }
                 }
-        result: dict = {
+        result: dict[str, object] = {
             "ruleId": finding.rule_id,
             "ruleIndex": index,
             "level": _SEVERITY_TO_LEVEL[finding.severity],
@@ -103,9 +103,9 @@ def _build_results(findings: list[Finding]) -> list[dict]:
     return results
 
 
-def render(result: ScanResult) -> dict:
+def render(result: ScanResult) -> dict[str, object]:
     """Serialize a :class:`ScanResult` into a SARIF 2.1.0 dictionary."""
-    run_properties: dict = {}
+    run_properties: dict[str, object] = {}
     if result.scope:
         run_properties["scope"] = result.scope["scope"]
     if result.redaction:
