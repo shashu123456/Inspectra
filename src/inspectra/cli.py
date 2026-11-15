@@ -248,13 +248,15 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     # Show beautiful header banner
     console.print()
-    console.print(Panel(
-        f"[bold blue]🔍 INSPECTRA[/bold blue]  [bold cyan]LIVE SCAN[/bold cyan]\n"
-        f"[bold]{target.hostname}[/bold]  │  [bold]{target.scheme.upper()}://{target.hostname}[/bold]\n"
-        f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST",
-        border_style="blue",
-        padding=(1, 2),
-    ))
+    console.print(
+        Panel(
+            f"[bold blue]🔍 INSPECTRA[/bold blue]  [bold cyan]LIVE SCAN[/bold cyan]\n"
+            f"[bold]{target.hostname}[/bold]  │  [bold]{target.scheme.upper()}://{target.hostname}[/bold]\n"
+            f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST",
+            border_style="blue",
+            padding=(1, 2),
+        )
+    )
     console.print()
 
     try:
