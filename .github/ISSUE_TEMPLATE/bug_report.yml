@@ -1,0 +1,55 @@
+name: Bug Report
+description: File a bug report for Inspectra
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please confirm you are scanning targets you own or are
+        explicitly authorized to test.
+  - type: input
+    id: version
+    attributes:
+      label: Inspectra version
+      description: Run `inspectra --version` and paste the output.
+      placeholder: "2.1.0"
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Target (only targets you own/authorize)
+      description: Hostname, IP, or URL you scanned.
+      placeholder: "http://127.0.0.1:9999"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands and flags used.
+      placeholder: |
+        inspectra scan http://127.0.0.1:9999 --yes --skip-ports --allow-private --authorized --format json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include any error output or report excerpts.
+    validations:
+      required: true
+  - type: checkboxes
+    id: authorization
+    attributes:
+      label: Authorization
+      options:
+        - label: "I confirm I scanned only targets I own or am authorized to test."
+          required: true

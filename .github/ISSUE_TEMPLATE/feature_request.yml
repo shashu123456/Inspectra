@@ -1,0 +1,39 @@
+name: Feature Request
+description: Suggest a new check or improvement for Inspectra
+title: "[Feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests must align with Inspectra's founding promise:
+        **observe, assess, explain, report — never exploit.** Exploitation,
+        brute-forcing, or payload-delivery features will be declined.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or gap
+      description: What limitation are you hitting?
+      placeholder: "I'd like Inspectra to also check ..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How should it work, and what output should it produce?
+    validations:
+      required: true
+  - type: input
+    id: target-example
+    attributes:
+      label: Example target (authorized only)
+      description: A target you own where this check would apply.
+      placeholder: "http://127.0.0.1:9999"
+  - type: checkboxes
+    id: authorization
+    attributes:
+      label: Authorization
+      options:
+        - label: "I confirm any example target is one I own or am authorized to test."
+          required: true
