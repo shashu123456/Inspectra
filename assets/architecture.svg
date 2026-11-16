@@ -1,68 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
-  <!-- Inspectra scan pipeline architecture -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520">
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#06b6d4"/>
     </marker>
-    <style>
-      .node { fill:#0a0a0a; stroke:#06b6d4; stroke-width:2; rx:8; }
-      .node text { fill:#eaeaea; font-family:ui-monospace, monospace; font-size:13; }
-      .small text { font-size:10.5; }
-      .group { fill:#141414; stroke:#262626; stroke-width:1; rx:6; }
-    </style>
   </defs>
-  <!-- Target -->
-  <rect x="20" y="170" width="160" height="80" class="node"/>
-  <text x="100" y="202" text-anchor="middle" font-weight="700">Target</text>
-  <text x="100" y="220" text-anchor="middle">hostname / IP / URL</text>
-  <!-- Safety / SSRF gate -->
-  <rect x="220" y="120" width="170" height="80" class="node"/>
-  <text x="305" y="152" text-anchor="middle" font-weight="700">Safety / SSRF gate</text>
-  <text x="305" y="170" text-anchor="middle">pin IP, block private,</text>
-  <text x="305" y="185" text-anchor="middle">reject downgrade</text>
-  <!-- Checks group -->
-  <rect x="430" y="40" width="320" height="340" class="group"/>
-  <text x="590" y="62" text-anchor="middle" fill="#9ca3af" font-size="12">Checks</text>
-  <rect x="450" y="80" width="100" height="50" class="node small"/>
-  <text x="500" y="108" text-anchor="middle">dns</text>
-  <rect x="650" y="80" width="100" height="50" class="node small"/>
-  <text x="700" y="108" text-anchor="middle">tls</text>
-  <rect x="450" y="150" width="100" height="50" class="node small"/>
-  <text x="500" y="178" text-anchor="middle">headers</text>
-  <rect x="650" y="150" width="100" height="50" class="node small"/>
-  <text x="700" y="178" text-anchor="middle">http</text>
-  <rect x="450" y="220" width="100" height="50" class="node small"/>
-  <text x="500" y="248" text-anchor="middle">robots</text>
-  <rect x="650" y="220" width="100" height="50" class="node small"/>
-  <text x="700" y="248" text-anchor="middle">directories</text>
-  <rect x="450" y="290" width="100" height="50" class="node small"/>
-  <text x="500" y="318" text-anchor="middle">ports</text>
-  <rect x="650" y="290" width="100" height="50" class="node small"/>
-  <text x="700" y="318" text-anchor="middle">fingerprint</text>
-  <rect x="550" y="360" width="100" height="50" class="node small"/>
-  <text x="600" y="388" text-anchor="middle">context</text>
-  <!-- Findings -->
-  <rect x="790" y="170" width="140" height="80" class="node"/>
-  <text x="860" y="202" text-anchor="middle" font-weight="700">Findings</text>
-  <text x="860" y="220" text-anchor="middle">rule_id, title, severity</text>
-  <!-- Risk -->
-  <rect x="970" y="170" width="140" height="80" class="node"/>
-  <text x="1040" y="202" text-anchor="middle" font-weight="700">Risk</text>
-  <text x="1040" y="220" text-anchor="middle">posture score &amp; grade</text>
-  <!-- Reports -->
-  <rect x="1150" y="170" width="40" height="80" class="node"/>
-  <text x="1170" y="202" text-anchor="middle" font-size="10">Report</text>
-  <text x="1170" y="216" text-anchor="middle" font-size="10">html / json /</text>
-  <text x="1170" y="230" text-anchor="middle" font-size="10">markdown / sarif</text>
-  <!-- Baseline diff -->
-  <rect x="1150" y="280" width="40" height="80" class="node"/>
-  <text x="1170" y="312" text-anchor="middle" font-size="10">Baseline</text>
-  <text x="1170" y="326" text-anchor="middle" font-size="10">diff</text>
+  <!-- 1. Safety gate -->
+  <rect x="60" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="190" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Safety gate</text>
+  <text x="190" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">DNS pinned &middot; private blocked</text>
+  <text x="190" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">--authorized consent</text>
+  <!-- 2. Checks -->
+  <rect x="340" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="470" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Checks</text>
+  <text x="470" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">DNS, TLS, HTTP, headers</text>
+  <text x="470" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">robots, directories, ports</text>
+  <!-- 3. Findings -->
+  <rect x="620" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="750" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Findings</text>
+  <text x="750" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">rule-id, severity, evidence</text>
+  <text x="750" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">evidence_hash per finding</text>
+  <!-- 4. Risk -->
+  <rect x="900" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="1030" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Risk</text>
+  <text x="1030" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">severity x confidence</text>
+  <text x="1030" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">posture score &amp; grade</text>
+  <!-- 5. Report -->
+  <rect x="1180" y="160" width="360" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="1360" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Report</text>
+  <text x="1360" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">JSON, Markdown, HTML</text>
+  <text x="1360" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">SARIF, baseline diff</text>
   <!-- arrows -->
-  <path d="M180 210 H220" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M390 160 H430" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M750 210 H790" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M930 210 H970" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M1110 210 H1150" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
-  <path d="M1170 250 V270" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M320 260 H340" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 260 H620" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M880 260 H900" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M1160 260 H1180" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
 </svg>
