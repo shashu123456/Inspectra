@@ -126,33 +126,34 @@ def test_t3_global_concurrency_never_exceeds_n(
     assert max_inflight <= 3
 
 
-def test_t4_delay_applied_per_host_lower_bound(monkeypatch) -> None:
+def test_t4_delay_applied_per_host_lower_bound() -> None:
     """Per-host delay is scheduled as >= delay between requests to same host.
 
-    Uses a deterministic fake clock to assert the delay contract (0.2s) exactly
-    without relying on wall-clock timer resolution/jitter.
+    Passes deterministic fake clock/sleep functions into RateLimitedClient so the
+    production delay arithmetic is exercised directly (no module monkeypatching).
     """
-    import inspectra.network as net
-
     fake_now = {"t": 1000.0}
 
-    def fake_monotonic() -> float:
+    def fake_clock() -> float:
         return fake_now["t"]
 
     def fake_sleep(seconds: float) -> None:
         fake_now["t"] += max(0.0, seconds)
 
-    monkeypatch.setattr(net.time, "monotonic", fake_monotonic)
-    monkeypatch.setattr(net.time, "sleep", fake_sleep)
-
     calls: list[float] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(net.time.monotonic())
+        calls.append(fake_clock())
         return httpx.Response(200, text="ok")
 
     transport = httpx.MockTransport(handler)
-    client = RateLimitedClient(httpx.Client(transport=transport), max_per_host=2, delay=0.2)
+    client = RateLimitedClient(
+        httpx.Client(transport=transport),
+        max_per_host=2,
+        delay=0.2,
+        clock=fake_clock,
+        sleep=fake_sleep,
+    )
     client.get("http://example.test/one")
     client.get("http://example.test/two")
     client.close()

@@ -6,6 +6,7 @@ import socket
 import ssl
 import threading
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
@@ -44,10 +45,19 @@ class RateLimitedClient:
     semaphore so sleeping does not hold another host's slot.
     """
 
-    def __init__(self, client: httpx.Client, max_per_host: int = 2, delay: float = 0.0) -> None:
+    def __init__(
+        self,
+        client: httpx.Client,
+        max_per_host: int = 2,
+        delay: float = 0.0,
+        clock: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
         self._client = client
         self._max_per_host = max_per_host
         self._delay = max(0.0, float(delay))
+        self._clock = clock
+        self._sleep = sleep
         self._lock = threading.Lock()
         self._semaphores: dict[str, threading.Semaphore] = {}
         self._last_request: dict[str, float] = {}
@@ -64,12 +74,12 @@ class RateLimitedClient:
         if self._delay <= 0:
             return
         with self._lock:
-            now = time.monotonic()
+            now = self._clock()
             target = max(now, self._last_request.get(host, 0.0) + self._delay)
             self._last_request[host] = target
-        sleep_for = target - time.monotonic()
+        sleep_for = target - self._clock()
         if sleep_for > 0:
-            time.sleep(sleep_for)
+            self._sleep(sleep_for)
 
     def get(self, url: str, **kwargs: Any) -> httpx.Response:
         parsed = urlparse(url)
