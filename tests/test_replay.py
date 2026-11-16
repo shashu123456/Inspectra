@@ -193,7 +193,9 @@ def test_cli_save_fixtures_and_replay_exclusive(
 
 
 def test_replay_committed_fixtures(tmp_path, target) -> None:
-    """Replay from committed fixtures works offline."""
+    """Replay from committed fixtures works offline and reports skipped raw-socket checks."""
+    from inspectra.report import json_report
+
     fixtures_dir = Path(__file__).parent / "fixtures" / "replay"
     assert fixtures_dir.exists(), "committed fixtures missing"
 
@@ -211,7 +213,14 @@ def test_replay_committed_fixtures(tmp_path, target) -> None:
         skip_ports=True,
     )
     result = run_scan(fixed_target, options)
-    assert result.findings  # replay produced findings
+    assert len(result.findings) == 9  # replay produced findings (pre-M5 baseline)
+    assert result.skipped == [
+        {"check": "dns", "reason": "requires live network; not available in replay"},
+        {"check": "ports", "reason": "requires live network; not available in replay"},
+        {"check": "tls", "reason": "requires live network; not available in replay"},
+    ]
+    rendered = json_report.render(result)
+    assert rendered.get("skipped") == result.skipped
 
 
 # --- D3: Determinism diff helper ---
