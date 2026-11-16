@@ -10,8 +10,10 @@
 | Version | Status | Focus |
 |---------|--------|-------|
 | 1.0.0 | ✅ Released | Core framework: 8 checks, risk engine, JSON/Markdown/HTML reports, live demo |
+| 2.0.0 | ✅ Released | SARIF output, GitHub Action, baseline diff, SSRF-safe targeting, redaction, deterministic replay + evidence_hash |
+| 2.1.0 | ✅ Released | Bounded concurrency (default 4), per-host max 2 in-flight, --delay (default 0.2s), per-run DNS/TLS caches |
 
-## Version 2 — Candidates (prioritized)
+## Version 3 — Next (candidates, prioritized)
 
 1. **Async engine** — migrate network I/O to `asyncio` +
    `httpx.AsyncClient` for faster scans. Trade-off: complexity.

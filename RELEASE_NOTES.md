@@ -1,4 +1,4 @@
-# EcoMind Inspectra v2.0.0
+# Inspectra v2.0.0
 
 ## What's New
 
