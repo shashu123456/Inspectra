@@ -431,3 +431,5 @@ See [SECURITY.md](SECURITY.md) for the full policy, supported versions, scope, a
 ## Disclaimer
 
 Inspectra is provided **"as is"**, without warranty of any kind. You are solely responsible for ensuring your use of the tool is legal and authorized. The authors and contributors are not liable for misuse.
+
+Replay covers HTTP-based checks. Raw-socket checks (DNS, ports, TLS handshake) are skipped because they cannot be served from fixtures.

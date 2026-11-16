@@ -1,4 +1,4 @@
-# Inspectra — Usage Guide
+﻿# Inspectra — Usage Guide
 
 ## Installation
 
@@ -167,6 +167,8 @@ inspectra scan http://127.0.0.1:9999 --replay tests/fixtures/replay \
 made, and checks that require raw sockets (DNS, port discovery, TLS) are
 skipped. Only HTTP-layer checks (headers, schema, robots, fingerprinting)
 are replayed — a replayed report is a subset of a live one.
+
+Replay covers HTTP-based checks. Raw-socket checks (DNS, ports, TLS handshake) are skipped because they cannot be served from fixtures.
 
 `--format json` prints a human-readable summary to stdout; use `-o report.json`
 to write the machine-readable JSON report to a file.
