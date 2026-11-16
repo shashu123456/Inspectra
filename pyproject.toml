@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Inspectra contributors" }]
+dynamic = ["version"]
 keywords = ["security", "vulnerability-assessment", "security-audit", "cli", "python"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -32,7 +33,13 @@ dependencies = [
   "python-nmap>=0.7.1",
   "rich>=13.7.0",
 ]
-version = "2.0.0"
+
+[project.urls]
+Homepage = "https://github.com/shashu123456/Inspectra"
+Repository = "https://github.com/shashu123456/Inspectra"
+Changelog = "https://github.com/shashu123456/Inspectra/blob/main/CHANGELOG.md"
+Documentation = "https://shashu123456.github.io/Inspectra/"
+Issues = "https://github.com/shashu123456/Inspectra/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -49,6 +56,10 @@ inspectra-cli = "inspectra.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inspectra"]
+
+[tool.hatch.version]
+source = "code"
+path = "src/inspectra/__init__.py"
 
 [tool.ruff]
 line-length = 100
