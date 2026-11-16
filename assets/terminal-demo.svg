@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="908" height="1080" viewBox="0 0 908 1080">
+<rect width="100%" height="100%" fill="#0a0a0a"/>
+<rect x="24" y="24" width="860.0" height="56" rx="10" fill="#141414"/>
+<circle cx="38" cy="44" r="4" fill="#ff5f56"/>
+<circle cx="54" cy="44" r="4" fill="#feb258"/>
+<circle cx="70" cy="44" r="4" fill="#27c93f"/>
+<text x="100" y="46" font-family="ui-sans-serif, sans-serif" font-size="13" fill="#9ca3af">inspectra scan — terminal demo</text>
+<text x="824.0" y="46" font-family="ui-sans-serif, sans-serif" font-size="12" fill="#6b7280">127.0.0.1 &middot; replay fixtures</text>
+<rect x="24" y="68" width="860.0" height="958" rx="8" fill="#0d0d0d"/>
+<text x="42" y="88" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">Note: target is a private/local address — home-lab testing.</text>
+<text x="42" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">┌─────────────────────────────────────────────────────────────────────────────────────────────────┐</text>
+<text x="42" y="132" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│                                                                                                 │</text>
+<text x="42" y="154" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│  🔍 INSPECTRA  LIVE SCAN                                                                        │</text>
+<text x="42" y="176" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│  127.0.0.1  │  HTTP://127.0.0.1                                                                 │</text>
+<text x="42" y="198" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│  Started: 2026-11-16 14:25:39 IST                                                               │</text>
+<text x="42" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│                                                                                                 │</text>
+<text x="42" y="242" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">└─────────────────────────────────────────────────────────────────────────────────────────────────┘</text>
+<text x="42" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">Skipped (replay): dns, ports, tls — these need live network access</text>
+<text x="42" y="286" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">          Scan complete — 127.0.0.1          </text>
+<text x="42" y="308" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">┌─────────────────┬─────────────────────────┐</text>
+<text x="42" y="330" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Severity        │ Count                   │</text>
+<text x="42" y="352" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="374" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ HIGH            │ 0                       │</text>
+<text x="42" y="396" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="418" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ MEDIUM          │ 3                       │</text>
+<text x="42" y="440" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="462" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ LOW             │ 4                       │</text>
+<text x="42" y="484" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="506" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ INFO            │ 2                       │</text>
+<text x="42" y="528" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="550" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Posture score   │ 28.0 / 100 (F)          │</text>
+<text x="42" y="572" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="594" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Completed (IST) │ 2026-11-16 14:25:41 IST │</text>
+<text x="42" y="616" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">└─────────────────┴─────────────────────────┘</text>
+<text x="42" y="638" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">Reports written to C:\Users\kavitha\OneDrive\Desktop\internship_project\inspectra\inspectra-report</text>
+<text x="42" y="660" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">          Scan complete — 127.0.0.1          </text>
+<text x="42" y="682" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">┌─────────────────┬─────────────────────────┐</text>
+<text x="42" y="704" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Severity        │ Count                   │</text>
+<text x="42" y="726" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="748" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ HIGH            │ 0                       │</text>
+<text x="42" y="770" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="792" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ MEDIUM          │ 3                       │</text>
+<text x="42" y="814" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="836" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ LOW             │ 4                       │</text>
+<text x="42" y="858" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="880" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ INFO            │ 2                       │</text>
+<text x="42" y="902" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="924" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Posture score   │ 28.0 / 100 (F)          │</text>
+<text x="42" y="946" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">├─────────────────┼─────────────────────────┤</text>
+<text x="42" y="968" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">│ Completed (IST) │ 2026-11-16 14:25:41 IST │</text>
+<text x="42" y="990" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">└─────────────────┴─────────────────────────┘</text>
+<text x="42" y="1012" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" fill="#eaeaea">Reports written to C:\Users\kavitha\OneDrive\Desktop\internship_project\inspectra\inspectra-report</text>
+</svg>

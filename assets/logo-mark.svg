@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Inspectra logo mark: terminal-native square mark, accent + dark neutral -->
+  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
+  <!-- outer scan ring -->
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#06b6d4" stroke-width="14" stroke-dasharray="110 46"/>
+  <!-- inner beam / magnifying glass -->
+  <circle cx="256" cy="256" r="64" fill="none" stroke="#06b6d4" stroke-width="10"/>
+  <line x1="330" y1="330" x2="424" y2="424" stroke="#06b6d4" stroke-width="11" stroke-linecap="round"/>
+  <!-- central dot (target) -->
+  <circle cx="256" cy="256" r="18" fill="#06b6d4"/>
+</svg>
