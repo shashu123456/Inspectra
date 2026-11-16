@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Inspectra",
+          "version": "2.0.0",
+          "informationUri": "https://github.com/shashu123456/inspectra",
+          "rules": [
+            {
+              "id": "HDR-002",
+              "name": "Missing security header: Content-Security-Policy",
+              "shortDescription": {
+                "text": "Missing security header: Content-Security-Policy"
+              },
+              "fullDescription": {
+                "text": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks."
+              },
+              "help": {
+                "text": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.\n\nRecommendation: Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time)."
+              },
+              "properties": {
+                "confidence": "medium",
+                "category": "security_headers"
+              }
+            },
+            {
+              "id": "HTP-003",
+              "name": "Web server software disclosed (with version)",
+              "shortDescription": {
+                "text": "Web server software disclosed (with version)"
+              },
+              "fullDescription": {
+                "text": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface."
+              },
+              "help": {
+                "text": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.\n\nRecommendation: Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure."
+              },
+              "properties": {
+                "confidence": "high",
+                "category": "http"
+              }
+            },
+            {
+              "id": "TLS-001",
+              "name": "HTTPS not available",
+              "shortDescription": {
+                "text": "HTTPS not available"
+              },
+              "fullDescription": {
+                "text": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext."
+              },
+              "help": {
+                "text": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.\n\nRecommendation: Enable TLS on the server and redirect HTTP traffic to HTTPS."
+              },
+              "properties": {
+                "confidence": "high",
+                "category": "tls"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "HDR-002",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Missing security header: Content-Security-Policy",
+            "markdown": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks."
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time)."
+              }
+            }
+          ],
+          "properties": {
+            "confidence": "medium",
+            "category": "security_headers",
+            "evidenceHash": "42f70c2ac6396335"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "startLine": 1,
+                  "snippet": {
+                    "text": "Header not present in the HTTP response"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "HTP-003",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "Web server software disclosed (with version)",
+            "markdown": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface."
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure."
+              }
+            }
+          ],
+          "properties": {
+            "confidence": "high",
+            "category": "http",
+            "evidenceHash": "9c5ad659ba44d445"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "startLine": 1,
+                  "snippet": {
+                    "text": "Server: Python/3.11.9"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "TLS-001",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "HTTPS not available",
+            "markdown": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext."
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Enable TLS on the server and redirect HTTP traffic to HTTPS."
+              }
+            }
+          ],
+          "properties": {
+            "confidence": "high",
+            "category": "tls",
+            "evidenceHash": "9b4bfc8e994a53fc"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "region": {
+                  "startLine": 1,
+                  "snippet": {
+                    "text": "TLS handshake to 127.0.0.1:8002 failed"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "scope": "private-allowed"
+      }
+    }
+  ]
+}

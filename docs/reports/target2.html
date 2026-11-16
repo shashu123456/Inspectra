@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspectra Report — http://127.0.0.1:8002</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+    --high: #ef4444;
+    --medium: #f59e0b;
+    --low: #eab308;
+    --info: #38bdf8;
+    --good: #22c55e;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem; }
+  header h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+  header h1 span { color: var(--muted); font-weight: 400; }
+  .meta { color: var(--muted); font-size: .9rem; margin: .25rem 0 1.5rem; }
+  .meta code { background: var(--panel); padding: .1rem .35rem; border-radius: 4px; }
+
+  .score-card {
+    display: flex; gap: 1.25rem; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+  }
+  .score { font-size: 2.4rem; font-weight: 700; }
+  .score small { color: var(--muted); }
+  .grade {
+    font-size: 2rem; font-weight: 800; min-width: 3.5rem; text-align: center;
+    border: 2px solid; border-radius: 10px; padding: .15rem .6rem;
+  }
+  .grade.good { color: var(--good); border-color: var(--good); }
+  .grade.warn { color: var(--warn); border-color: var(--warn); }
+  .grade.bad { color: var(--bad); border-color: var(--bad); }
+  .summary { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .summary .chip {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 999px; padding: .3rem .75rem; font-size: .85rem;
+  }
+  .sev-high { color: var(--high); }
+  .sev-medium { color: var(--medium); }
+  .sev-low { color: var(--low); }
+  .sev-info { color: var(--info); }
+
+  h2 { font-size: 1.15rem; margin: 1.75rem 0 .75rem; }
+  .finding {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+  }
+  .finding.sev-high { border-left-color: var(--high); }
+  .finding.sev-medium { border-left-color: var(--medium); }
+  .finding.sev-low { border-left-color: var(--low); }
+  .finding.sev-info { border-left-color: var(--info); }
+  .finding h3 { margin: 0 0 .6rem; font-size: 1rem; }
+  .badge {
+    display: inline-block; font-size: .7rem; font-weight: 700;
+    background: var(--panel); border: 1px solid currentColor;
+    border-radius: 6px; padding: .1rem .45rem; color: var(--text);
+  }
+  .finding.sev-high .badge { color: var(--high); }
+  .finding.sev-medium .badge { color: var(--medium); }
+  .finding.sev-low .badge { color: var(--low); }
+  .finding.sev-info .badge { color: var(--info); }
+  dl { display: grid; grid-template-columns: 10rem 1fr; gap: .35rem .75rem; margin: 0; }
+  dt { color: var(--muted); font-size: .85rem; }
+  dd { margin: 0; font-size: .9rem; }
+  details { margin-top: .6rem; }
+  summary { color: var(--muted); cursor: pointer; font-size: .85rem; }
+  pre {
+    background: #0b1220; color: #cbd5e1; border: 1px solid var(--border);
+    border-radius: 8px; padding: .75rem; overflow-x: auto; font-size: .8rem;
+  }
+  .empty { color: var(--muted); }
+  footer {
+    margin-top: 2rem; padding: 1rem 1.25rem; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    font-size: .85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Inspectra <span>Security Assessment Report</span></h1>
+    <p class="meta">
+      Target: <code>http://127.0.0.1:8002</code> ·
+      2026-11-16 14:58:50 IST ·
+      inspectra 2.0.0
+    </p>
+  </header>
+
+  <section class="score-card">
+    <div class="score">61.6<small> / 100</small></div>
+    <div class="grade bad">D</div>
+    <div class="summary">
+      <span class="chip sev-high">High 0</span>
+      <span class="chip sev-medium">Medium 2</span>
+      <span class="chip sev-low">Low 0</span>
+      <span class="chip sev-info">Info 1</span>
+    </div>
+  </section>
+
+  <h2>Findings (3)</h2>
+
+  <article class="finding sev-medium">
+    <h3><span class="badge">MEDIUM</span> HDR-002 — Missing security header: Content-Security-Policy</h3>
+    <dl>
+      <dt>What was observed</dt><dd>The Content-Security-Policy response header was not present on 127.0.0.1.</dd>
+      <dt>Why it matters</dt><dd>CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.</dd>
+      <dt>Confidence</dt><dd>Medium</dd>
+      <dt>Recommendation</dt><dd>Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).</dd>
+    </dl>
+    <details><summary>Evidence (1)</summary><pre>Header not present in the HTTP response</pre></details>
+  </article>
+  <article class="finding sev-medium">
+    <h3><span class="badge">MEDIUM</span> TLS-001 — HTTPS not available</h3>
+    <dl>
+      <dt>What was observed</dt><dd>Could not establish a TLS connection to 127.0.0.1:8002: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)</dd>
+      <dt>Why it matters</dt><dd>Without HTTPS, all traffic — including credentials — is transmitted in plaintext.</dd>
+      <dt>Confidence</dt><dd>High</dd>
+      <dt>Recommendation</dt><dd>Enable TLS on the server and redirect HTTP traffic to HTTPS.</dd>
+    </dl>
+    <details><summary>Evidence (1)</summary><pre>TLS handshake to 127.0.0.1:8002 failed</pre></details>
+  </article>
+  <article class="finding sev-info">
+    <h3><span class="badge">INFO</span> HTP-003 — Web server software disclosed (with version)</h3>
+    <dl>
+      <dt>What was observed</dt><dd>The server disclosed its software via the Server header: 'Python/3.11.9'.</dd>
+      <dt>Why it matters</dt><dd>Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.</dd>
+      <dt>Confidence</dt><dd>High</dd>
+      <dt>Recommendation</dt><dd>Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.</dd>
+    </dl>
+    <details><summary>Evidence (1)</summary><pre>Server: Python/3.11.9</pre></details>
+  </article>
+
+  <footer>
+    Generated by <strong>Inspectra</strong> — a passive security assessment
+    framework. It observes, assesses, explains and reports; it never exploits.
+    Only scan systems you own or are authorized to test.
+  </footer>
+</div>
+</body>
+</html>
