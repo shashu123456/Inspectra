@@ -4,6 +4,17 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.1.1] - 2026-11-16
+
+### Fixed
+
+- README now embeds logo-mark, wordmark, and banner-light assets (absolute URLs render on PyPI).
+- "How it works" section with the architecture diagram.
+- CI badge is live (GitHub Actions workflow badge); coverage badge states the measured 89%.
+- Python version truth: requires-python `>=3.10`, CI matrix `3.10/3.11/3.12`, badge `3.10+`.
+- Project URLs: Documentation points at the docs tree; "Live sample report" points at GitHub Pages.
+- Deleted EcoMind-contaminated dead assets from docs/assets/.
+
 ## [2.1.0] - 2026-11-16
 
 ### Added

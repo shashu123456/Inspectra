@@ -38,7 +38,8 @@ dependencies = [
 Homepage = "https://github.com/shashu123456/Inspectra"
 Repository = "https://github.com/shashu123456/Inspectra"
 Changelog = "https://github.com/shashu123456/Inspectra/blob/main/CHANGELOG.md"
-Documentation = "https://shashu123456.github.io/Inspectra/"
+Documentation = "https://github.com/shashu123456/Inspectra/tree/main/docs"
+"Live sample report" = "https://shashu123456.github.io/Inspectra/"
 Issues = "https://github.com/shashu123456/Inspectra/issues"
 
 [project.optional-dependencies]

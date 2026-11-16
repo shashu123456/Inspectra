@@ -1,7 +1,7 @@
 <div align="center">
-
+<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/logo-mark.svg" width="72"/>
 <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/wordmark.svg" alt="Inspectra wordmark" width="560"/>
-
+<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/banner-light.svg" alt="Inspectra banner" width="100%"/>
 </div>
 
 One command, passive security assessment for authorized targets — and nothing more.
@@ -14,12 +14,12 @@ One command, passive security assessment for authorized targets — and nothing 
 
 ---
 
-[![CI](https://img.shields.io/badge/CI-github--actions-blue?logo=github-actions)](.github/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.11%2B-blue?logo=python&logoColor=white)](pyproject.toml)
+[![CI](https://github.com/shashu123456/Inspectra/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green?logo=opensource&logoColor=white)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230?logo=ruff&logoColor=white)](pyproject.toml)
 [![Types: mypy strict](https://img.shields.io/badge/types-mypy--strict-blue?logo=python&logoColor=white)](pyproject.toml)
-[![Coverage: 80%+](https://img.shields.io/badge/coverage-80%25+-green)](pyproject.toml)
+[![Coverage: 89%](https://img.shields.io/badge/coverage-89%25-green)](pyproject.toml)
 [![Live Sample Report](https://img.shields.io/badge/sample%20report-GitHub%20Pages-blue)](https://shashu123456.github.io/Inspectra/)
 
 ---
@@ -29,6 +29,18 @@ One command, passive security assessment for authorized targets — and nothing 
 <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/terminal-demo.svg" alt="Inspectra CLI terminal demo" width="100%"/>
 
 *Real output from `inspectra scan` against the committed replay fixtures — not a mockup.*
+
+## How it works
+
+Inspectra scans a target you own or are authorized to test through a bounded pipeline:
+
+<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/architecture.svg" alt="Inspectra scan pipeline" width="100%"/>
+
+1. **Safety/SSRF gate** — DNS is resolved once and the IP is pinned; private/loopback/link-local/CGNAT addresses are blocked unless `--allow-private --authorized` is both present; HTTPS→HTTP downgrades and metadata endpoints are rejected.
+2. **Checks** — DNS, TLS, HTTP, headers, robots, directories, ports, fingerprint, and context checks run with per-host politeness (max 2 in-flight) and degrade gracefully.
+3. **Findings** — each check emits rule-id, title, severity, confidence, evidence, and an `evidence_hash`.
+4. **Risk engine** — severity × confidence → posture score (0–100) with letter grade.
+5. **Report** — JSON, Markdown, HTML, or SARIF output, with optional baseline diff (`--fail-on` fails CI only on new findings).
 
 ---
 
