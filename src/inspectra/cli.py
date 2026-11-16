@@ -290,9 +290,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if result.skipped:
         skipped_names = ", ".join(item["check"] for item in result.skipped)
-        console.print(
-            f"Skipped (replay): {skipped_names} — these need live network access"
-        )
+        console.print(f"Skipped (replay): {skipped_names} — these need live network access")
 
     # Set scope/redaction metadata from options (M3).
     from inspectra.redact import redaction_metadata

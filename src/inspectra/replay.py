@@ -17,11 +17,21 @@ import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Protocol, cast
 
 import httpx
 
 REPLAY_VERSION = "1"
+
+
+class _HttpGetClient(Protocol):
+    def get(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response: ...
 
 
 class ReplayMissError(Exception):
@@ -130,13 +140,13 @@ class FixtureStore:
 
 
 class Recorder:
-    """Wrap an httpx.Client and record every request/response to a FixtureStore.
+    """Wrap an HTTP client and record every request/response to a FixtureStore.
 
     Implements the ``get(url, *, headers, extensions)`` interface used by the
     HTTP check, so it can be dropped in for ``context.client``.
     """
 
-    def __init__(self, client: httpx.Client, store: FixtureStore) -> None:
+    def __init__(self, client: _HttpGetClient, store: FixtureStore) -> None:
         self._client = client
         self._store = store
 

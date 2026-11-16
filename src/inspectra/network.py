@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import socket
 import ssl
+import threading
+import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 from cryptography import x509
@@ -30,6 +34,63 @@ def build_client() -> httpx.Client:
         trust_env=False,
         headers={"User-Agent": USER_AGENT},
     )
+
+
+class RateLimitedClient:
+    """httpx.Client-compatible wrapper enforcing per-host concurrency and delay.
+
+    Each host gets its own semaphore limiting concurrent requests to
+    ``max_per_host``. A per-host delay is applied before acquiring the host
+    semaphore so sleeping does not hold another host's slot.
+    """
+
+    def __init__(self, client: httpx.Client, max_per_host: int = 2, delay: float = 0.0) -> None:
+        self._client = client
+        self._max_per_host = max_per_host
+        self._delay = max(0.0, float(delay))
+        self._lock = threading.Lock()
+        self._semaphores: dict[str, threading.Semaphore] = {}
+        self._last_request: dict[str, float] = {}
+
+    def _get_semaphore(self, host: str) -> threading.Semaphore:
+        with self._lock:
+            sem = self._semaphores.get(host)
+            if sem is None:
+                sem = threading.Semaphore(self._max_per_host)
+                self._semaphores[host] = sem
+            return sem
+
+    def _wait_for_delay(self, host: str) -> None:
+        if self._delay <= 0:
+            return
+        with self._lock:
+            now = time.monotonic()
+            target = max(now, self._last_request.get(host, 0.0) + self._delay)
+            self._last_request[host] = target
+        sleep_for = target - time.monotonic()
+        if sleep_for > 0:
+            time.sleep(sleep_for)
+
+    def get(self, url: str, **kwargs: Any) -> httpx.Response:
+        parsed = urlparse(url)
+        host = parsed.hostname or ""
+        self._wait_for_delay(host)
+        sem = self._get_semaphore(host)
+        with sem:
+            return self._client.get(url, **kwargs)
+
+    def close(self) -> None:
+        self._client.close()
+
+    def __enter__(self) -> RateLimitedClient:
+        self._client.__enter__()
+        return self
+
+    def __exit__(self, exc_type: object, exc: object, tb: object) -> None:
+        self._client.__exit__(exc_type, exc, tb)  # type: ignore[arg-type]
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._client, name)
 
 
 @dataclass(slots=True)

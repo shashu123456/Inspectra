@@ -19,7 +19,7 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
     """Perform a TLS handshake and report certificate and protocol findings."""
     port = target.port if target.port not in (None, 80) else 443
     try:
-        info = inspect_tls(target.hostname, port)
+        info = _inspect_tls_cached(target.hostname, port, context)
     except (TimeoutError, ssl.SSLError, ssl.CertificateError, OSError) as exc:
         if target.scheme == "http":
             return [_https_unavailable(target, port, exc)]
@@ -44,6 +44,35 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
         findings.append(_tls12_only(info))
     findings.append(_certificate_summary(info))
     return findings
+
+
+def _inspect_tls_cached(hostname: str, port: int, context: ScanContext) -> TlsInfo:
+    key = (hostname, port)
+    with context.cache_lock:
+        cached = context.tls_cache.get(key)
+    if cached is not None:
+        if isinstance(cached, Exception):
+            raise cached
+        return cached
+    try:
+        info = inspect_tls(hostname, port)
+    except Exception as exc:
+        with context.cache_lock:
+            existing = context.tls_cache.get(key)
+            if existing is not None:
+                if isinstance(existing, Exception):
+                    raise existing from None
+                return existing
+            context.tls_cache[key] = exc
+        raise
+    with context.cache_lock:
+        existing = context.tls_cache.get(key)
+        if existing is not None:
+            if isinstance(existing, Exception):
+                raise existing from None
+            return existing
+        context.tls_cache[key] = info
+    return info
 
 
 def _https_unavailable(target: Target, port: int, exc: Exception) -> Finding:

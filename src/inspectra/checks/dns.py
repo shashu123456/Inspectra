@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ipaddress
+import threading
 import time
 
 import dns.exception
@@ -22,17 +23,7 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
         _apply_ip_literal(target, context)
         return []
 
-    try:
-        records, elapsed = _resolve(target.hostname)
-    except dns.exception.Timeout as exc:
-        raise FatalCheckError(f"DNS resolution timed out for {target.hostname}.") from exc
-    except dns.resolver.NoNameservers as exc:
-        raise FatalCheckError(
-            f"Could not reach any configured DNS nameserver for {target.hostname}."
-        ) from exc
-    except dns.resolver.NXDOMAIN as exc:
-        raise FatalCheckError(f"Domain {target.hostname} does not exist (NXDOMAIN).") from exc
-
+    records, elapsed = _resolve_cached(target.hostname, context)
     context.dns_records = records
     context.dns_elapsed = elapsed
     target.ip_addresses = [*records["A"], *records["AAAA"]]
@@ -48,6 +39,36 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
     if not records["TXT"]:
         findings.append(_missing_record("TXT"))
     return findings
+
+
+def _resolve_cached(hostname: str, context: ScanContext) -> tuple[dict[str, list[str]], float]:
+    with context.cache_lock:
+        cached = context.dns_cache.get(hostname)
+        if cached is not None:
+            return cached
+        host_lock = context.dns_locks.get(hostname)
+        if host_lock is None:
+            host_lock = threading.Lock()
+            context.dns_locks[hostname] = host_lock
+
+    with host_lock:
+        with context.cache_lock:
+            cached = context.dns_cache.get(hostname)
+            if cached is not None:
+                return cached
+        try:
+            records, elapsed = _resolve(hostname)
+        except dns.exception.Timeout as exc:
+            raise FatalCheckError(f"DNS resolution timed out for {hostname}.") from exc
+        except dns.resolver.NoNameservers as exc:
+            raise FatalCheckError(
+                f"Could not reach any configured DNS nameserver for {hostname}."
+            ) from exc
+        except dns.resolver.NXDOMAIN as exc:
+            raise FatalCheckError(f"Domain {hostname} does not exist (NXDOMAIN).") from exc
+        with context.cache_lock:
+            context.dns_cache[hostname] = (records, elapsed)
+        return records, elapsed
 
 
 def _is_ip_literal(hostname: str) -> bool:
