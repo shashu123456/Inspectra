@@ -8,13 +8,13 @@ the resulting :class:`ScanResult`.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
-from enum import StrEnum
+from datetime import datetime, timezone
+from enum import Enum
 
 from inspectra import __version__
 
 
-class Severity(StrEnum):
+class Severity(str, Enum):
     """Risk severity of a finding, ordered from least to most severe."""
 
     INFO = "info"
@@ -23,7 +23,7 @@ class Severity(StrEnum):
     HIGH = "high"
 
 
-class Confidence(StrEnum):
+class Confidence(str, Enum):
     """How sure we are that a finding reflects reality."""
 
     LOW = "low"
@@ -98,6 +98,9 @@ class ScanOptions:
     replay_dir: str | None = None
     concurrency: int = 4
     delay: float = 0.2
+    no_findings: bool = False
+    findings_limit: int = 25
+    quiet: bool = False
 
 
 @dataclass(slots=True)
@@ -107,7 +110,7 @@ class ScanMetadata:
     tool: str = "inspectra"
     version: str = __version__
     target: str = ""
-    started_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    started_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     finished_at: datetime | None = None
     duration_seconds: float = 0.0
 
@@ -125,6 +128,8 @@ class ScanResult:
     scope: dict[str, str] | None = None
     redaction: dict[str, str] | None = None
     skipped: list[dict[str, str]] = field(default_factory=list)
+    checks_run: int = 0
+    checks_skipped: list[str] = field(default_factory=list)
 
     def count_by_severity(self, severity: Severity) -> int:
         """Count findings at the given severity."""

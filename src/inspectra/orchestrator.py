@@ -8,7 +8,7 @@ import logging
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -49,7 +49,7 @@ def run_scan(
     using a thread pool. A per-host semaphore (max 2 in-flight requests)
     prevents overwhelming any single host.
     """
-    started = datetime.now(UTC)
+    started = datetime.now(timezone.utc)
     metadata = ScanMetadata(version=__version__, target=target.input, started_at=started)
     result = ScanResult(target=target, metadata=metadata)
     context = ScanContext(options=options)
@@ -154,6 +154,9 @@ def run_scan(
         )
     )
 
+    result.checks_run = len(checks)
+    result.checks_skipped = [item["check"] for item in result.skipped]
+
     for finding in result.findings:
         finding.evidence = [truncate(line) for line in finding.evidence]
         evidence_text = finding.evidence[0] if finding.evidence else None
@@ -166,7 +169,7 @@ def run_scan(
     if not options.no_redact:
         for finding in result.findings:
             finding.evidence = redact_evidence(finding.evidence)
-    result.metadata.finished_at = datetime.now(UTC)
+    result.metadata.finished_at = datetime.now(timezone.utc)
     result.metadata.duration_seconds = (result.metadata.finished_at - started).total_seconds()
     return result
 

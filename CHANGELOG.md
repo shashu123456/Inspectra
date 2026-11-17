@@ -4,6 +4,22 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-11-16
+
+### Added
+
+- **Findings table in the terminal:** `inspectra scan` now prints a `Sev | Rule | Title | Where` table sorted critical to info, with severity colors and a `… and N more - see the report` overflow line.
+- **`--no-findings`:** suppress the findings table (summary panel still prints).
+- **`--findings-limit N`:** cap the number of findings printed in the terminal (default 25).
+- **`--quiet`:** panel and counts only, for CI logs.
+- **`--help` examples:** epilog with three copy-paste invocations and grouped scan options (TARGET / WHAT TO RUN / OUTPUT / SAFETY).
+- **Python 3.10 classifier:** `Programming Language :: Python :: 3.10` added; ruff `target-version` and mypy `python_version` set to `3.10`.
+
+### Fixed
+
+- Terminal glyph artifacts replaced with plain ASCII (no `??`, `—`, or `…`).
+- README assets rebuilt at 2x display size so all text is legible at 880px width.
+
 ## [2.1.1] - 2026-11-16
 
 ### Fixed

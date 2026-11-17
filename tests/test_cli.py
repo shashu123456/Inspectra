@@ -394,10 +394,134 @@ def test_cli_private_target_rejected_without_flags(
 
 def test_cli_allow_private_requires_authorized(
     fixture_server, target, tmp_path, monkeypatch, capsys
-) -> None:
+):
     """--allow-private without --authorized exits 2."""
     monkeypatch.chdir(tmp_path)
     code = main(["scan", target.input, "--yes", "--allow-private"])
     assert code == 2
     captured = capsys.readouterr()
     assert "--authorized" in captured.err
+
+
+def test_summary_lists_findings_with_rule_ids(
+    fixture_server, target, tmp_path, monkeypatch, capsys
+):
+    monkeypatch.chdir(tmp_path)
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--fail-on",
+            "low",
+            "--output-dir",
+            "out",
+        ]
+    )
+    assert code == 1
+    captured = capsys.readouterr()
+    assert "Scan complete" in captured.out
+    assert "Sev" in captured.out
+    assert "Rule" in captured.out
+    assert "Title" in captured.out
+    assert "Where" in captured.out
+    assert "HDR-" in captured.out
+
+
+def test_findings_limit_truncates_with_remainder(
+    fixture_server, target, tmp_path, monkeypatch, capsys
+):
+    monkeypatch.chdir(tmp_path)
+    main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--fail-on",
+            "low",
+            "--output-dir",
+            "out",
+            "--findings-limit",
+            "1",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert "... and " in captured.out
+    assert "more - see the report" in captured.out
+
+
+def test_no_findings_flag_suppresses_table(fixture_server, target, tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--fail-on",
+            "low",
+            "--output-dir",
+            "out",
+            "--no-findings",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert "Scan complete" in captured.out
+    assert "Sev" not in captured.out
+    assert "Rule" not in captured.out
+
+
+def test_quiet_prints_only_counts(fixture_server, target, tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--fail-on",
+            "low",
+            "--output-dir",
+            "out",
+            "--quiet",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert "Scan complete" in captured.out
+    assert "Sev" not in captured.out
+    assert "Where" not in captured.out
+    assert "HIGH findings" in captured.out
+
+
+def test_no_question_mark_artifacts_in_output(
+    fixture_server, target, tmp_path, monkeypatch, capsys
+):
+    monkeypatch.chdir(tmp_path)
+    main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--fail-on",
+            "low",
+            "--output-dir",
+            "out",
+        ]
+    )
+    captured = capsys.readouterr()
+    assert "?" not in captured.out
+    assert "\u2014" not in captured.out
+    assert "\u2026" not in captured.out

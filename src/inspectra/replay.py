@@ -15,7 +15,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol, cast
 
@@ -105,7 +105,7 @@ class FixtureStore:
             "headers": headers,
             "body_b64": body_b64,
             "elapsed_ms": round(elapsed_ms, 3),
-            "recorded_at": datetime.now(UTC).isoformat(),
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
         }
 
         fixture_path = self.directory / f"{key}.json"
@@ -157,9 +157,9 @@ class Recorder:
         headers: dict[str, str] | None = None,
         extensions: dict[str, Any] | None = None,
     ) -> httpx.Response:
-        start = datetime.now(UTC)
+        start = datetime.now(timezone.utc)
         response = self._client.get(url, headers=headers, extensions=extensions)
-        elapsed_ms = (datetime.now(UTC) - start).total_seconds() * 1000
+        elapsed_ms = (datetime.now(timezone.utc) - start).total_seconds() * 1000
         self._store.record("GET", str(response.url), response, elapsed_ms)
         return response
 

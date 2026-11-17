@@ -5,13 +5,14 @@ from __future__ import annotations
 import ipaddress
 import json
 import re
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from importlib.resources import files
 from typing import Any
 
 from inspectra.models import Target
 
 #: Indian Standard Time (UTC+05:30, no DST) — the display timezone for reports.
+UTC = timezone.utc
 IST_TIMEZONE = timezone(timedelta(hours=5, minutes=30), name="IST")
 IST_LABEL = "Asia/Kolkata (UTC+05:30)"
 
@@ -84,14 +85,14 @@ def is_private_address(ip: str) -> bool:
 
 def load_json(name: str) -> Any:
     """Load a JSON knowledge-base file shipped inside the package."""
-    path = files("inspectra").joinpath("data", name)
+    path = files("inspectra").joinpath("data").joinpath(name)
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
 def load_text_lines(name: str) -> list[str]:
     """Load a newline-separated data file, skipping blank lines and comments."""
-    path = files("inspectra").joinpath("data", name)
+    path = files("inspectra").joinpath("data").joinpath(name)
     with path.open("r", encoding="utf-8") as handle:
         return [
             line.strip() for line in handle if line.strip() and not line.lstrip().startswith("#")

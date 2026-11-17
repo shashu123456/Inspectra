@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import cast
 
@@ -37,7 +37,7 @@ def save_baseline(target_input: str, findings: list[dict[str, object]], path: Pa
     """Write a baseline file from a list of finding dictionaries."""
     baseline = {
         "target": target_input,
-        "generated_at": datetime.now(UTC).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "findings": findings,
     }
     path.write_text(json.dumps(baseline, indent=2) + "\n", encoding="utf-8")

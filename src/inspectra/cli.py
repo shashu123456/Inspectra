@@ -17,7 +17,7 @@ from rich.table import Table
 from inspectra import __version__
 from inspectra.models import ScanResult, Severity
 from inspectra.report import html_report, json_report, markdown_report, sarif_report
-from inspectra.utils import TargetValidationError, format_ist, normalize_target
+from inspectra.utils import TargetValidationError, normalize_target
 
 CONFIG_DIR = Path.home() / ".config" / "inspectra"
 CONFIG_FILE = CONFIG_DIR / "config.json"
@@ -32,6 +32,20 @@ CONSENT_BANNER = (
 
 console = Console()
 
+SEVERITY_STYLE = {
+    "HIGH": "bold red",
+    "MEDIUM": "yellow",
+    "LOW": "cyan",
+    "INFO": "dim",
+}
+
+SEVERITY_ORDER = {
+    Severity.HIGH: 0,
+    Severity.MEDIUM: 1,
+    Severity.LOW: 2,
+    Severity.INFO: 3,
+}
+
 
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line argument parser."""
@@ -41,140 +55,168 @@ def build_parser() -> argparse.ArgumentParser:
             "Open-source explainable security assessment framework. "
             "Inspect. Observe. Assess. Explain. Report. Never exploit."
         ),
+        epilog=(
+            "Examples:\n"
+            "  inspectra scan https://example.com --yes\n"
+            "  inspectra scan https://example.com --format sarif --fail-on high\n"
+            "  inspectra scan --replay evidence.jsonl\n"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--version", action="version", version=f"inspectra {__version__}")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
+        title="subcommands",
+        description="Available commands:",
+    )
 
     scan = subparsers.add_parser(
         "scan",
         help="Run a security assessment against a target.",
-        epilog=(
-            "Examples:\n"
-            "  inspectra scan example.com --yes --skip-ports --format html\n"
-            "  inspectra scan 192.168.1.1 --yes --skip-ports --allow-private --authorized\n"
-            "  inspectra scan google.com --yes --skip-ports --format json -o report.json\n"
-            "  inspectra scan example.com --yes --skip-ports --ports 80,443,8080"
-        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    scan.add_argument(
+
+    target_group = scan.add_argument_group("TARGET")
+    target_group.add_argument(
         "target",
         help="Domain, IP address or URL to assess (e.g. example.com).",
     )
-    scan.add_argument(
-        "--format",
-        dest="report_format",
-        default="html",
-        help="Report format(s): markdown, html, json, sarif. "
-        "Repeat or comma-separate for multiple (default: html).",
-    )
-    scan.add_argument(
-        "-o",
-        "--output",
-        dest="output_path",
-        metavar="PATH",
-        help="Write a single-format report to this exact path (requires a single format).",
-    )
-    scan.add_argument(
-        "--output-dir",
-        default=DEFAULT_OUTPUT_DIR,
-        help=f"Directory for reports (default: {DEFAULT_OUTPUT_DIR}/).",
-    )
-    scan.add_argument(
+
+    run_group = scan.add_argument_group("WHAT TO RUN")
+    run_group.add_argument(
         "--ports",
-        help="Explicit comma-separated port list for Nmap (e.g. 80,443,8080).",
+        help="PORTS comma-separated port list for Nmap (e.g. 80,443,8080).",
     )
-    scan.add_argument(
+    run_group.add_argument(
         "--top-ports",
         type=int,
         default=1000,
-        help="Scan the N most common ports with Nmap (default: 1000).",
+        help="N scan the N most common ports with Nmap (default: 1000).",
     )
-    scan.add_argument(
+    run_group.add_argument(
         "--skip-ports",
         action="store_true",
         help="Skip Nmap port discovery (useful when Nmap is not installed).",
     )
-    scan.add_argument(
+    run_group.add_argument(
         "--directories",
         action="store_true",
-        help="Also probe a curated wordlist of common paths (rate-limited, GET-only).",
+        help="Probe a curated wordlist of common paths (rate-limited, GET-only).",
     )
-    scan.add_argument(
+    run_group.add_argument(
         "--directory-wordlist",
-        help="Path to a custom wordlist for --directories (one path per line, # comments allowed).",
+        help="PATH custom wordlist for --directories (one path per line, # comments allowed).",
     )
-    scan.add_argument(
-        "--yes",
-        action="store_true",
-        help="Accept the authorization agreement without prompting.",
-    )
-    scan.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Enable debug logging.",
-    )
-    scan.add_argument(
-        "--fail-on",
-        dest="fail_on",
-        default="high",
-        choices=["none", "low", "medium", "high"],
-        help=(
-            "Exit non-zero when new findings at or above this severity exist: "
-            "none|low|medium|high (default: high)."
-        ),
-    )
-    scan.add_argument(
-        "--allow-private",
-        action="store_true",
-        help="Allow scanning private/loopback/local addresses (home-lab only).",
-    )
-    scan.add_argument(
-        "--authorized",
-        action="store_true",
-        help="Required with --allow-private; confirms explicit authorization.",
-    )
-    scan.add_argument(
-        "--no-redact",
-        action="store_true",
-        help="Disable secret redaction in evidence (debug only).",
-    )
-    scan.add_argument(
-        "--save-baseline",
-        dest="save_baseline",
-        metavar="PATH",
-        help="Write baseline fingerprint file to PATH after scanning.",
-    )
-    scan.add_argument(
-        "--baseline",
-        dest="baseline",
-        metavar="PATH",
-        help="Compare against a baseline file at PATH; only new findings count toward fail-on.",
-    )
-    scan.add_argument(
-        "--save-fixtures",
-        dest="save_fixtures",
-        metavar="DIR",
-        help="Record every HTTP request/response to DIR for later replay.",
-    )
-    scan.add_argument(
-        "--replay",
-        dest="replay_dir",
-        metavar="DIR",
-        help="Replay all HTTP requests from DIR fixtures (offline, no network).",
-    )
-    scan.add_argument(
+    run_group.add_argument(
         "--concurrency",
         dest="concurrency",
         type=int,
         default=4,
-        help="Max concurrent checks per target (default: 4).",
+        help="N max concurrent checks per target (default: 4).",
     )
-    scan.add_argument(
+    run_group.add_argument(
         "--delay",
         dest="delay",
         type=float,
         default=0.2,
-        help="Delay in seconds between per-host requests (default: 0.2).",
+        help="SECONDS delay between per-host requests (default: 0.2).",
+    )
+
+    output_group = scan.add_argument_group("OUTPUT")
+    output_group.add_argument(
+        "--format",
+        dest="report_format",
+        default="html",
+        help="FORMAT html | json | markdown | sarif (default: html).",
+    )
+    output_group.add_argument(
+        "-o",
+        "--output",
+        dest="output_path",
+        metavar="PATH",
+        help="PATH write a single-format report to this exact path (requires a single format).",
+    )
+    output_group.add_argument(
+        "--output-dir",
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"DIR directory for reports (default: {DEFAULT_OUTPUT_DIR}/).",
+    )
+    output_group.add_argument(
+        "--save-baseline",
+        dest="save_baseline",
+        metavar="PATH",
+        help="PATH write baseline fingerprint file to PATH after scanning.",
+    )
+    output_group.add_argument(
+        "--baseline",
+        dest="baseline",
+        metavar="PATH",
+        help="PATH compare against a baseline file; only new findings count toward fail-on.",
+    )
+    output_group.add_argument(
+        "--save-fixtures",
+        dest="save_fixtures",
+        metavar="DIR",
+        help="DIR record every HTTP request/response to DIR for later replay.",
+    )
+    output_group.add_argument(
+        "--replay",
+        dest="replay_dir",
+        metavar="DIR",
+        help="DIR replay all HTTP requests from DIR fixtures (offline, no network).",
+    )
+    output_group.add_argument(
+        "--no-findings",
+        action="store_true",
+        help="Suppress the findings table (summary panel still prints).",
+    )
+    output_group.add_argument(
+        "--findings-limit",
+        dest="findings_limit",
+        type=int,
+        default=25,
+        help="N max findings to print in the terminal table (default: 25).",
+    )
+    output_group.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Print the summary panel and counts only (CI logs).",
+    )
+
+    safety_group = scan.add_argument_group("SAFETY")
+    safety_group.add_argument(
+        "--yes",
+        action="store_true",
+        help="Accept the authorization agreement without prompting.",
+    )
+    safety_group.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable debug logging.",
+    )
+    safety_group.add_argument(
+        "--fail-on",
+        dest="fail_on",
+        default="high",
+        choices=["none", "low", "medium", "high"],
+        help="LEVEL exit non-zero when findings at or above this severity exist: "
+        "none|low|medium|high (default: high).",
+    )
+    safety_group.add_argument(
+        "--allow-private",
+        action="store_true",
+        help="Allow scanning private/loopback/local addresses (home-lab only).",
+    )
+    safety_group.add_argument(
+        "--authorized",
+        action="store_true",
+        help="Required with --allow-private; confirms explicit authorization.",
+    )
+    safety_group.add_argument(
+        "--no-redact",
+        action="store_true",
+        help="Disable secret redaction in evidence (debug only).",
     )
     return parser
 
@@ -185,24 +227,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command != "scan":
         return 2
 
-    # Validate --format values after comma-split (F5).
     formats = [f.strip().lower() for f in args.report_format.split(",") if f.strip()]
     valid_formats = {"markdown", "html", "json", "sarif"}
     for fmt in formats:
         if fmt not in valid_formats:
             build_parser().error(f"Invalid format {fmt!r}; choose from {sorted(valid_formats)}.")
 
-    # Validate -o/--output requires a single format (F1).
     if args.output_path and len(formats) != 1:
         build_parser().error(
             "-o/--output requires a single report format (no comma-separated lists)."
         )
 
-    # Treat empty --baseline string as absent (F2).
     if args.baseline == "":
         args.baseline = None
 
-    # M4: --save-fixtures and --replay are mutually exclusive.
     if args.save_fixtures and args.replay_dir:
         build_parser().error("--save-fixtures and --replay are mutually exclusive.")
 
@@ -216,9 +254,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"Error: Invalid target: {exc}", file=sys.stderr)
         return 2
     if target.is_private:
-        console.print("[dim]Note: target is a private/local address — home-lab testing.[/]")
+        console.print("[dim]Note: target is a private/local address - home-lab testing.[/]")
 
-    # SSRF safety validation before any network I/O (M3).
     from inspectra.safety import SSRFError, validate_target
 
     try:
@@ -227,12 +264,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
 
-    # --no-redact warning to stderr (M3).
     if args.no_redact:
         print("Warning: redaction disabled - evidence may contain secrets.", file=sys.stderr)
 
-    # Imported lazily: keeps `inspectra --version` fast by deferring the
-    # heavy scan stack (httpx, dnspython, cryptography).
     from inspectra.models import ScanOptions
     from inspectra.orchestrator import ScanAborted, run_scan
 
@@ -255,6 +289,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         replay_dir=args.replay_dir,
         concurrency=args.concurrency,
         delay=args.delay,
+        no_findings=args.no_findings,
+        findings_limit=args.findings_limit,
+        quiet=args.quiet,
     )
     output_dir = None
     if not args.output_path:
@@ -262,11 +299,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_dir.mkdir(parents=True, exist_ok=True)
         _setup_logging(args.verbose, output_dir / "inspectra.log")
 
-    # Show beautiful header banner
     console.print()
     console.print(
         Panel(
-            f"[bold blue]🔍 INSPECTRA[/bold blue]  [bold cyan]LIVE SCAN[/bold cyan]\n"
+            f"[bold blue]INSPECTRA[/bold blue]  [bold cyan]LIVE SCAN[/bold cyan]\n"
             f"[bold]{target.hostname}[/bold]  │  [bold]{target.scheme.upper()}://{target.hostname}[/bold]\n"
             f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST",
             border_style="blue",
@@ -276,12 +312,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     console.print()
 
     try:
-        with console.status(f"[bold green]🔍 Scanning[/] {target.hostname} …") as status:
+        with console.status(f"[bold green]Scanning[/] {target.hostname} ...") as status:
             result = run_scan(
                 target,
                 options,
                 progress=lambda name: status.update(
-                    f"[bold green]🔍 Scanning[/] {target.hostname} — {name} check"
+                    f"[bold green]Scanning[/] {target.hostname} — {name} check"
                 ),
             )
     except ScanAborted as exc:
@@ -290,16 +326,14 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if result.skipped:
         skipped_names = ", ".join(item["check"] for item in result.skipped)
-        console.print(f"Skipped (replay): {skipped_names} — these need live network access")
+        console.print(f"Skipped (replay): {skipped_names} - these need live network access")
 
-    # Set scope/redaction metadata from options (M3).
     from inspectra.redact import redaction_metadata
     from inspectra.safety import scope_metadata
 
     result.scope = scope_metadata(args.allow_private, args.authorized)
     result.redaction = redaction_metadata(args.no_redact)
 
-    # Write reports (F1: -o/--output writes a single format to an exact path).
     if args.output_path:
         output_path = Path(args.output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -318,7 +352,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_dir.mkdir(parents=True, exist_ok=True)
         _setup_logging(args.verbose, output_dir / "inspectra.log")
         _write_reports(result, output_dir, args.report_format)
-        _print_summary(result, output_dir)
+        if not args.quiet:
+            _print_summary(result, output_dir, args)
+
     baseline_summary: dict[str, int] | None = None
     if args.save_baseline:
         from inspectra.baseline import save_baseline
@@ -348,16 +384,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         ]
         baseline_summary = classify_findings(finding_dicts, baseline_data)
         result._baseline_summary = baseline_summary
-        # Attach status back to findings for JSON output
         for finding, fd in zip(result.findings, finding_dicts, strict=True):
             baseline_status = fd.get("_baseline_status")
             finding._baseline_status = baseline_status if isinstance(baseline_status, str) else None
 
-    if output_dir is not None:
-        _print_summary(result, output_dir)
+    if output_dir is not None and args.quiet:
+        _print_summary(result, output_dir, args)
 
-    # Exit code: --fail-on applies to all findings without baseline,
-    # only to new findings with baseline (F4).
     from inspectra.baseline import failing_severity
 
     if baseline_summary:
@@ -368,7 +401,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             and failing_severity(args.fail_on, f.severity.value)
         )
         return 1 if new_highs > 0 else 0
-    # No baseline: fail-on applies to all findings; none => always exit 0.
     if args.fail_on == "none":
         return 0
     return (
@@ -433,16 +465,66 @@ def _write_reports(result: ScanResult, output_dir: Path, report_format: str) -> 
         sarif_report.write(result, output_dir / "report.sarif")
 
 
-def _print_summary(result: ScanResult, output_dir: Path) -> None:
-    table = Table(title=f"Scan complete — {result.target.hostname}", show_lines=True)
-    table.add_column("Severity", style="bold")
-    table.add_column("Count")
+def _where_text(evidence: list[str], width: int = 40) -> str:
+    """Return the first evidence line truncated to width without splitting words or ellipsis."""
+    text = evidence[0] if evidence else "-"
+    if len(text) <= width:
+        return text
+    cut = text.rfind(" ", 0, width)
+    if cut <= 0:
+        return text[:width]
+    return text[:cut]
+
+
+def _title_text(title: str, width: int = 40) -> str:
+    """Return a finding title truncated to width without splitting words or ellipsis."""
+    if len(title) <= width:
+        return title
+    cut = title.rfind(" ", 0, width)
+    if cut <= 0:
+        return title[:width]
+    return title[:cut]
+
+
+def _print_summary(result: ScanResult, output_dir: Path, args: argparse.Namespace) -> None:
+    """Print the scan summary panel and, unless quiet, the findings table."""
+    grid = Table.grid(padding=(0, 2))
+    grid.add_column(style="bold")
+    grid.add_column()
+    grid.add_row("Target", f"{result.target.hostname} - {result.target.base_url}")
+    grid.add_row("Posture", f"{result.posture_score:.1f} / 100 - {result.grade}")
     for severity in (Severity.HIGH, Severity.MEDIUM, Severity.LOW, Severity.INFO):
-        table.add_row(severity.value.upper(), str(result.count_by_severity(severity)))
-    table.add_row("Posture score", f"{result.posture_score:.1f} / 100 ({result.grade})")
-    table.add_row(
-        "Completed (IST)",
-        format_ist(result.metadata.finished_at or result.metadata.started_at),
+        grid.add_row(f"{severity.value.upper()} findings", str(result.count_by_severity(severity)))
+    grid.add_row("Elapsed", f"{result.metadata.duration_seconds:.1f}s")
+    grid.add_row("Checks run", str(result.checks_run))
+    grid.add_row("Skipped", ", ".join(result.checks_skipped) or "none")
+    console.print(
+        Panel(grid, title=f"Scan complete - {result.target.hostname}", border_style="blue")
     )
-    console.print(table)
     console.print(f"Reports written to [cyan]{output_dir.resolve()}[/]")
+
+    if args.quiet or args.no_findings:
+        return
+
+    ordered = sorted(
+        result.findings,
+        key=lambda f: (SEVERITY_ORDER[f.severity], f.rule_id, f.title),
+    )
+    if not ordered:
+        return
+
+    if not ordered:
+        return
+
+    console.print("[bold]Sev   Rule     Title                                       Where[/]")
+    console.print("[bold]-" * 78 + "[/]")
+    limit = max(0, args.findings_limit)
+    for finding in ordered[:limit]:
+        style = SEVERITY_STYLE.get(finding.severity.value.upper(), "white")
+        sev_text = f"[{style}]{finding.severity.value.upper():<5}[/]"
+        console.print(
+            f"{sev_text} {finding.rule_id:<8} {_title_text(finding.title, 38)} "
+            f"{_where_text(finding.evidence, 38)}"
+        )
+    if len(ordered) > limit:
+        console.print(f"... and {len(ordered) - limit} more - see the report")

@@ -8,7 +8,7 @@ import threading
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import urlparse
 
@@ -120,7 +120,7 @@ class TlsInfo:
     @property
     def days_remaining(self) -> int:
         """Whole days until the certificate expires (negative when expired)."""
-        return (self.not_valid_after - datetime.now(UTC)).days
+        return (self.not_valid_after - datetime.now(timezone.utc)).days
 
     @property
     def is_expired(self) -> bool:
