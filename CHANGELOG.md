@@ -4,6 +4,23 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] - 2026-11-17
+
+### Added
+
+- **Custom check extension point:** `--rules-dir` (repeatable) and `--list-checks`
+  for loading user-written check modules with validation and actionable errors
+- **Optional Nmap:** `python-nmap` moved to `inspectra-cli[ports]` extra; port
+  discovery reports skipped with a readable reason when nmap is absent; scan
+  exits 0
+
+### Fixed
+
+- Ports check no longer aborts the scan when nmap is missing; reported as
+  skipped in the summary panel
+- Custom check loader rejects missing attributes, duplicate rule IDs, and bad
+  imports with clear error messages
+
 ## [2.2.0] - 2026-11-16
 
 ### Added
