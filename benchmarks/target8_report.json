@@ -1,0 +1,189 @@
+{
+  "tool": "inspectra",
+  "version": "2.0.0",
+  "target": "http://127.0.0.1:8008",
+  "started_at": "2026-11-17T16:36:12.335378+00:00",
+  "started_at_ist": "2026-11-17 22:06:12 IST",
+  "timezone_display": "Asia/Kolkata (UTC+05:30)",
+  "finished_at": "2026-11-17T16:36:13.636789+00:00",
+  "duration_seconds": 1.301411,
+  "posture_score": 0.0,
+  "grade": "F",
+  "summary": {
+    "total": 11,
+    "info": 2,
+    "low": 5,
+    "medium": 4,
+    "high": 0
+  },
+  "findings": [
+    {
+      "rule_id": "HTP-004",
+      "title": "Root path returned an error status",
+      "category": "http",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "GET http://127.0.0.1:8008/ returned HTTP 404.",
+      "why_it_matters": "An error status on the root path may indicate misconfiguration or that the service is not intended for direct access.",
+      "evidence": [
+        "GET http://127.0.0.1:8008/ -> 404"
+      ],
+      "recommendation": "Verify the application serves its intended content on the root path.",
+      "fingerprint": "9bdb2a79c48418f6291f4baee81857e18795b18b8461011c7abb7afbc6b5bfed",
+      "evidence_hash": "ad190b24d20e89fb"
+    },
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "9e51ffdda84a63fba02974a779fc0ea0d65a71ffce7809b45f698e49de629cb3",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8008: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8008 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "ff5d708c0e3afee1ffdc17e723fcbb7aaae21b4366e1e02cde0b71ae893e07b3",
+      "evidence_hash": "8feffaa7b5e6af02"
+    },
+    {
+      "rule_id": "HDR-001",
+      "title": "Missing security header: Strict-Transport-Security",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Strict-Transport-Security response header was not present on 127.0.0.1.",
+      "why_it_matters": "HSTS tells browsers to only connect over HTTPS for a set period, protecting users from protocol-downgrade and cookie-hijacking attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Strict-Transport-Security: max-age=31536000; includeSubDomains on every HTTPS response.",
+      "fingerprint": "6f6a73c5f356e7f7ff33b94ddd329b1209d7f20903bb296f3e273ad25c2edbda",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-002",
+      "title": "Missing security header: Content-Security-Policy",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).",
+      "fingerprint": "6b86b4fbc8715d91786c53ede55feda245b2cf978c5a7389d85020924ca06df2",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
+      "fingerprint": "9f98570aecbcb9a4d0317efdef75f491018e79ffc9d9e3354ceb3a8c141027d7",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-004",
+      "title": "Missing security header: X-Content-Type-Options",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The X-Content-Type-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without nosniff, browsers may guess the MIME type of a response, which can turn an upload into an executable script.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Content-Type-Options: nosniff on all responses.",
+      "fingerprint": "c987d9e6dd1f89591b57be3a63332a0aeb1802a40c6c90ea7e324803860f9bd8",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-005",
+      "title": "Missing security header: Referrer-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Referrer-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Referrer-Policy controls how much of the previous URL is leaked to other sites, protecting sensitive query strings and paths.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Referrer-Policy: strict-origin-when-cross-origin (or no-referrer for highly sensitive applications).",
+      "fingerprint": "4be4b82448925044d79501b372f5c1288c7d1e7e5182bb9da4765399b1377d1d",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-006",
+      "title": "Missing security header: Permissions-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Permissions-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "Permissions-Policy restricts which browser features (camera, microphone, geolocation) a page and its frames may use.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Permissions-Policy with a restrictive default, e.g. Permissions-Policy: camera=(), microphone=(), geolocation=().",
+      "fingerprint": "641ba9fee509191e141a74818ac778a95a7d011da56a4531ca941eb59683e0cd",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HDR-007",
+      "title": "Missing security header: Cross-Origin-Resource-Policy",
+      "category": "security_headers",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "The Cross-Origin-Resource-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CORP stops other origins from loading this site's resources, reducing cross-origin data leakage.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required.",
+      "fingerprint": "49fd5962987e3c289d411d3e084e62e90e8c0f088fcce454652c7ce58191ec05",
+      "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "ROB-001",
+      "title": "robots.txt not found",
+      "category": "robots",
+      "severity": "info",
+      "confidence": "medium",
+      "description": "GET http://127.0.0.1:8008/robots.txt returned HTTP 404 (not found).",
+      "why_it_matters": "robots.txt is a courtesy for crawlers; its absence is not a vulnerability, but it may be intentional or an oversight.",
+      "evidence": [
+        "GET /robots.txt -> 404"
+      ],
+      "recommendation": "Add a robots.txt if you want to control crawler access. Note that it is not a security control.",
+      "fingerprint": "d47512cfb96d45bdf173093c21ca4651e9e0714c6648734f607ab7252c8c2c7a",
+      "evidence_hash": "15a89f53896ac3a9"
+    }
+  ],
+  "scope": {
+    "scope": "private-allowed"
+  }
+}

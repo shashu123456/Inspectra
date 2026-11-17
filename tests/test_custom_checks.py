@@ -170,7 +170,7 @@ def test_custom_check_run_failure(tmp_path) -> None:
     check_file = tmp_path / "failing.py"
     check_file.write_text(
         'RULE_ID = "FAIL"\nTITLE = "Failing"\n'
-        "\ndef check(target, context):\n    raise RuntimeError(\"boom\")\n"
+        '\ndef check(target, context):\n    raise RuntimeError("boom")\n'
     )
     modules = load_rules_dir(str(tmp_path))
     target = _make_target()

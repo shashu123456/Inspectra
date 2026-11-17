@@ -1,0 +1,6 @@
+{
+  "target": "target12",
+  "audited_by": "manual review from lab/targets/target12/server.py",
+  "expected": ["HTP-004","HTP-003","PRT-003"],
+  "known_absent": []
+}

@@ -527,9 +527,7 @@ def test_no_question_mark_artifacts_in_output(
     assert "\u2026" not in captured.out
 
 
-def test_list_checks_prints_builtin_checks(
-    fixture_server, target, monkeypatch, capsys, tmp_path
-):
+def test_list_checks_prints_builtin_checks(fixture_server, target, monkeypatch, capsys, tmp_path):
     monkeypatch.chdir(tmp_path)
     code = main(
         [
@@ -547,3 +545,39 @@ def test_list_checks_prints_builtin_checks(
     assert "dns" in captured.out
     assert "http" in captured.out
     assert "headers" in captured.out
+
+
+def test_rules_dir_cli_loads_custom_check(fixture_server, target, monkeypatch, capsys, tmp_path):
+    monkeypatch.chdir(tmp_path)
+    rules_dir = tmp_path / "rules"
+    rules_dir.mkdir()
+    (rules_dir / "custom.py").write_text(
+        'RULE_ID = "CUST-CLI"\nTITLE = "CLI custom"\n'
+        "\nfrom inspectra.models import Finding, Severity, Confidence\n"
+        "def check(target, context):\n"
+        "    return [Finding(\n"
+        '        rule_id="CUST-CLI", title="CLI custom",\n'
+        '        category="custom", severity=Severity.INFO,\n'
+        "        confidence=Confidence.HIGH,\n"
+        '        description="cli custom finding",\n'
+        '        why_it_matters="it matters",\n'
+        '        recommendation="fix it",\n'
+        '        evidence=["http://127.0.0.1:9999/"],\n'
+        "    )]\n"
+    )
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--rules-dir",
+            str(rules_dir),
+            "--output-dir",
+            "out",
+            "--no-findings",
+        ]
+    )
+    assert code == 0
