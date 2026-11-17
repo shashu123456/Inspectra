@@ -1,0 +1,8 @@
+- id: inspectra
+  name: Inspectra security scan
+  description: Runs Inspectra passive security scan on the target
+  entry: inspectra scan
+  language: python
+  types: [text]
+  args: ["--yes", "--skip-ports", "--allow-private", "--authorized", "--allow-insecure", "--quiet"]
+  additional_dependencies: ["inspectra-cli>=2.3.0"]

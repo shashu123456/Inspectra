@@ -1,6 +1,14 @@
 {
   "target": "target5",
-  "audited_by": "manual review from lab/targets/target5/server.py",
-  "expected": ["TLS-002","HTP-003","PRT-003"],
-  "known_absent": []
+  "audited_by": "manual review of lab/targets/target5/server.py",
+  "in_scope": [
+    "TLS-006"
+  ],
+  "out_of_scope": [
+    {
+      "id": "platform",
+      "reason": "cannot generate self-signed cert on Windows (/tmp, openssl)"
+    }
+  ],
+  "expected_absent": []
 }

@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8010",
-  "started_at": "2026-11-17T16:32:38.929689+00:00",
-  "started_at_ist": "2026-11-17 22:02:38 IST",
+  "started_at": "2026-11-17T19:23:30.608159+00:00",
+  "started_at_ist": "2026-11-18 00:53:30 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:32:40.099425+00:00",
-  "duration_seconds": 1.169736,
+  "finished_at": "2026-11-17T19:23:32.720107+00:00",
+  "duration_seconds": 2.111948,
   "posture_score": 4.0,
   "grade": "F",
   "summary": {
@@ -17,36 +17,6 @@
     "high": 0
   },
   "findings": [
-    {
-      "rule_id": "HTP-003",
-      "title": "Web server software disclosed (with version)",
-      "category": "http",
-      "severity": "info",
-      "confidence": "high",
-      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
-      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
-      "evidence": [
-        "Server: Python/3.11.9"
-      ],
-      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
-      "fingerprint": "03e153a025025fd435ae4bc5006826eb6b3c1399193e28f8999765374c96338b",
-      "evidence_hash": "9c5ad659ba44d445"
-    },
-    {
-      "rule_id": "TLS-001",
-      "title": "HTTPS not available",
-      "category": "tls",
-      "severity": "medium",
-      "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:8010: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
-      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
-      "evidence": [
-        "TLS handshake to 127.0.0.1:8010 failed"
-      ],
-      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
-      "fingerprint": "2c80cdf98906d74ad3ece336de2a8afe7d543778b801aba1aebe490f11795c96",
-      "evidence_hash": "8d073e58545e06c6"
-    },
     {
       "rule_id": "HDR-001",
       "title": "Missing security header: Strict-Transport-Security",
@@ -153,6 +123,21 @@
       "evidence_hash": "42f70c2ac6396335"
     },
     {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "03e153a025025fd435ae4bc5006826eb6b3c1399193e28f8999765374c96338b",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
       "rule_id": "ROB-002",
       "title": "robots.txt disallows crawler access to paths",
       "category": "robots",
@@ -167,6 +152,21 @@
       "recommendation": "Review the disallowed paths: sensitive content should be protected by authentication, not just robots.txt.",
       "fingerprint": "c8f158ec42d30b7e6871a7ca07164cf18106150cfe017034e53c6cf1ee7e7400",
       "evidence_hash": "014d8c17bc65ba9f"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8010: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8010 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "2c80cdf98906d74ad3ece336de2a8afe7d543778b801aba1aebe490f11795c96",
+      "evidence_hash": "8d073e58545e06c6"
     }
   ],
   "scope": {

@@ -128,12 +128,18 @@ class TlsInfo:
         return self.days_remaining < 0
 
 
-def inspect_tls(hostname: str, port: int = 443, timeout: float = 10.0) -> TlsInfo:
+def inspect_tls(
+    hostname: str, port: int = 443, timeout: float = 10.0, insecure: bool = False
+) -> TlsInfo:
     """Perform a real TLS handshake and return parsed certificate details.
 
     Raises ``ssl.SSLError`` / ``OSError`` when the handshake fails.
+    Set ``insecure=True`` to accept self-signed / untrusted certificates (lab only).
     """
     context = ssl.create_default_context()
+    if insecure:
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
     with (
         socket.create_connection((hostname, port), timeout=timeout) as sock,
         context.wrap_socket(sock, server_hostname=hostname) as tls_sock,

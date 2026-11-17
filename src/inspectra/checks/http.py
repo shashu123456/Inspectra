@@ -22,8 +22,18 @@ from inspectra.network import build_client
 from inspectra.safety import validate_redirect, validate_target
 
 SERVER_VERSION_RE = re.compile(r"\d+(?:\.\d+)+")
+STACK_TRACE_RE = re.compile(
+    r"(Traceback \(most recent call last\):|"
+    r"File \"[^\"]+\", line \d+, in |"
+    r"(RuntimeError|ValueError|TypeError|NameError|ImportError|SyntaxError):|"
+    r"Exception in thread|"
+    r"debugger|"
+    r"<!--\s*ERROR\s*-->)",
+    re.IGNORECASE,
+)
 MAX_REDIRECT_EVIDENCE = 6
 MAX_REDIRECT_HOPS = 5
+ERROR_PROBE_PATHS = ("/error", "/_error", "/debug", "/__debug__")
 
 
 def _pinned_url(
@@ -79,6 +89,9 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
     if server:
         findings.append(_server_header(server))
     _fetch_robots(client, target, context, allow_private, authorized, replay_dir)
+    findings.extend(
+        _error_path_findings(client, target, context, allow_private, authorized, replay_dir)
+    )
     return findings
 
 
@@ -273,6 +286,71 @@ def _server_header(server: str) -> Finding:
         recommendation=remove_header("Server"),
         evidence=[f"Server: {server}"],
     )
+
+
+def _error_path_findings(
+    client: httpx.Client,
+    target: Target,
+    context: ScanContext,
+    allow_private: bool = False,
+    authorized: bool = False,
+    replay_dir: str | None = None,
+) -> list[Finding]:
+    """Probe common error/debug paths and detect stack traces or debug output."""
+    findings: list[Finding] = []
+    if context.client is None:
+        return findings
+    client = context.client
+    if replay_dir or (context.options and context.options.save_fixtures):
+        return findings
+    for path in ERROR_PROBE_PATHS:
+        try:
+            response = _pinned_get(
+                client,
+                f"{target.base_url}{path}",
+                target.hostname,
+                _pinned_ip(target, allow_private, authorized, replay_dir),
+            )
+        except Exception:
+            continue
+        if response.status_code >= 500 and STACK_TRACE_RE.search(response.text):
+            findings.append(
+                Finding(
+                    rule_id="HTP-005",
+                    title="Verbose error message / stack trace exposed",
+                    category="http",
+                    severity=Severity.MEDIUM,
+                    confidence=Confidence.HIGH,
+                    description=(
+                        f"GET {path} returned HTTP {response.status_code} with a stack trace "
+                        "or debug output in the response body."
+                    ),
+                    why_it_matters=(
+                        "Stack traces reveal internal implementation details, file paths, "
+                        "and sometimes secrets, aiding targeted attacks."
+                    ),
+                    recommendation=(
+                        "Configure the application to return generic error pages without "
+                        "stack traces in production."
+                    ),
+                    evidence=[f"GET {path} -> {response.status_code} stack trace detected"],
+                )
+            )
+            break  # one finding per scan
+    return findings
+
+
+def _pinned_ip(
+    target: Target,
+    allow_private: bool,
+    authorized: bool,
+    replay_dir: str | None = None,
+) -> str:
+    if replay_dir:
+        return target.hostname
+    from inspectra.safety import validate_target
+
+    return validate_target(target.hostname, allow_private, authorized)
 
 
 def _fetch_robots(

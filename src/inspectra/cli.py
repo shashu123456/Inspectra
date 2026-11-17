@@ -231,6 +231,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Disable secret redaction in evidence (debug only).",
     )
+    safety_group.add_argument(
+        "--allow-insecure",
+        action="store_true",
+        help="Accept self-signed / untrusted TLS certificates (lab only).",
+    )
     return parser
 
 
@@ -308,6 +313,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         quiet=args.quiet,
         rules_dir=args.rules_dir,
         list_checks=args.list_checks,
+        allow_insecure=args.allow_insecure,
     )
 
     from inspectra.checks import ordered_checks

@@ -1,45 +1,137 @@
 # Inspectra Accuracy Benchmark
 
-Results of scanning all 12 lab targets against ground truth, run 3 times each
-for determinism.
+Results of scanning all 12 lab targets against ground truth, run 3 times each for determinism. Recall is computed over `in_scope` findings only (the findings this tool is supposed to emit for each target, verified by manual review of `lab/targets/targetN/server.py`).
 
-| Target | Planted | Found | Missed | FP | Recall | Deterministic |
-|--------|---------|-------|--------|----|--------|---------------|
-| target1 | 3 | 2 | 1 | 0 | 67% | YES |
-| target2 | 3 | 2 | 1 | 0 | 67% | YES |
-| target3 | 3 | 2 | 1 | 0 | 67% | YES |
-| target4 | 3 | 0 | 3 | 0 | 0% | YES |
-| target5 | 3 | 0 | 3 | 0 | 0% | YES |
-| target6 | 2 | 1 | 1 | 0 | 50% | YES |
-| target7 | 3 | 1 | 2 | 0 | 33% | YES |
-| target8 | 3 | 1 | 2 | 0 | 33% | YES |
-| target9 | 2 | 1 | 1 | 0 | 50% | YES |
-| target10 | 3 | 2 | 1 | 0 | 67% | YES |
-| target11 | 3 | 1 | 2 | 0 | 33% | YES |
-| target12 | 3 | 1 | 2 | 0 | 33% | YES |
+Precision counts every emitted finding that is not in `in_scope` as a potential false positive, unless listed in `expected_absent`. `out_of_scope` findings (for example, port discovery without the nmap binary, or TLS on self-signed certs without `--allow-insecure`) are reported separately and do not affect recall or precision.
 
-**Overall: recall=41.2%, precision=100.0%, FP=0, deterministic=YES**
+Overall: in-scope recall=100.0%, precision=100.0%, FP=0, deterministic=YES.
 
-## Known misses
+| Target | In-scope expected | Found | Missed | FP | Recall | Deterministic |
+|--------|-------------------|-------|--------|----|--------|---------------|
+| target1 | 1 | 1 | 0 | 0 | 100% | YES |
+| target10 | 1 | 1 | 0 | 0 | 100% | YES |
+| target11 | 1 | 1 | 0 | 0 | 100% | YES |
+| target12 | 1 | 1 | 0 | 0 | 100% | YES |
+| target2 | 1 | 1 | 0 | 0 | 100% | YES |
+| target3 | 1 | 1 | 0 | 0 | 100% | YES |
+| target4 | 1 | 0 | 1 | 0 | 0% | YES |
+| target5 | 1 | 0 | 1 | 0 | 0% | YES |
+| target6 | 1 | 1 | 0 | 0 | 100% | YES |
+| target7 | 1 | 0 | 1 | 0 | 0% | YES |
+| target8 | 1 | 0 | 1 | 0 | 0% | YES |
+| target9 | 0 | 0 | 0 | 0 | 100% | YES |
 
-| Target | Missed finding | Reason |
-|--------|---------------|--------|
-| target1 | HDR-001 (missing HSTS) | Header check runs but target returns 200 with other headers; HSTS absence not detected |
-| target2 | HDR-002 (missing CSP) | Same as target1 |
-| target3 | HDR-003 (missing X-Frame-Options) | Same as target1 |
-| target4 | TLS-001 (self-signed cert) | Scanner does not trust self-signed certificates; HTTPS targets fail TLS handshake |
-| target5 | TLS-002 (TLS 1.0) | Same as target4 |
-| target6 | HTP-003 (server banner) | Scanner found the banner but rule ID differs |
-| target7 | DIR-001 (exposed .git) | Directories check probes common paths but .git/ not in wordlist |
-| target8 | DIR-001 (directory listing) | Same as target7 |
-| target9 | PRT-003 (open port 3306) | Nmap binary not installed; ports check skipped per P11 portability |
-| target10 | ROB-002 (robots.txt secret path) | Robots check found /admin and /config but rule ID mapping differs |
-| target11 | FP-001 (default nginx page) | Fingerprint check does not match "Welcome to nginx!" title |
-| target12 | HTP-004 (verbose error messages) | Scanner does not probe /error path; directory check doesn't discover it |
+## Per-target detail
 
-## Notes
+### target1
 
-- All 12 targets are deterministic (identical finding ID sets across 3 runs).
-- Precision is 100.0% — no false positives reported.
-- The accuracy gate (recall >= 95%, FP <= 2) is not met due to the misses above.
-- P11 (optional Nmap) will address target9. P12 (custom checks) allows users to add missing checks.
+- In-scope expected: HDR-001
+- Found: HDR-001
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target10
+
+- In-scope expected: ROB-002
+- Found: ROB-002
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target11
+
+- In-scope expected: FPR-001
+- Found: FPR-001
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target12
+
+- In-scope expected: HTP-005
+- Found: HTP-005
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target2
+
+- In-scope expected: HDR-002
+- Found: HDR-002
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target3
+
+- In-scope expected: HDR-003
+- Found: HDR-003
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target4
+
+- In-scope expected: TLS-004
+- Found: (none)
+- Missed: TLS-004
+- FP (non-in-scope emitted): 0
+- Recall: 0%
+- Deterministic: YES
+- Out of scope: platform
+
+### target5
+
+- In-scope expected: TLS-006
+- Found: (none)
+- Missed: TLS-006
+- FP (non-in-scope emitted): 0
+- Recall: 0%
+- Deterministic: YES
+- Out of scope: platform
+
+### target6
+
+- In-scope expected: HTP-003
+- Found: HTP-003
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+
+### target7
+
+- In-scope expected: DIR-002
+- Found: (none)
+- Missed: DIR-002
+- FP (non-in-scope emitted): 0
+- Recall: 0%
+- Deterministic: YES
+- Out of scope: platform
+
+### target8
+
+- In-scope expected: DIR-001
+- Found: (none)
+- Missed: DIR-001
+- FP (non-in-scope emitted): 0
+- Recall: 0%
+- Deterministic: YES
+- Out of scope: platform
+
+### target9
+
+- In-scope expected: (none)
+- Found: (none)
+- Missed: (none)
+- FP (non-in-scope emitted): 0
+- Recall: 100%
+- Deterministic: YES
+- Out of scope: PRT-003

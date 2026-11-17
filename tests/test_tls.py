@@ -32,7 +32,7 @@ def _info(**overrides: object) -> TlsInfo:
 
 
 def _run(info: TlsInfo, monkeypatch) -> list:
-    monkeypatch.setattr(tls, "inspect_tls", lambda hostname, port: info)
+    monkeypatch.setattr(tls, "inspect_tls", lambda hostname, port, insecure=False: info)
     target = Target(input="example.com", hostname="example.com")
     return tls.run(target, ScanContext())
 
@@ -85,7 +85,7 @@ def test_tls12_only_is_informational(monkeypatch) -> None:
 
 def test_https_unavailable_on_http_target(monkeypatch) -> None:
 
-    def fail(hostname: str, port: int) -> TlsInfo:
+    def fail(hostname: str, port: int, insecure: bool = False) -> TlsInfo:
         raise TimeoutError("timed out")
 
     monkeypatch.setattr(tls, "inspect_tls", fail)

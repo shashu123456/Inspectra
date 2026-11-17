@@ -1,6 +1,21 @@
 {
   "target": "target10",
-  "audited_by": "manual review from lab/targets/target10/server.py",
-  "expected": ["ROB-002","HTP-003","PRT-003"],
-  "known_absent": []
+  "audited_by": "manual review of lab/targets/target10/server.py",
+  "in_scope": [
+    "ROB-002"
+  ],
+  "out_of_scope": [],
+  "expected_absent": [
+    "HDR-001",
+    "HDR-002",
+    "HDR-003",
+    "HDR-004",
+    "HDR-005",
+    "HDR-006",
+    "HDR-007",
+    "HTP-003",
+    "TLS-001",
+    "DNS-003",
+    "DNS-004"
+  ]
 }

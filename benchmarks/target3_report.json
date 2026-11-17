@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8003",
-  "started_at": "2026-11-17T16:33:55.448732+00:00",
-  "started_at_ist": "2026-11-17 22:03:55 IST",
+  "started_at": "2026-11-17T19:24:42.837330+00:00",
+  "started_at_ist": "2026-11-18 00:54:42 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:33:57.310176+00:00",
-  "duration_seconds": 1.861444,
+  "finished_at": "2026-11-17T19:24:44.513788+00:00",
+  "duration_seconds": 1.676458,
   "posture_score": 61.6,
   "grade": "D",
   "summary": {
@@ -17,6 +17,21 @@
     "high": 0
   },
   "findings": [
+    {
+      "rule_id": "HDR-003",
+      "title": "Missing security header: X-Frame-Options",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
+      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
+      "fingerprint": "3797905b3f72b077ea3a79a4da6e4e950d73c8d1d65e15250e4efc9c29f4b372",
+      "evidence_hash": "42f70c2ac6396335"
+    },
     {
       "rule_id": "HTP-003",
       "title": "Web server software disclosed (with version)",
@@ -46,21 +61,6 @@
       "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
       "fingerprint": "6f1559c953755e5bbbbae1de06fd0bc3b167d298f2a2e5bb70aa1c51389f3185",
       "evidence_hash": "fce8ba60a0c87b85"
-    },
-    {
-      "rule_id": "HDR-003",
-      "title": "Missing security header: X-Frame-Options",
-      "category": "security_headers",
-      "severity": "medium",
-      "confidence": "medium",
-      "description": "The X-Frame-Options response header was not present on 127.0.0.1.",
-      "why_it_matters": "Without clickjacking protection an attacker can embed the page in a transparent iframe and trick users into unintended actions.",
-      "evidence": [
-        "Header not present in the HTTP response"
-      ],
-      "recommendation": "Set X-Frame-Options: DENY (or SAMEORIGIN if framing by same-origin pages is required).",
-      "fingerprint": "3797905b3f72b077ea3a79a4da6e4e950d73c8d1d65e15250e4efc9c29f4b372",
-      "evidence_hash": "42f70c2ac6396335"
     }
   ],
   "scope": {

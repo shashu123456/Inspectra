@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8009",
-  "started_at": "2026-11-17T16:36:26.850762+00:00",
-  "started_at_ist": "2026-11-17 22:06:26 IST",
+  "started_at": "2026-11-17T19:25:45.838068+00:00",
+  "started_at_ist": "2026-11-18 00:55:45 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:36:27.984410+00:00",
-  "duration_seconds": 1.133648,
+  "finished_at": "2026-11-17T19:25:48.608044+00:00",
+  "duration_seconds": 2.769976,
   "posture_score": 4.0,
   "grade": "F",
   "summary": {
@@ -17,36 +17,6 @@
     "high": 0
   },
   "findings": [
-    {
-      "rule_id": "HTP-003",
-      "title": "Web server software disclosed (with version)",
-      "category": "http",
-      "severity": "info",
-      "confidence": "high",
-      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
-      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
-      "evidence": [
-        "Server: Python/3.11.9"
-      ],
-      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
-      "fingerprint": "46475cc964b6f91a46f974b451e5c87f30bb7159dd8e2e6359a3875bfbd333a8",
-      "evidence_hash": "9c5ad659ba44d445"
-    },
-    {
-      "rule_id": "TLS-001",
-      "title": "HTTPS not available",
-      "category": "tls",
-      "severity": "medium",
-      "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:8009: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
-      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
-      "evidence": [
-        "TLS handshake to 127.0.0.1:8009 failed"
-      ],
-      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
-      "fingerprint": "adf42d587258a8c2e40788080c3e637d60f3bc32bfef88d497c010896b482ba6",
-      "evidence_hash": "5c5c7f2aaf806847"
-    },
     {
       "rule_id": "HDR-001",
       "title": "Missing security header: Strict-Transport-Security",
@@ -151,6 +121,36 @@
       "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required.",
       "fingerprint": "bddcc624a1d22ae4808e17a09958cd818137123814f3a338dc843689ab2a4ff2",
       "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "46475cc964b6f91a46f974b451e5c87f30bb7159dd8e2e6359a3875bfbd333a8",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8009: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8009 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "adf42d587258a8c2e40788080c3e637d60f3bc32bfef88d497c010896b482ba6",
+      "evidence_hash": "5c5c7f2aaf806847"
     }
   ],
   "scope": {

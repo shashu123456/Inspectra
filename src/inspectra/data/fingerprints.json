@@ -2,7 +2,10 @@
   {
     "name": "Nginx",
     "category": "web_server",
-    "patterns": [{ "type": "header", "name": "Server", "pattern": "nginx" }]
+    "patterns": [
+      { "type": "header", "name": "Server", "pattern": "nginx" },
+      { "type": "body", "pattern": "Welcome to nginx" }
+    ]
   },
   {
     "name": "Apache",

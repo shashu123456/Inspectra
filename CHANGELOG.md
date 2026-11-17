@@ -4,6 +4,32 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.1] - 2026-11-17
+
+### Added
+
+- **Terminal findings table:** `Sev | Rule | Title | Where` with severity colors,
+  25-row cap, and remainder line
+- **`--no-findings`, `--findings-limit`, `--quiet`** flags for CLI output control
+- **`--allow-insecure`** flag for self-signed TLS certificates (lab only)
+- **Custom check extension point:** `--rules-dir` and `--list-checks`
+- **Error path detection:** `HTP-005` for verbose error messages / stack traces
+- **Fingerprint improvement:** Nginx detected via `Welcome to nginx` body match
+- **Accuracy benchmark:** `benchmarks/accuracy.py` with 12 lab targets,
+  in-scope recall >=95%, FP <=2, deterministic
+
+### Fixed
+
+- Ports check no longer aborts the scan when nmap is missing
+- TLS handshake failures on self-signed certs handled via `--allow-insecure`
+- Replay mode no longer aborts on missing error-path fixtures
+- Terminal glyph artifacts replaced with plain ASCII
+
+### Changed
+
+- `python-nmap` moved to `inspectra-cli[ports]` optional extra
+- Python 3.10 claim aligned: classifier, ruff target py310, mypy 3.10
+
 ## [2.3.0] - 2026-11-17
 
 ### Added

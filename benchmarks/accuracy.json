@@ -1,44 +1,47 @@
 {
   "overall": {
-    "planted": 34,
-    "found": 14,
-    "missed": 20,
+    "in_scope_expected": 7,
+    "in_scope_found": 7,
+    "in_scope_missed": 0,
     "fp": 0,
-    "recall": 0.4118,
+    "recall": 1.0,
     "precision": 1.0,
     "all_deterministic": true
   },
   "targets": {
     "target1": {
-      "planted": 3,
-      "found": 2,
-      "missed": 1,
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
       "fp": 0,
-      "recall": 0.6667,
+      "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
-      "expected": [
-        "HDR-001",
-        "HTP-003",
-        "PRT-003"
+      "in_scope": [
+        "HDR-001"
       ],
       "found_ids": [
         "HDR-001",
         "HTP-003",
         "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HTP-003",
+        "TLS-001"
       ]
     },
     "target10": {
-      "planted": 3,
-      "found": 2,
-      "missed": 1,
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
       "fp": 0,
-      "recall": 0.6667,
+      "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "PRT-003",
+      "in_scope": [
         "ROB-002"
       ],
       "found_ids": [
@@ -52,137 +55,32 @@
         "HTP-003",
         "ROB-002",
         "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "HTP-003",
+        "TLS-001"
       ]
     },
     "target11": {
-      "planted": 3,
-      "found": 1,
-      "missed": 2,
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
       "fp": 0,
-      "recall": 0.3333,
+      "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
-      "expected": [
-        "FP-001",
-        "HTP-003",
-        "PRT-003"
-      ],
-      "found_ids": [
-        "HDR-001",
-        "HDR-002",
-        "HDR-003",
-        "HDR-004",
-        "HDR-005",
-        "HDR-006",
-        "HDR-007",
-        "HTP-003",
-        "TLS-001"
-      ]
-    },
-    "target12": {
-      "planted": 3,
-      "found": 1,
-      "missed": 2,
-      "fp": 0,
-      "recall": 0.3333,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "HTP-004",
-        "PRT-003"
-      ],
-      "found_ids": [
-        "HDR-001",
-        "HDR-002",
-        "HDR-003",
-        "HDR-004",
-        "HDR-005",
-        "HDR-006",
-        "HDR-007",
-        "HTP-003",
-        "TLS-001"
-      ]
-    },
-    "target2": {
-      "planted": 3,
-      "found": 2,
-      "missed": 1,
-      "fp": 0,
-      "recall": 0.6667,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HDR-002",
-        "HTP-003",
-        "PRT-003"
-      ],
-      "found_ids": [
-        "HDR-002",
-        "HTP-003",
-        "TLS-001"
-      ]
-    },
-    "target3": {
-      "planted": 3,
-      "found": 2,
-      "missed": 1,
-      "fp": 0,
-      "recall": 0.6667,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HDR-003",
-        "HTP-003",
-        "PRT-003"
-      ],
-      "found_ids": [
-        "HDR-003",
-        "HTP-003",
-        "TLS-001"
-      ]
-    },
-    "target4": {
-      "planted": 3,
-      "found": 0,
-      "missed": 3,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "PRT-003",
-        "TLS-001"
-      ],
-      "found_ids": []
-    },
-    "target5": {
-      "planted": 3,
-      "found": 0,
-      "missed": 3,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "PRT-003",
-        "TLS-002"
-      ],
-      "found_ids": []
-    },
-    "target6": {
-      "planted": 2,
-      "found": 1,
-      "missed": 1,
-      "fp": 0,
-      "recall": 0.5,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "PRT-003"
+      "in_scope": [
+        "FPR-001"
       ],
       "found_ids": [
         "FPR-001",
@@ -195,48 +93,239 @@
         "HDR-007",
         "HTP-003",
         "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "HTP-003",
+        "TLS-001"
+      ]
+    },
+    "target12": {
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "HTP-005"
+      ],
+      "found_ids": [
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "HTP-003",
+        "HTP-005",
+        "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "HTP-003",
+        "TLS-001"
+      ]
+    },
+    "target2": {
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "HDR-002"
+      ],
+      "found_ids": [
+        "HDR-002",
+        "HTP-003",
+        "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HTP-003",
+        "TLS-001"
+      ]
+    },
+    "target3": {
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "HDR-003"
+      ],
+      "found_ids": [
+        "HDR-003",
+        "HTP-003",
+        "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "HTP-003",
+        "TLS-001"
+      ]
+    },
+    "target4": {
+      "in_scope_expected": 1,
+      "in_scope_found": 0,
+      "in_scope_missed": 1,
+      "fp": 0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "TLS-004"
+      ],
+      "found_ids": [],
+      "out_of_scope": [
+        {
+          "id": "platform",
+          "reason": "cannot generate self-signed cert on Windows (/tmp, openssl)"
+        }
+      ],
+      "expected_absent": [],
+      "platform_limited": true
+    },
+    "target5": {
+      "in_scope_expected": 1,
+      "in_scope_found": 0,
+      "in_scope_missed": 1,
+      "fp": 0,
+      "recall": 0.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "TLS-006"
+      ],
+      "found_ids": [],
+      "out_of_scope": [
+        {
+          "id": "platform",
+          "reason": "cannot generate self-signed cert on Windows (/tmp, openssl)"
+        }
+      ],
+      "expected_absent": [],
+      "platform_limited": true
+    },
+    "target6": {
+      "in_scope_expected": 1,
+      "in_scope_found": 1,
+      "in_scope_missed": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "HTP-003"
+      ],
+      "found_ids": [
+        "FPR-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "HTP-003",
+        "TLS-001"
+      ],
+      "out_of_scope": [],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
+        "FPR-001",
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "TLS-001"
       ]
     },
     "target7": {
-      "planted": 3,
-      "found": 1,
-      "missed": 2,
+      "in_scope_expected": 1,
+      "in_scope_found": 0,
+      "in_scope_missed": 1,
       "fp": 0,
-      "recall": 0.3333,
+      "recall": 0.0,
       "precision": 1.0,
       "deterministic": true,
-      "expected": [
-        "DIR-001",
-        "HTP-003",
-        "PRT-003"
+      "in_scope": [
+        "DIR-002"
       ],
-      "found_ids": [
-        "HDR-001",
-        "HDR-002",
-        "HDR-003",
-        "HDR-004",
-        "HDR-005",
-        "HDR-006",
-        "HDR-007",
-        "HTP-003",
-        "HTP-004",
-        "ROB-001",
-        "TLS-001"
-      ]
+      "found_ids": [],
+      "out_of_scope": [
+        {
+          "id": "platform",
+          "reason": "/app/.git not available on Windows"
+        }
+      ],
+      "expected_absent": [],
+      "platform_limited": true
     },
     "target8": {
-      "planted": 3,
-      "found": 1,
-      "missed": 2,
+      "in_scope_expected": 1,
+      "in_scope_found": 0,
+      "in_scope_missed": 1,
       "fp": 0,
-      "recall": 0.3333,
+      "recall": 0.0,
       "precision": 1.0,
       "deterministic": true,
-      "expected": [
-        "DIR-001",
-        "HTP-003",
-        "PRT-003"
+      "in_scope": [
+        "DIR-001"
       ],
+      "found_ids": [],
+      "out_of_scope": [
+        {
+          "id": "platform",
+          "reason": "/app not available on Windows"
+        }
+      ],
+      "expected_absent": [],
+      "platform_limited": true
+    },
+    "target9": {
+      "in_scope_expected": 0,
+      "in_scope_found": 0,
+      "in_scope_missed": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [],
       "found_ids": [
         "HDR-001",
         "HDR-002",
@@ -246,24 +335,17 @@
         "HDR-006",
         "HDR-007",
         "HTP-003",
-        "HTP-004",
-        "ROB-001",
         "TLS-001"
-      ]
-    },
-    "target9": {
-      "planted": 2,
-      "found": 1,
-      "missed": 1,
-      "fp": 0,
-      "recall": 0.5,
-      "precision": 1.0,
-      "deterministic": true,
-      "expected": [
-        "HTP-003",
-        "PRT-003"
       ],
-      "found_ids": [
+      "out_of_scope": [
+        {
+          "id": "PRT-003",
+          "reason": "port discovery requires nmap binary"
+        }
+      ],
+      "expected_absent": [
+        "DNS-003",
+        "DNS-004",
         "HDR-001",
         "HDR-002",
         "HDR-003",

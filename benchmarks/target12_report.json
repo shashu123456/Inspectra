@@ -1,52 +1,22 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8012",
-  "started_at": "2026-11-17T16:33:17.121989+00:00",
-  "started_at_ist": "2026-11-17 22:03:17 IST",
+  "started_at": "2026-11-17T19:24:06.648841+00:00",
+  "started_at_ist": "2026-11-18 00:54:06 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:33:18.551517+00:00",
-  "duration_seconds": 1.429528,
-  "posture_score": 4.0,
+  "finished_at": "2026-11-17T19:24:08.285464+00:00",
+  "duration_seconds": 1.636623,
+  "posture_score": 0.0,
   "grade": "F",
   "summary": {
-    "total": 9,
+    "total": 10,
     "info": 1,
     "low": 4,
-    "medium": 4,
+    "medium": 5,
     "high": 0
   },
   "findings": [
-    {
-      "rule_id": "HTP-003",
-      "title": "Web server software disclosed (with version)",
-      "category": "http",
-      "severity": "info",
-      "confidence": "high",
-      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
-      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
-      "evidence": [
-        "Server: Python/3.11.9"
-      ],
-      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
-      "fingerprint": "6986855d4a577cc58ebd195b268c804acac4d6234897f2a0473bd0510db854fa",
-      "evidence_hash": "9c5ad659ba44d445"
-    },
-    {
-      "rule_id": "TLS-001",
-      "title": "HTTPS not available",
-      "category": "tls",
-      "severity": "medium",
-      "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:8012: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
-      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
-      "evidence": [
-        "TLS handshake to 127.0.0.1:8012 failed"
-      ],
-      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
-      "fingerprint": "c6a3b516f381c7d9f52f0cf3d9c7931769729d207279cfe67f268f235e857f0d",
-      "evidence_hash": "39db5eb18bc2124b"
-    },
     {
       "rule_id": "HDR-001",
       "title": "Missing security header: Strict-Transport-Security",
@@ -151,6 +121,51 @@
       "recommendation": "Set Cross-Origin-Resource-Policy: same-origin unless cross-origin embedding is explicitly required.",
       "fingerprint": "504851bb7ceadd91b5a6d5c47a416f3f5cfd2b40ff43992bb07ef00b256cce00",
       "evidence_hash": "42f70c2ac6396335"
+    },
+    {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "6986855d4a577cc58ebd195b268c804acac4d6234897f2a0473bd0510db854fa",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "HTP-005",
+      "title": "Verbose error message / stack trace exposed",
+      "category": "http",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "GET /error returned HTTP 500 with a stack trace or debug output in the response body.",
+      "why_it_matters": "Stack traces reveal internal implementation details, file paths, and sometimes secrets, aiding targeted attacks.",
+      "evidence": [
+        "GET /error -> 500 stack trace detected"
+      ],
+      "recommendation": "Configure the application to return generic error pages without stack traces in production.",
+      "fingerprint": "24687b45425ec2aea18fb057b7e1a75d815f4b672fe97dc13c83a24a3095e9fe",
+      "evidence_hash": "df95b88ca2f8e3df"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8012: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8012 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "c6a3b516f381c7d9f52f0cf3d9c7931769729d207279cfe67f268f235e857f0d",
+      "evidence_hash": "39db5eb18bc2124b"
     }
   ],
   "scope": {

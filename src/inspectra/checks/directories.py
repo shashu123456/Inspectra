@@ -51,6 +51,9 @@ SENSITIVE_PATHS: dict[str, Severity] = {
     "/phpmyadmin": Severity.MEDIUM,
     "/web.config": Severity.MEDIUM,
     "/actuator/beans": Severity.MEDIUM,
+    "/backup.zip": Severity.MEDIUM,
+    "/.DS_Store": Severity.MEDIUM,
+    "/config.php.bak": Severity.MEDIUM,
 }
 
 

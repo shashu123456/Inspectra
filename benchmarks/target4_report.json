@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "https://127.0.0.1:8004",
-  "started_at": "2026-11-17T16:34:27.765629+00:00",
-  "started_at_ist": "2026-11-17 22:04:27 IST",
+  "started_at": "2026-11-17T18:34:15.636773+00:00",
+  "started_at_ist": "2026-11-18 00:04:15 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:34:34.720670+00:00",
-  "duration_seconds": 6.955041,
+  "finished_at": "2026-11-17T18:34:22.553167+00:00",
+  "duration_seconds": 6.916394,
   "posture_score": 100.0,
   "grade": "A+",
   "summary": {
@@ -19,5 +19,15 @@
   "findings": [],
   "scope": {
     "scope": "private-allowed"
-  }
+  },
+  "skipped": [
+    {
+      "check": "tls",
+      "reason": "TLS inspection failed for 127.0.0.1: [WinError 10061] No connection could be made because the target machine actively refused it"
+    },
+    {
+      "check": "http",
+      "reason": "Could not reach 127.0.0.1 over HTTP or HTTPS: [WinError 10061] No connection could be made because the target machine actively refused it"
+    }
+  ]
 }

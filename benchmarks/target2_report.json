@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8002",
-  "started_at": "2026-11-17T16:33:37.209930+00:00",
-  "started_at_ist": "2026-11-17 22:03:37 IST",
+  "started_at": "2026-11-17T19:24:29.609986+00:00",
+  "started_at_ist": "2026-11-18 00:54:29 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:33:38.772515+00:00",
-  "duration_seconds": 1.562585,
+  "finished_at": "2026-11-17T19:24:31.623830+00:00",
+  "duration_seconds": 2.013844,
   "posture_score": 61.6,
   "grade": "D",
   "summary": {
@@ -17,6 +17,21 @@
     "high": 0
   },
   "findings": [
+    {
+      "rule_id": "HDR-002",
+      "title": "Missing security header: Content-Security-Policy",
+      "category": "security_headers",
+      "severity": "medium",
+      "confidence": "medium",
+      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
+      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
+      "evidence": [
+        "Header not present in the HTTP response"
+      ],
+      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).",
+      "fingerprint": "603b5e0db157ece653b13deb17a562313a9a3b3910a7ffa83baaac282f45c531",
+      "evidence_hash": "42f70c2ac6396335"
+    },
     {
       "rule_id": "HTP-003",
       "title": "Web server software disclosed (with version)",
@@ -46,21 +61,6 @@
       "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
       "fingerprint": "ec1973b2ee02dc3a35cb233a02acd2fed7688a9c073b734b38b313cb7645d98f",
       "evidence_hash": "9b4bfc8e994a53fc"
-    },
-    {
-      "rule_id": "HDR-002",
-      "title": "Missing security header: Content-Security-Policy",
-      "category": "security_headers",
-      "severity": "medium",
-      "confidence": "medium",
-      "description": "The Content-Security-Policy response header was not present on 127.0.0.1.",
-      "why_it_matters": "CSP restricts which resources a page may load, sharply reducing the impact of cross-site scripting (XSS) and injection attacks.",
-      "evidence": [
-        "Header not present in the HTTP response"
-      ],
-      "recommendation": "Add a Content-Security-Policy header with explicit source allowlists (start with default-src 'self' and tighten over time).",
-      "fingerprint": "603b5e0db157ece653b13deb17a562313a9a3b3910a7ffa83baaac282f45c531",
-      "evidence_hash": "42f70c2ac6396335"
     }
   ],
   "scope": {

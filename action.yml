@@ -12,6 +12,13 @@ inputs:
     description: Path to baseline JSON file for diff comparison
     default: ""
     required: false
+  rules-dir:
+    description: Directory containing custom check modules (repeatable via multiple inputs not supported; use comma-separated)
+    default: ""
+    required: false
+branding:
+  icon: shield
+  color: purple
 runs:
   using: composite
   steps:
@@ -25,7 +32,11 @@ runs:
         if [ -n "${{ inputs.baseline }}" ]; then
           BASELINE_ARGS="--baseline ${{ inputs.baseline }}"
         fi
-        inspectra scan "${{ inputs.target }}" --format sarif -o inspectra.sarif --fail-on "${{ inputs.fail-on }}" $BASELINE_ARGS
+        RULES_DIR_ARGS=""
+        if [ -n "${{ inputs.rules-dir }}" ]; then
+          RULES_DIR_ARGS="--rules-dir ${{ inputs.rules-dir }}"
+        fi
+        inspectra scan "${{ inputs.target }}" --yes --skip-ports --allow-private --authorized --allow-insecure --directories --format sarif -o inspectra.sarif --fail-on "${{ inputs.fail-on }}" $BASELINE_ARGS $RULES_DIR_ARGS
       shell: bash
     - uses: github/codeql-action/upload-sarif@v3
       with:

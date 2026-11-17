@@ -327,7 +327,9 @@ def test_tls_cache_hit_resolves_once(monkeypatch) -> None:
 
     calls = {"count": 0}
 
-    def fake_inspect_tls(hostname: str, port: int = 443, timeout: float = 10.0):
+    def fake_inspect_tls(
+        hostname: str, port: int = 443, timeout: float = 10.0, insecure: bool = False
+    ):
         calls["count"] += 1
         return tls_check.TlsInfo(
             version="TLSv1.3",

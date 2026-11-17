@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8006",
-  "started_at": "2026-11-17T16:35:26.895381+00:00",
-  "started_at_ist": "2026-11-17 22:05:26 IST",
+  "started_at": "2026-11-17T19:25:20.248287+00:00",
+  "started_at_ist": "2026-11-18 00:55:20 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:35:28.031548+00:00",
-  "duration_seconds": 1.136167,
+  "finished_at": "2026-11-17T19:25:23.395074+00:00",
+  "duration_seconds": 3.146787,
   "posture_score": 4.0,
   "grade": "F",
   "summary": {
@@ -18,34 +18,19 @@
   },
   "findings": [
     {
-      "rule_id": "HTP-003",
-      "title": "Web server software disclosed (with version)",
-      "category": "http",
+      "rule_id": "FPR-001",
+      "title": "Technologies identified",
+      "category": "fingerprinting",
       "severity": "info",
-      "confidence": "high",
-      "description": "The server disclosed its software via the Server header: 'nginx/1.18.0 Python/3.11.9'.",
-      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "confidence": "medium",
+      "description": "Identified the following technologies on 127.0.0.1: Nginx 1.18.0.",
+      "why_it_matters": "Known technologies help prioritize patching and reveal the stack an attacker would study first.",
       "evidence": [
         "Server: nginx/1.18.0 Python/3.11.9"
       ],
-      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
-      "fingerprint": "5e8c85fdb9af8757561d9afd85b1cabf8954380dd30fa5ec1f77873c8f0e7c65",
+      "recommendation": "Keep all identified components patched and disable version disclosure where possible.",
+      "fingerprint": "db95d5d86cc8f610eae47fc9865c1bf951d465ba1880d9a090985f3f27ff977a",
       "evidence_hash": "d0736607f0ff9e40"
-    },
-    {
-      "rule_id": "TLS-001",
-      "title": "HTTPS not available",
-      "category": "tls",
-      "severity": "medium",
-      "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:8006: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
-      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
-      "evidence": [
-        "TLS handshake to 127.0.0.1:8006 failed"
-      ],
-      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
-      "fingerprint": "43f8b80eb7e039cd3b86cc90f5b5c04cce64c0fcc7fc7ecc32153d86ef3ff05e",
-      "evidence_hash": "8d151d5998835e06"
     },
     {
       "rule_id": "HDR-001",
@@ -153,19 +138,34 @@
       "evidence_hash": "42f70c2ac6396335"
     },
     {
-      "rule_id": "FPR-001",
-      "title": "Technologies identified",
-      "category": "fingerprinting",
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
       "severity": "info",
-      "confidence": "medium",
-      "description": "Identified the following technologies on 127.0.0.1: Nginx 1.18.0.",
-      "why_it_matters": "Known technologies help prioritize patching and reveal the stack an attacker would study first.",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'nginx/1.18.0 Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
       "evidence": [
         "Server: nginx/1.18.0 Python/3.11.9"
       ],
-      "recommendation": "Keep all identified components patched and disable version disclosure where possible.",
-      "fingerprint": "db95d5d86cc8f610eae47fc9865c1bf951d465ba1880d9a090985f3f27ff977a",
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "5e8c85fdb9af8757561d9afd85b1cabf8954380dd30fa5ec1f77873c8f0e7c65",
       "evidence_hash": "d0736607f0ff9e40"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8006: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8006 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "43f8b80eb7e039cd3b86cc90f5b5c04cce64c0fcc7fc7ecc32153d86ef3ff05e",
+      "evidence_hash": "8d151d5998835e06"
     }
   ],
   "scope": {

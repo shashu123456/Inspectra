@@ -103,6 +103,7 @@ class ScanOptions:
     quiet: bool = False
     rules_dir: list[str] | None = None
     list_checks: bool = False
+    allow_insecure: bool = False
 
 
 @dataclass(slots=True)

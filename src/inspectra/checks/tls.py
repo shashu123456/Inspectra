@@ -55,7 +55,9 @@ def _inspect_tls_cached(hostname: str, port: int, context: ScanContext) -> TlsIn
             raise cached
         return cached
     try:
-        info = inspect_tls(hostname, port)
+        info = inspect_tls(
+            hostname, port, insecure=context.options.allow_insecure if context.options else False
+        )
     except Exception as exc:
         with context.cache_lock:
             existing = context.tls_cache.get(key)

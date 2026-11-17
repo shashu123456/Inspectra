@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.0.0",
+  "version": "2.3.0",
   "target": "http://127.0.0.1:8008",
-  "started_at": "2026-11-17T16:36:12.335378+00:00",
-  "started_at_ist": "2026-11-17 22:06:12 IST",
+  "started_at": "2026-11-17T18:37:27.012217+00:00",
+  "started_at_ist": "2026-11-18 00:07:27 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T16:36:13.636789+00:00",
-  "duration_seconds": 1.301411,
+  "finished_at": "2026-11-17T18:37:29.060044+00:00",
+  "duration_seconds": 2.047827,
   "posture_score": 0.0,
   "grade": "F",
   "summary": {
@@ -17,51 +17,6 @@
     "high": 0
   },
   "findings": [
-    {
-      "rule_id": "HTP-004",
-      "title": "Root path returned an error status",
-      "category": "http",
-      "severity": "low",
-      "confidence": "medium",
-      "description": "GET http://127.0.0.1:8008/ returned HTTP 404.",
-      "why_it_matters": "An error status on the root path may indicate misconfiguration or that the service is not intended for direct access.",
-      "evidence": [
-        "GET http://127.0.0.1:8008/ -> 404"
-      ],
-      "recommendation": "Verify the application serves its intended content on the root path.",
-      "fingerprint": "9bdb2a79c48418f6291f4baee81857e18795b18b8461011c7abb7afbc6b5bfed",
-      "evidence_hash": "ad190b24d20e89fb"
-    },
-    {
-      "rule_id": "HTP-003",
-      "title": "Web server software disclosed (with version)",
-      "category": "http",
-      "severity": "info",
-      "confidence": "high",
-      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
-      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
-      "evidence": [
-        "Server: Python/3.11.9"
-      ],
-      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
-      "fingerprint": "9e51ffdda84a63fba02974a779fc0ea0d65a71ffce7809b45f698e49de629cb3",
-      "evidence_hash": "9c5ad659ba44d445"
-    },
-    {
-      "rule_id": "TLS-001",
-      "title": "HTTPS not available",
-      "category": "tls",
-      "severity": "medium",
-      "confidence": "high",
-      "description": "Could not establish a TLS connection to 127.0.0.1:8008: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
-      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
-      "evidence": [
-        "TLS handshake to 127.0.0.1:8008 failed"
-      ],
-      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
-      "fingerprint": "ff5d708c0e3afee1ffdc17e723fcbb7aaae21b4366e1e02cde0b71ae893e07b3",
-      "evidence_hash": "8feffaa7b5e6af02"
-    },
     {
       "rule_id": "HDR-001",
       "title": "Missing security header: Strict-Transport-Security",
@@ -168,6 +123,36 @@
       "evidence_hash": "42f70c2ac6396335"
     },
     {
+      "rule_id": "HTP-003",
+      "title": "Web server software disclosed (with version)",
+      "category": "http",
+      "severity": "info",
+      "confidence": "high",
+      "description": "The server disclosed its software via the Server header: 'Python/3.11.9'.",
+      "why_it_matters": "Version numbers help attackers identify known vulnerabilities. Even without a version, the software name narrows the attack surface.",
+      "evidence": [
+        "Server: Python/3.11.9"
+      ],
+      "recommendation": "Remove the 'Server' response header (or disable the framework option that adds it) to reduce information disclosure.",
+      "fingerprint": "9e51ffdda84a63fba02974a779fc0ea0d65a71ffce7809b45f698e49de629cb3",
+      "evidence_hash": "9c5ad659ba44d445"
+    },
+    {
+      "rule_id": "HTP-004",
+      "title": "Root path returned an error status",
+      "category": "http",
+      "severity": "low",
+      "confidence": "medium",
+      "description": "GET http://127.0.0.1:8008/ returned HTTP 404.",
+      "why_it_matters": "An error status on the root path may indicate misconfiguration or that the service is not intended for direct access.",
+      "evidence": [
+        "GET http://127.0.0.1:8008/ -> 404"
+      ],
+      "recommendation": "Verify the application serves its intended content on the root path.",
+      "fingerprint": "9bdb2a79c48418f6291f4baee81857e18795b18b8461011c7abb7afbc6b5bfed",
+      "evidence_hash": "ad190b24d20e89fb"
+    },
+    {
       "rule_id": "ROB-001",
       "title": "robots.txt not found",
       "category": "robots",
@@ -181,6 +166,21 @@
       "recommendation": "Add a robots.txt if you want to control crawler access. Note that it is not a security control.",
       "fingerprint": "d47512cfb96d45bdf173093c21ca4651e9e0714c6648734f607ab7252c8c2c7a",
       "evidence_hash": "15a89f53896ac3a9"
+    },
+    {
+      "rule_id": "TLS-001",
+      "title": "HTTPS not available",
+      "category": "tls",
+      "severity": "medium",
+      "confidence": "high",
+      "description": "Could not establish a TLS connection to 127.0.0.1:8008: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1006)",
+      "why_it_matters": "Without HTTPS, all traffic \u2014 including credentials \u2014 is transmitted in plaintext.",
+      "evidence": [
+        "TLS handshake to 127.0.0.1:8008 failed"
+      ],
+      "recommendation": "Enable TLS on the server and redirect HTTP traffic to HTTPS.",
+      "fingerprint": "ff5d708c0e3afee1ffdc17e723fcbb7aaae21b4366e1e02cde0b71ae893e07b3",
+      "evidence_hash": "8feffaa7b5e6af02"
     }
   ],
   "scope": {
