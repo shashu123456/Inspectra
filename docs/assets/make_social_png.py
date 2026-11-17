@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 W, H = 1280, 640
 BG = (10, 10, 10)
 CARD = (16, 16, 16)
-ACCENT = (6, 182, 214)   # #06b6d4
+ACCENT = (6, 182, 214)  # #06b6d4
 TEXT = (234, 234, 234)
 MUTED = (156, 163, 175)
 
