@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
-  <rect width="1280" height="640" fill="#0a0a0a"/>
-  <g transform="translate(90, 200)">
-    <rect width="300" height="300" fill="#0a0a0a"/>
-    <circle cx="150" cy="150" r="84" fill="none" stroke="#06b6d4" stroke-width="32"/>
-    <circle cx="150" cy="150" r="20" fill="#06b6d4"/>
+  <rect width="1280" height="640" fill="#F7F7F8"/>
+  <g transform="translate(112, 112)">
+    <path d="M64 12 c-28.8 0-52 23.2-52 52 0 20.8 12.8 38.4 32 46.4V24L64 72l20-48v34.4c19.2-8 32-25.6 32-46.4 0-28.8-23.2-52-52-52" fill="#1f2328"/>
+    <path d="M64 100 c-19.2 0-36-15.2-36-34 0-10.4 6.4-19.2 16-24 9.6-4.8 20-4.8 29.6 0 9.6 4.8 16 13.6 16 24 0 18.8-16.8 34-36 34" fill="none" stroke="#06b6d4" stroke-width="8" stroke-linecap="round"/>
+    <path d="M64 44 c-14.4 0-26 11.2-26 26 0 8 3.2 15.2 9.2 20.8l4 4 4-4c6-6 15.2-9.6 24-8.8s16 14.4 10 23.2" fill="none" stroke="#e6edf3" stroke-width="8" stroke-linecap="round"/>
   </g>
-  <text x="420" y="400" font-family="JetBrains Mono, ui-monospace, monospace" font-size="112" font-weight="700" fill="#eaeaea" letter-spacing="-10">inspectra</text>
-  <text x="420" y="560" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="28" fill="#9ca3af">Passive security assessment · SSRF-safe</text>
+  <text x="224" y="220" font-family="JetBrains Mono, ui-monospace, monospace" font-size="112" font-weight="800" fill="#1f2328" letter-spacing="-14">inspectra</text>
+  <text x="224" y="336" font-family="JetBrains Mono, ui-monospace, monospace" font-size="64" fill="#4b5563">Passive security assessment for authorized targets.</text>
 </svg>

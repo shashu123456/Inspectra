@@ -1,37 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520">
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#06b6d4"/>
-    </marker>
-  </defs>
-  <!-- 1. Safety gate -->
-  <rect x="60" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
-  <text x="190" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Safety gate</text>
-  <text x="190" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">DNS pinned &middot; private blocked</text>
-  <text x="190" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">--authorized consent</text>
-  <!-- 2. Checks -->
-  <rect x="340" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
-  <text x="470" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Checks</text>
-  <text x="470" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">DNS, TLS, HTTP, headers</text>
-  <text x="470" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">robots, directories, ports</text>
-  <!-- 3. Findings -->
-  <rect x="620" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
-  <text x="750" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Findings</text>
-  <text x="750" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">rule-id, severity, evidence</text>
-  <text x="750" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">evidence_hash per finding</text>
-  <!-- 4. Risk -->
-  <rect x="900" y="160" width="260" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
-  <text x="1030" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Risk</text>
-  <text x="1030" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">severity x confidence</text>
-  <text x="1030" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">posture score &amp; grade</text>
-  <!-- 5. Report -->
-  <rect x="1180" y="160" width="360" height="200" fill="#0a0a0a" stroke="#06b6d4" stroke-width="2" rx="8"/>
-  <text x="1360" y="220" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" font-weight="700" fill="#eaeaea">Report</text>
-  <text x="1360" y="260" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">JSON, Markdown, HTML</text>
-  <text x="1360" y="284" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" fill="#9ca3af">SARIF, baseline diff</text>
-  <!-- arrows -->
-  <path d="M320 260 H340" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
-  <path d="M600 260 H620" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
-  <path d="M880 260 H900" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
-  <path d="M1160 260 H1180" stroke="#06b6d4" stroke-width="3" marker-end="url(#arrow)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="620" viewBox="0 0 1760 620">
+  <rect width="1760" height="620" fill="#0E1116"/>
+  <text x="56" y="120" font-family="JetBrains Mono, ui-monospace, monospace" font-size="40" font-weight="800" fill="#e6edf3">Target</text>
+  <text x="56" y="180" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">domain or IP to assess</text>
+
+  <rect x="56" y="220" width="200" height="300" fill="#1f2328" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="76" y="300" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="800" fill="#e6edf3">Safety gate</text>
+  <text x="76" y="380" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">DNS pinned</text>
+  <text x="76" y="432" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">private blocked</text>
+  <text x="76" y="484" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">--authorized</text>
+
+  <rect x="344" y="220" width="200" height="300" fill="#1f2328" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="364" y="300" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="800" fill="#e6edf3">Checks</text>
+  <text x="364" y="380" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">DNS, TLS, HTTP</text>
+  <text x="364" y="432" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">headers, robots</text>
+  <text x="364" y="484" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">directories, ports</text>
+
+  <rect x="632" y="220" width="200" height="300" fill="#1f2328" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="652" y="300" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="800" fill="#e6edf3">Findings</text>
+  <text x="652" y="380" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">rule-id, severity</text>
+  <text x="652" y="432" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">evidence, title</text>
+  <text x="652" y="484" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">evidence_hash</text>
+
+  <rect x="920" y="220" width="200" height="300" fill="#1f2328" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="940" y="300" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="800" fill="#e6edf3">Risk score</text>
+  <text x="940" y="380" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">severity x confidence</text>
+  <text x="940" y="432" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">posture 0-100</text>
+  <text x="940" y="484" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">grade A+ to F</text>
+
+  <rect x="1208" y="220" width="200" height="300" fill="#1f2328" stroke="#06b6d4" stroke-width="2" rx="8"/>
+  <text x="1228" y="300" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="800" fill="#e6edf3">Reports</text>
+  <text x="1228" y="380" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">HTML, JSON</text>
+  <text x="1228" y="432" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">Markdown, SARIF</text>
+  <text x="1228" y="484" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" fill="#9ca3af">baseline diff</text>
+
+  <path d="M264 370 L344 370" stroke="#06b6d4" stroke-width="4" fill="none"/>
+  <path d="M552 370 L632 370" stroke="#06b6d4" stroke-width="4" fill="none"/>
+  <path d="M840 370 L920 370" stroke="#06b6d4" stroke-width="4" fill="none"/>
+  <path d="M1128 370 L1208 370" stroke="#06b6d4" stroke-width="4" fill="none"/>
+  <path d="M1416 370 L1496 370" stroke="#06b6d4" stroke-width="4" fill="none"/>
+  <polygon points="334 360, 344 370, 334 380" fill="#06b6d4"/>
+  <polygon points="622 360, 632 370, 622 380" fill="#06b6d4"/>
+  <polygon points="910 360, 920 370, 910 380" fill="#06b6d4"/>
+  <polygon points="1198 360, 1208 370, 1198 380" fill="#06b6d4"/>
+  <polygon points="1486 360, 1496 370, 1486 380" fill="#06b6d4"/>
 </svg>

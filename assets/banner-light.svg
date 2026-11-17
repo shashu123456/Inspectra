@@ -1,13 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="400" viewBox="0 0 1600 400">
-  <rect width="1600" height="400" fill="#F7F7F8"/>
-  <g transform="translate(48, 48)">
-    <rect width="128" height="128" fill="#0a0a0a"/>
-    <circle cx="64" cy="64" r="36" fill="none" stroke="#06b6d4" stroke-width="24"/>
-    <circle cx="64" cy="64" r="8" fill="#06b6d4"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="440" viewBox="0 0 1760 440">
+  <rect width="1760" height="440" fill="#F7F7F8"/>
+  <g transform="translate(56, 56)">
+    <path d="M64 12 c-28.8 0-52 23.2-52 52 0 20.8 12.8 38.4 32 46.4V24L64 72l20-48v34.4c19.2-8 32-25.6 32-46.4 0-28.8-23.2-52-52-52" fill="#1f2328"/>
+    <path d="M64 100 c-19.2 0-36-15.2-36-34 0-10.4 6.4-19.2 16-24 9.6-4.8 20-4.8 29.6 0 9.6 4.8 16 13.6 16 24 0 18.8-16.8 34-36 34" fill="none" stroke="#06b6d4" stroke-width="8" stroke-linecap="round"/>
+    <path d="M64 44 c-14.4 0-26 11.2-26 26 0 8 3.2 15.2 9.2 20.8l4 4 4-4c6-6 15.2-9.6 24-8.8s16 14.4 10 23.2" fill="none" stroke="#e6edf3" stroke-width="8" stroke-linecap="round"/>
   </g>
-  <text x="48" y="210" font-family="JetBrains Mono, ui-monospace, monospace" font-size="64" font-weight="700" fill="#0a0a0a" letter-spacing="-4">inspectra</text>
-  <text x="816" y="132" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#0a0a0a">inspectra scan http://127.0.0.1:9999 --replay tests/fixtures/replay</text>
-  <text x="816" y="162" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#0a0a0a">medium  HDR-001  Strict-Transport-Security</text>
-  <text x="816" y="188" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#0a0a0a">medium  HDR-002  Content-Security-Policy</text>
-  <text x="816" y="214" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#0a0a0a">medium  HDR-003  X-Frame-Options</text>
+  <text x="176" y="132" font-family="JetBrains Mono, ui-monospace, monospace" font-size="112" font-weight="800" fill="#1f2328" letter-spacing="-12">inspectra</text>
+  <text x="176" y="216" font-family="JetBrains Mono, ui-monospace, monospace" font-size="40" fill="#4b5563">Passive security assessment for authorized targets.</text>
+  <g transform="translate(992, 56)">
+    <rect width="712" height="328" fill="#E5E7EB"/>
+    <text x="32" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="36" fill="#111827">inspectra scan https://example.com --yes</text>
+    <text x="32" y="120" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="36" fill="#111827">medium  HDR-001  Missing Strict-Transport-Security</text>
+    <text x="32" y="176" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="36" fill="#111827">medium  HDR-002  Missing Content-Security-Policy</text>
+    <text x="32" y="232" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="36" fill="#111827">low     HDR-004  Missing X-Content-Type-Options</text>
+  </g>
 </svg>
