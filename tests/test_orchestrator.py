@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from inspectra.checks import ALL_CHECKS, FatalCheckError
+from inspectra.checks import ALL_CHECKS, CheckError, FatalCheckError
 from inspectra.models import Confidence, ScanOptions, Severity
 from inspectra.orchestrator import ScanAborted, run_scan
 
@@ -53,3 +53,13 @@ def test_posture_score_reflects_findings(fixture_server, target) -> None:
         for f in result.findings
     )
     assert result.posture_score == max(0.0, round(100.0 - expected_penalty, 1))
+
+
+def test_check_error_is_tracked_as_skipped(fixture_server, target, monkeypatch) -> None:
+    def skipped_check(target, context):
+        raise CheckError("check skipped for testing")
+
+    monkeypatch.setitem(ALL_CHECKS, "headers", skipped_check)
+    result = run_scan(target, ScanOptions(skip_ports=True, allow_private=True, authorized=True))
+    skipped_names = [item["check"] for item in result.skipped]
+    assert "headers" in skipped_names

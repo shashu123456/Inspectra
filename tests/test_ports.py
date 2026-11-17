@@ -6,7 +6,7 @@ import shutil
 
 import pytest
 
-from inspectra.checks import FatalCheckError, ports
+from inspectra.checks import CheckError, ports
 from inspectra.checks.context import ScanContext
 from inspectra.models import ScanOptions
 
@@ -49,9 +49,9 @@ def test_ports_skipped_with_option(target, monkeypatch) -> None:
     assert ports.run(target, context) == []
 
 
-def test_ports_missing_nmap_is_fatal(target, monkeypatch) -> None:
+def test_ports_missing_nmap_is_skipped(target, monkeypatch) -> None:
     monkeypatch.setattr(shutil, "which", lambda name: None)
-    with pytest.raises(FatalCheckError):
+    with pytest.raises(CheckError):
         ports.run(target, ScanContext(options=ScanOptions()))
 
 

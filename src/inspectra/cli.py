@@ -9,6 +9,7 @@ import sys
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
+from types import ModuleType
 
 from rich.console import Console
 from rich.panel import Panel
@@ -121,6 +122,18 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.2,
         help="SECONDS delay between per-host requests (default: 0.2).",
+    )
+    run_group.add_argument(
+        "--rules-dir",
+        dest="rules_dir",
+        action="append",
+        metavar="PATH",
+        help="PATH load custom checks from this directory (repeatable).",
+    )
+    run_group.add_argument(
+        "--list-checks",
+        action="store_true",
+        help="Print every built-in and loaded check with ID, title, and source.",
     )
 
     output_group = scan.add_argument_group("OUTPUT")
@@ -267,6 +280,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.no_redact:
         print("Warning: redaction disabled - evidence may contain secrets.", file=sys.stderr)
 
+    from inspectra.checks.context import ScanContext
     from inspectra.models import ScanOptions
     from inspectra.orchestrator import ScanAborted, run_scan
 
@@ -292,7 +306,36 @@ def main(argv: Sequence[str] | None = None) -> int:
         no_findings=args.no_findings,
         findings_limit=args.findings_limit,
         quiet=args.quiet,
+        rules_dir=args.rules_dir,
+        list_checks=args.list_checks,
     )
+
+    from inspectra.checks import ordered_checks
+
+    if args.list_checks:
+        table = Table(title="Available checks")
+        table.add_column("ID", style="bold", no_wrap=True)
+        table.add_column("Title", no_wrap=True)
+        table.add_column("Source", no_wrap=True)
+        for name, _ in ordered_checks(args.directories):
+            table.add_row(name, name, "builtin")
+        if args.rules_dir:
+            from inspectra.checks.loader import load_rules_dir
+
+            for rd in args.rules_dir:
+                for module in load_rules_dir(rd):
+                    table.add_row(module.RULE_ID, module.TITLE, "custom")
+        console.print(table)
+        return 0
+
+    custom_modules: list[ModuleType] = []
+    custom_context: ScanContext | None = None
+    if args.rules_dir:
+        from inspectra.checks.loader import load_rules_dir
+
+        custom_context = ScanContext(options=options)
+        for rd in args.rules_dir:
+            custom_modules.extend(load_rules_dir(rd))
     output_dir = None
     if not args.output_path:
         output_dir = Path(args.output_dir)
@@ -323,6 +366,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ScanAborted as exc:
         print(f"Error: Scan aborted: {exc}", file=sys.stderr)
         return 2
+
+    if custom_modules and custom_context is not None:
+        from inspectra.checks.loader import run_custom_checks
+
+        custom_findings = run_custom_checks(custom_modules, target, custom_context)
+        result.findings.extend(custom_findings)
 
     if result.skipped:
         skipped_names = ", ".join(item["check"] for item in result.skipped)

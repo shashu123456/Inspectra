@@ -101,6 +101,8 @@ class ScanOptions:
     no_findings: bool = False
     findings_limit: int = 25
     quiet: bool = False
+    rules_dir: list[str] | None = None
+    list_checks: bool = False
 
 
 @dataclass(slots=True)

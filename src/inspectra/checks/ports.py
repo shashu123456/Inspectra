@@ -6,7 +6,7 @@ import shutil
 from dataclasses import dataclass
 
 from inspectra.analysis.recommendations import restrict_service
-from inspectra.checks import CheckError, FatalCheckError
+from inspectra.checks import CheckError
 from inspectra.checks.context import ScanContext
 from inspectra.models import Confidence, Finding, Severity, Target
 
@@ -44,16 +44,15 @@ def run(target: Target, context: ScanContext) -> list[Finding]:
     if context.options is not None and context.options.skip_ports:
         return []
     if shutil.which("nmap") is None:
-        raise FatalCheckError(
-            "Nmap is required for port discovery but was not found on PATH. "
-            "Install it (see docs/usage.md) or re-run with --skip-ports."
+        raise CheckError(
+            "ports skipped: nmap not installed "
+            "(pip install inspectra-cli[ports] and install the nmap binary)"
         )
     try:
         import nmap
     except ImportError as exc:
-        raise FatalCheckError(
-            "The python-nmap package is not installed. Reinstall Inspectra with "
-            "its dependencies (pip install -e .)."
+        raise CheckError(
+            "ports skipped: python-nmap package not installed (pip install inspectra-cli[ports])"
         ) from exc
 
     return _scan(target, context, nmap.PortScanner())

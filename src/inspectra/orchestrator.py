@@ -121,6 +121,7 @@ def run_scan(
                     ) from exc
                 except CheckError as exc:
                     logger.warning("Check '%s' skipped: %s", name, exc)
+                    result.skipped.append({"check": name, "reason": str(exc)})
                 except Exception as exc:  # defensive: never let one check kill a scan
                     logger.warning("Check '%s' failed unexpectedly: %s", name, exc)
         elif options.concurrency == 1 and options.delay == 0:
@@ -239,6 +240,7 @@ def _run_concurrently(
                     raise ScanAborted(str(exc)) from exc
                 except CheckError as exc:
                     logger.warning("Check '%s' skipped: %s", name, exc)
+                    result.skipped.append({"check": name, "reason": str(exc)})
                     findings_by_name[name] = []
                 except Exception as exc:  # defensive: never let one check kill a scan
                     logger.warning("Check '%s' failed unexpectedly: %s", name, exc)
@@ -259,6 +261,7 @@ def _run_concurrently(
                     raise ScanAborted(str(exc)) from exc
                 except CheckError as exc:
                     logger.warning("Check '%s' skipped: %s", name, exc)
+                    result.skipped.append({"check": name, "reason": str(exc)})
                     findings_by_name[name] = []
                 except Exception as exc:  # defensive
                     logger.warning("Check '%s' failed unexpectedly: %s", name, exc)

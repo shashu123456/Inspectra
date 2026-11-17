@@ -525,3 +525,25 @@ def test_no_question_mark_artifacts_in_output(
     assert "?" not in captured.out
     assert "\u2014" not in captured.out
     assert "\u2026" not in captured.out
+
+
+def test_list_checks_prints_builtin_checks(
+    fixture_server, target, monkeypatch, capsys, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    code = main(
+        [
+            "scan",
+            target.input,
+            "--yes",
+            "--skip-ports",
+            "--allow-private",
+            "--authorized",
+            "--list-checks",
+        ]
+    )
+    assert code == 0
+    captured = capsys.readouterr()
+    assert "dns" in captured.out
+    assert "http" in captured.out
+    assert "headers" in captured.out
