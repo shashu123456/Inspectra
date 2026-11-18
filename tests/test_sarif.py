@@ -78,6 +78,15 @@ def test_sarif_rule_mapping() -> None:
     assert headers["properties"]["confidence"] == "medium"
 
 
+def test_sarif_rules_have_help_uri() -> None:
+    """Every SARIF rule carries a helpUri so Code Scanning links to guidance."""
+    data = render(_result())
+    rules = data["runs"][0]["tool"]["driver"]["rules"]
+    assert rules
+    for rule in rules:
+        assert rule["helpUri"].startswith("https://github.com/shashu123456/inspectra/")
+
+
 def test_sarif_result_mapping() -> None:
     """Inspectra fields map to the correct SARIF result fields."""
     data = render(_result())
