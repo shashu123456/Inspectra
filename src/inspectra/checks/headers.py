@@ -6,6 +6,8 @@ to extend without touching code). Rules support three outcomes:
 * missing — the header is absent and should be present
 * weak — the header is present but its value does not meet the rule pattern
 * present — the header is present but should not be (e.g. X-Powered-By)
+* directive — the header is present but lacks a required directive
+  (e.g. ``preload`` on Strict-Transport-Security)
 """
 
 from __future__ import annotations
@@ -40,9 +42,36 @@ def _evaluate_rule(rule: dict[str, Any], headers: httpx.Headers, hostname: str) 
         return []
     if rule.get("severity_when_present"):
         return [_present(rule, value, hostname)]
+    if rule.get("required_directive"):
+        return _evaluate_directive(rule, value, hostname)
     if rule.get("pattern") and not re.search(rule["pattern"], value, re.IGNORECASE):
         return [_weak(rule, value, hostname)]
     return []
+
+
+def _evaluate_directive(rule: dict[str, Any], value: str, hostname: str) -> list[Finding]:
+    directive = rule["required_directive"]
+    directives = {part.strip().lower() for part in value.split(";")}
+    if directive.lower() in directives:
+        return []
+    return [_directive_missing(rule, value, hostname)]
+
+
+def _directive_missing(rule: dict[str, Any], value: str, hostname: str) -> Finding:
+    directive = rule["required_directive"]
+    return Finding(
+        rule_id=rule["id"],
+        title=f"{rule['name']} header lacks the {directive} directive",
+        category="security_headers",
+        severity=Severity(rule["severity_when_directive_missing"]),
+        confidence=Confidence.MEDIUM,
+        description=(
+            f"The {rule['name']} header on {hostname} does not include the {directive} directive."
+        ),
+        why_it_matters=rule["explanation"],
+        recommendation=rule["recommendation"],
+        evidence=[f"{rule['name']}: {value}"],
+    )
 
 
 def _missing(rule: dict[str, Any], hostname: str) -> Finding:
