@@ -84,11 +84,28 @@ inspectra scan TARGET [options]
 | `--skip-ports` | Skip port discovery (no Nmap required) |
 | `--directories` | Probe a curated wordlist of common paths (rate-limited, GET-only) |
 | `--directory-wordlist FILE` | Use a custom wordlist with `--directories` |
+| `--config FILE` | Read default options from a JSON file (see below); command-line options win |
 | `--yes` | Accept the authorization agreement without prompting |
 | `--verbose` | Enable debug logging |
 | `inspectra --version` | Show the version |
 | `--save-fixtures DIR` | Record every HTTP request/response to DIR for later replay |
 | `--replay DIR` | Replay all HTTP requests from DIR fixtures (offline, no network) |
+
+### Configuration file
+
+`--config FILE` reads default options from a JSON file. Keys are the long
+option names without the leading dashes (hyphens or underscores). Options on
+the command line override the file. `target`, `list-checks` and `yes` cannot
+be set in the file.
+
+```json
+{
+  "format": "json",
+  "fail-on": "medium",
+  "skip-ports": true,
+  "rules-dir": ["./my-checks"]
+}
+```
 
 ## Examples
 

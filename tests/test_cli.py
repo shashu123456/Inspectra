@@ -581,3 +581,50 @@ def test_rules_dir_cli_loads_custom_check(fixture_server, target, monkeypatch, c
         ]
     )
     assert code == 0
+
+
+def _write_config(tmp_path, text: str) -> str:
+    path = tmp_path / "inspectra.json"
+    path.write_text(text, encoding="utf-8")
+    return str(path)
+
+
+def test_config_file_sets_defaults(tmp_path) -> None:
+    from inspectra.cli import _parse_args
+
+    cfg = _write_config(
+        tmp_path,
+        '{"format": "json", "fail-on": "medium", "skip-ports": true, "top-ports": 20,'
+        ' "rules-dir": ["a", "b"]}',
+    )
+    args = _parse_args(["scan", "example.com", "--config", cfg])
+    assert args.report_format == "json"
+    assert args.fail_on == "medium"
+    assert args.skip_ports is True
+    assert args.top_ports == 20
+    assert args.rules_dir == ["a", "b"]
+
+
+def test_cli_option_overrides_config(tmp_path) -> None:
+    from inspectra.cli import _parse_args
+
+    cfg = _write_config(tmp_path, '{"fail-on": "medium"}')
+    args = _parse_args(["scan", "example.com", "--config", cfg, "--fail-on", "low"])
+    assert args.fail_on == "low"
+
+
+@pytest.mark.parametrize(
+    "text",
+    ['{"bogus": 1}', '{"fail-on": "extreme"}', '{"top-ports": "many"}', "not json [", "[1]"],
+)
+def test_invalid_config_is_rejected(tmp_path, text) -> None:
+    cfg = _write_config(tmp_path, text)
+    with pytest.raises(SystemExit) as exc:
+        main(["scan", "example.com", "--config", cfg, "--yes"])
+    assert exc.value.code == 2
+
+
+def test_missing_config_is_rejected(tmp_path) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main(["scan", "example.com", "--config", str(tmp_path / "nope.json"), "--yes"])
+    assert exc.value.code == 2
