@@ -1,12 +1,12 @@
 {
   "tool": "inspectra",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "target": "http://127.0.0.1:8010",
-  "started_at": "2026-11-17T19:23:30.608159+00:00",
-  "started_at_ist": "2026-11-18 00:53:30 IST",
+  "started_at": "2026-11-18T17:25:05.404193+00:00",
+  "started_at_ist": "2026-11-18 22:55:05 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T19:23:32.720107+00:00",
-  "duration_seconds": 2.111948,
+  "finished_at": "2026-11-18T17:25:07.685167+00:00",
+  "duration_seconds": 2.280974,
   "posture_score": 4.0,
   "grade": "F",
   "summary": {

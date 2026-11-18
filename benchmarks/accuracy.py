@@ -5,10 +5,15 @@ findings against ground truth (in_scope only), computes per-target recall
 and overall precision, and asserts 3-run determinism. Generates
 docs/accuracy.md from accuracy.json in the same run so the table can never
 diverge from the data.
+
+Every target with a ground-truth file counts toward the overall recall and
+precision. A target may be excluded only by deleting its json file and
+listing it under "Not measured" in docs/accuracy.md.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
 import sys
@@ -21,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[1]
 GROUND_TRUTH_DIR = ROOT / "benchmarks" / "ground_truth"
 OUTPUT = ROOT / "benchmarks" / "accuracy.json"
 DOCS_OUTPUT = ROOT / "docs" / "accuracy.md"
+
+MAX_EXPECTED_ABSENT = 3
 
 PORTS = {
     "target1": 8001,
@@ -37,23 +44,30 @@ PORTS = {
     "target12": 8012,
 }
 
-# Flags used for every scan: allow insecure TLS (self-signed lab certs),
-# opt-in directory probing, skip Nmap (not installed in CI), authorize.
-SCAN_FLAGS = [
+# Targets that need --directories (directory observation check).
+DIRECTORY_TARGETS = {"target7", "target8"}
+
+# Base flags: no --directories (too slow, noisy on simple servers).
+BASE_FLAGS = [
     "--yes",
     "--skip-ports",
     "--allow-private",
     "--authorized",
     "--allow-insecure",
-    "--directories",
+    "--delay",
+    "0",
 ]
 
 
-def run_scan(target: str, port: int) -> list[str]:
+def run_scan(target: str, port: int, use_directories: bool = False) -> list[str]:
     """Run inspectra scan against a target and return finding rule IDs."""
     scheme = "https" if target in ("target4", "target5") else "http"
     url = f"{scheme}://127.0.0.1:{port}"
     report_path = ROOT / "benchmarks" / f"{target}_report.json"
+
+    flags = list(BASE_FLAGS)
+    if use_directories:
+        flags.append("--directories")
 
     env = subprocess.os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
@@ -64,7 +78,7 @@ def run_scan(target: str, port: int) -> list[str]:
             "inspectra",
             "scan",
             url,
-            *SCAN_FLAGS,
+            *flags,
             "--format",
             "json",
             "-o",
@@ -95,25 +109,69 @@ def _server_responding(scheme: str, port: int) -> bool:
     url = f"{scheme}://127.0.0.1:{port}/"
     try:
         req = urllib.request.Request(url, method="GET")
+        if scheme == "https":
+            import ssl as _ssl
+
+            ctx = _ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = _ssl.CERT_NONE
+            with urllib.request.urlopen(req, timeout=3.0, context=ctx) as resp:
+                return resp.status < 500
         with urllib.request.urlopen(req, timeout=3.0) as resp:
             return resp.status < 500
     except (urllib.error.URLError, OSError, Exception):
         return False
 
 
+def _normalize_expected_absent(truth: dict) -> list[dict]:
+    """Return expected_absent entries, each with id and reason, capped at 3."""
+    absent = truth.get("expected_absent", [])
+    normalized: list[dict] = []
+    for entry in absent:
+        if isinstance(entry, str):
+            normalized.append({"id": entry, "reason": "expected absent"})
+        elif isinstance(entry, dict):
+            normalized.append({"id": entry.get("id", ""), "reason": entry.get("reason", "")})
+    return normalized[:MAX_EXPECTED_ABSENT]
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Inspectra accuracy benchmark")
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Run all targets and print verbose breakdown.",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print per-target and overall breakdown.",
+    )
+    parser.add_argument(
+        "--min-in-scope-recall",
+        type=float,
+        default=0.95,
+        help="Minimum in-scope recall to pass (default: 0.95).",
+    )
+    args = parser.parse_args()
+
     results: dict[str, dict] = {}
     overall_in_scope_expected = 0
     overall_in_scope_found = 0
     overall_in_scope_missed = 0
-    overall_fp = 0
+    overall_emitted = 0
+    overall_justified_absent = 0
+    overall_unexplained = 0
     all_deterministic = True
 
-    for target in sorted(PORTS.keys()):
+    for gt_file in sorted(GROUND_TRUTH_DIR.glob("*.json")):
+        target = gt_file.stem
         port = PORTS[target]
         truth = load_ground_truth(target)
         in_scope = set(truth["in_scope"])
-        expected_absent = set(truth.get("expected_absent", []))
+        expected_absent = _normalize_expected_absent(truth)
+        absent_ids = {e["id"] for e in expected_absent}
+        use_dirs = target in DIRECTORY_TARGETS
 
         server_proc = subprocess.Popen(
             [sys.executable, str(ROOT / "lab" / "targets" / target / "server.py")],
@@ -122,7 +180,7 @@ def main() -> int:
         )
 
         try:
-            time.sleep(2.5)
+            time.sleep(1.5)
 
             scheme = "https" if target in ("target4", "target5") else "http"
             if not _server_responding(scheme, port):
@@ -130,6 +188,9 @@ def main() -> int:
                     "in_scope_expected": len(in_scope),
                     "in_scope_found": 0,
                     "in_scope_missed": len(in_scope),
+                    "emitted_total": 0,
+                    "justified_absent": 0,
+                    "unexplained": 0,
                     "fp": 0,
                     "recall": 0.0,
                     "precision": 1.0,
@@ -137,32 +198,34 @@ def main() -> int:
                     "in_scope": sorted(in_scope),
                     "found_ids": [],
                     "out_of_scope": truth.get("out_of_scope", []),
-                    "expected_absent": sorted(expected_absent),
-                    "platform_limited": True,
+                    "expected_absent": expected_absent,
+                    "server_responding": False,
+                    "not_measured": True,
                 }
-                # Platform-limited targets don't count toward overall recall/precision
                 continue
 
             runs: list[list[str]] = []
             for _ in range(3):
-                found = run_scan(target, port)
+                found = run_scan(target, port, use_dirs)
                 runs.append(found)
 
             deterministic = all(r == runs[0] for r in runs)
             found_set = set(runs[0])
+            emitted_total = len(found_set)
 
             in_scope_found = len(found_set & in_scope)
             in_scope_missed = len(in_scope - found_set)
 
-            # Precision: every emitted finding not in in_scope is a potential FP,
-            # unless listed in expected_absent.
-            non_scope = found_set - in_scope - expected_absent
-            fp = len(non_scope)
+            justified = found_set & absent_ids
+            unexplained = found_set - in_scope - absent_ids
+            fp = len(unexplained)
 
             overall_in_scope_expected += len(in_scope)
             overall_in_scope_found += in_scope_found
             overall_in_scope_missed += in_scope_missed
-            overall_fp += fp
+            overall_emitted += emitted_total
+            overall_justified_absent += len(justified)
+            overall_unexplained += fp
             if not deterministic:
                 all_deterministic = False
 
@@ -173,6 +236,9 @@ def main() -> int:
                 "in_scope_expected": len(in_scope),
                 "in_scope_found": in_scope_found,
                 "in_scope_missed": in_scope_missed,
+                "emitted_total": emitted_total,
+                "justified_absent": len(justified),
+                "unexplained": fp,
                 "fp": fp,
                 "recall": round(recall, 4),
                 "precision": round(precision, 4),
@@ -180,7 +246,9 @@ def main() -> int:
                 "in_scope": sorted(in_scope),
                 "found_ids": sorted(found_set),
                 "out_of_scope": truth.get("out_of_scope", []),
-                "expected_absent": sorted(expected_absent),
+                "expected_absent": expected_absent,
+                "server_responding": True,
+                "not_measured": False,
             }
         finally:
             server_proc.terminate()
@@ -193,8 +261,8 @@ def main() -> int:
         overall_in_scope_found / overall_in_scope_expected if overall_in_scope_expected > 0 else 1.0
     )
     overall_precision = (
-        overall_in_scope_found / (overall_in_scope_found + overall_fp)
-        if (overall_in_scope_found + overall_fp) > 0
+        overall_in_scope_found / (overall_in_scope_found + overall_unexplained)
+        if (overall_in_scope_found + overall_unexplained) > 0
         else 1.0
     )
 
@@ -203,7 +271,10 @@ def main() -> int:
             "in_scope_expected": overall_in_scope_expected,
             "in_scope_found": overall_in_scope_found,
             "in_scope_missed": overall_in_scope_missed,
-            "fp": overall_fp,
+            "emitted_total": overall_emitted,
+            "justified_absent": overall_justified_absent,
+            "unexplained": overall_unexplained,
+            "fp": overall_unexplained,
             "recall": round(overall_recall, 4),
             "precision": round(overall_precision, 4),
             "all_deterministic": all_deterministic,
@@ -218,34 +289,44 @@ def main() -> int:
     lines.append("# Inspectra Accuracy Benchmark")
     lines.append("")
     lines.append(
-        "Results of scanning all 12 lab targets against ground truth, run 3 times each "
+        "Results of scanning all lab targets with ground-truth files, run 3 times each "
         "for determinism. Recall is computed over `in_scope` findings only (the findings "
         "this tool is supposed to emit for each target, verified by manual review of "
-        "`lab/targets/targetN/server.py`)."
+        "`lab/targets/targetN/server.py`). Every target with a ground-truth file counts "
+        "toward the overall recall and precision."
     )
     lines.append("")
     lines.append(
         "Precision counts every emitted finding that is not in `in_scope` as a potential "
-        "false positive, unless listed in `expected_absent`. `out_of_scope` findings "
-        "(for example, port discovery without the nmap binary, or TLS on self-signed "
-        "certs without `--allow-insecure`) are reported separately and do not affect "
-        "recall or precision."
+        "false positive, unless listed in `expected_absent` with a reason. "
+        "`out_of_scope` findings are reported separately and do not affect recall or "
+        "precision."
     )
     lines.append("")
     lines.append(
-        f"Overall: in-scope recall={overall_recall:.1%}, "
-        f"precision={overall_precision:.1%}, FP={overall_fp}, "
+        f"Overall: in-scope recall={overall_recall:.1%} "
+        f"({overall_in_scope_found}/{overall_in_scope_expected}), "
+        f"precision={overall_precision:.1%}, "
+        f"emitted={overall_emitted}, justified_absent={overall_justified_absent}, "
+        f"unexplained(FP)={overall_unexplained}, "
         f"deterministic={'YES' if all_deterministic else 'NO'}."
     )
     lines.append("")
-    lines.append("| Target | In-scope expected | Found | Missed | FP | Recall | Deterministic |")
-    lines.append("|--------|-------------------|-------|--------|----|--------|---------------|")
+    lines.append(
+        "| Target | In-scope expected | Found | Missed | Emitted |"
+        " Justified | Unexplained | FP | Recall | Deterministic |"
+    )
+    lines.append(
+        "|--------|-------------------|-------|--------|---------|-----------|-------------|----|--------|---------------|"
+    )
     for t in sorted(results.keys()):
         r = results[t]
         det = "YES" if r["deterministic"] else "NO"
+        nm = " (not measured)" if r.get("not_measured") else ""
         lines.append(
-            f"| {t} | {r['in_scope_expected']} | {r['in_scope_found']} | "
-            f"{r['in_scope_missed']} | {r['fp']} | {r['recall']:.0%} | {det} |"
+            f"| {t}{nm} | {r['in_scope_expected']} | {r['in_scope_found']} | "
+            f"{r['in_scope_missed']} | {r['emitted_total']} | {r['justified_absent']} | "
+            f"{r['unexplained']} | {r['fp']} | {r['recall']:.0%} | {det} |"
         )
     lines.append("")
     lines.append("## Per-target detail")
@@ -261,7 +342,9 @@ def main() -> int:
         lines.append(
             f"- Missed: {', '.join(sorted(set(r['in_scope']) - set(r['found_ids']))) or '(none)'}"
         )
-        lines.append(f"- FP (non-in-scope emitted): {r['fp']}")
+        lines.append(f"- Emitted total: {r['emitted_total']}")
+        lines.append(f"- Justified absent: {r['justified_absent']}")
+        lines.append(f"- Unexplained (FP): {r['unexplained']}")
         lines.append(f"- Recall: {r['recall']:.0%}")
         lines.append(f"- Deterministic: {'YES' if r['deterministic'] else 'NO'}")
         if r["out_of_scope"]:
@@ -269,30 +352,53 @@ def main() -> int:
             lines.append(f"- Out of scope: {oos}")
         lines.append("")
 
+    # Not measured section
+    not_measured = [(t, r) for t, r in results.items() if r.get("not_measured")]
+    if not_measured:
+        lines.append("## Not measured")
+        lines.append("")
+        for t, r in not_measured:
+            reason = ", ".join(o["reason"] for o in r["out_of_scope"] if isinstance(o, dict))
+            lines.append(f"- **{t}**: {reason or 'server not responding on this platform'}")
+        lines.append("")
+
     DOCS_OUTPUT.write_text("\n".join(lines), encoding="utf-8")
 
     # Print table to stdout
-    print("| Target | In-scope expected | Found | Missed | FP | Recall | Deterministic |")
-    print("|--------|-------------------|-------|--------|----|--------|---------------|")
+    print(
+        "| Target | In-scope expected | Found | Missed | Emitted |"
+        " Justified | Unexplained | FP | Recall | Deterministic |"
+    )
+    print(
+        "|--------|-------------------|-------|--------|---------|-----------|-------------|----|--------|---------------|"
+    )
     for t in sorted(results.keys()):
         r = results[t]
         det = "YES" if r["deterministic"] else "NO"
+        nm = " (not measured)" if r.get("not_measured") else ""
         print(
-            f"| {t} | {r['in_scope_expected']} | {r['in_scope_found']} | "
-            f"{r['in_scope_missed']} | {r['fp']} | {r['recall']:.0%} | {det} |"
+            f"| {t}{nm} | {r['in_scope_expected']} | {r['in_scope_found']} | "
+            f"{r['in_scope_missed']} | {r['emitted_total']} | {r['justified_absent']} | "
+            f"{r['unexplained']} | {r['fp']} | {r['recall']:.0%} | {det} |"
         )
     print()
     print(
-        f"Overall: in-scope recall={overall_recall:.1%}, "
-        f"precision={overall_precision:.1%}, FP={overall_fp}, "
+        f"Overall: in-scope recall={overall_recall:.1%} "
+        f"({overall_in_scope_found}/{overall_in_scope_expected}), "
+        f"precision={overall_precision:.1%}, "
+        f"emitted={overall_emitted}, justified_absent={overall_justified_absent}, "
+        f"unexplained(FP)={overall_unexplained}, "
         f"deterministic={'YES' if all_deterministic else 'NO'}"
     )
 
-    if overall_recall < 0.95:
-        print("FAIL: in-scope recall below 95%", file=sys.stderr)
+    if overall_recall < args.min_in_scope_recall:
+        print(
+            f"FAIL: in-scope recall {overall_recall:.1%} below {args.min_in_scope_recall:.0%}",
+            file=sys.stderr,
+        )
         return 1
-    if overall_fp > 2:
-        print("FAIL: false positives above 2", file=sys.stderr)
+    if overall_unexplained > 2:
+        print("FAIL: unexplained findings above 2", file=sys.stderr)
         return 1
     if not all_deterministic:
         print("FAIL: not all targets deterministic", file=sys.stderr)

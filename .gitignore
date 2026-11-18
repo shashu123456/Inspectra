@@ -34,3 +34,7 @@ sample-output/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Lab target TLS certificates (regenerated at runtime)
+lab/targets/*/*.pem
+lab/targets/*/*.key

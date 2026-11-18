@@ -2,10 +2,6 @@
   "target": "target11",
   "audited_by": "manual review of lab/targets/target11/server.py",
   "in_scope": [
-    "FPR-001"
-  ],
-  "out_of_scope": [],
-  "expected_absent": [
     "HDR-001",
     "HDR-002",
     "HDR-003",
@@ -13,9 +9,22 @@
     "HDR-005",
     "HDR-006",
     "HDR-007",
-    "HTP-003",
     "TLS-001",
-    "DNS-003",
-    "DNS-004"
+    "FPR-001"
+  ],
+  "out_of_scope": [],
+  "expected_absent": [
+    {
+      "id": "HTP-003",
+      "reason": "Server header present"
+    },
+    {
+      "id": "DNS-003",
+      "reason": "no MX record on IP literal"
+    },
+    {
+      "id": "ROB-002",
+      "reason": "no robots.txt served"
+    }
   ]
 }

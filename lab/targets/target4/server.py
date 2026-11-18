@@ -1,38 +1,46 @@
 #!/usr/bin/env python3
 """Target 4: HTTPS with self-signed certificate."""
 
-import os
+import datetime
 import ssl
-import subprocess
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.x509.oid import NameOID
 
 PORT = 8004
-CERT_FILE = "/tmp/server4.pem"
-KEY_FILE = "/tmp/server4.key"
+DIR = Path(__file__).resolve().parent
+CERT_FILE = DIR / "server4.pem"
+KEY_FILE = DIR / "server4.key"
 
 
 def ensure_cert():
-    if not os.path.exists(CERT_FILE) or not os.path.exists(KEY_FILE):
-        subprocess.run(
-            [
-                "openssl",
-                "req",
-                "-x509",
-                "-newkey",
-                "rsa:2048",
-                "-keyout",
-                KEY_FILE,
-                "-out",
-                CERT_FILE,
-                "-days",
-                "1",
-                "-nodes",
-                "-subj",
-                "/CN=localhost",
-            ],
-            capture_output=True,
+    if CERT_FILE.exists() and KEY_FILE.exists():
+        return
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "localhost")])
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(1000)
+        .not_valid_before(datetime.datetime.utcnow())
+        .not_valid_after(datetime.datetime.utcnow() + datetime.timedelta(days=1))
+        .sign(key, hashes.SHA256())
+    )
+    CERT_FILE.write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+    KEY_FILE.write_bytes(
+        key.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.PKCS8,
+            serialization.NoEncryption(),
         )
+    )
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -53,7 +61,7 @@ if __name__ == "__main__":
     ensure_cert()
     server = HTTPServer(("0.0.0.0", PORT), Handler)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain(CERT_FILE, KEY_FILE)
+    context.load_cert_chain(str(CERT_FILE), str(KEY_FILE))
     server.socket = context.wrap_socket(server.socket, server_side=True)
     print(f"Target 4 running on port {PORT} (HTTPS self-signed cert)")
     server.serve_forever()

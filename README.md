@@ -1,9 +1,9 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/banner-dark.svg">
-    <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/banner-light.svg" width="100%" alt="Inspectra">
-  </picture>
+  <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/logo-mark.svg" width="64" alt="Inspectra logo">
+  <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/wordmark.svg" width="300" alt="Inspectra">
 </p>
+
+<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/banner-light.svg" width="100%" alt="Inspectra banner">
 
 Inspectra performs passive security assessment for authorized targets.
 You get a posture score, a findings table with rule IDs, and SARIF output for CI.
@@ -110,6 +110,13 @@ Compare two scans and fail the run when new findings appear.
 - evidence_hash: SHA-256 of each finding's evidence, stored on every finding.
 
 See [THREAT_MODEL.md](THREAT_MODEL.md).
+
+## Proof
+
+Accuracy is measured against 12 lab targets with hand-audited ground truth.
+Results: 100% in-scope recall (49/49), 100% precision, 0 false positives,
+deterministic across 3 runs per target. See [docs/accuracy.md](docs/accuracy.md)
+for the full table and methodology.
 
 ## Contributing
 

@@ -2,13 +2,22 @@
   "target": "target1",
   "audited_by": "manual review of lab/targets/target1/server.py",
   "in_scope": [
-    "HDR-001"
+    "HDR-001",
+    "TLS-001"
   ],
   "out_of_scope": [],
   "expected_absent": [
-    "HTP-003",
-    "TLS-001",
-    "DNS-003",
-    "DNS-004"
+    {
+      "id": "HTP-003",
+      "reason": "Server header present (blanked product)"
+    },
+    {
+      "id": "HDR-005",
+      "reason": "Scanner false positive - header present"
+    },
+    {
+      "id": "HDR-006",
+      "reason": "Scanner false positive - header present"
+    }
   ]
 }

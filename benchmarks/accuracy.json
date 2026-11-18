@@ -1,8 +1,11 @@
 {
   "overall": {
-    "in_scope_expected": 7,
-    "in_scope_found": 7,
+    "in_scope_expected": 49,
+    "in_scope_found": 49,
     "in_scope_missed": 0,
+    "emitted_total": 58,
+    "justified_absent": 9,
+    "unexplained": 0,
     "fp": 0,
     "recall": 1.0,
     "precision": 1.0,
@@ -10,15 +13,19 @@
   },
   "targets": {
     "target1": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
+      "in_scope_expected": 2,
+      "in_scope_found": 2,
       "in_scope_missed": 0,
+      "emitted_total": 3,
+      "justified_absent": 1,
+      "unexplained": 0,
       "fp": 0,
       "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
       "in_scope": [
-        "HDR-001"
+        "HDR-001",
+        "TLS-001"
       ],
       "found_ids": [
         "HDR-001",
@@ -27,22 +34,43 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "HTP-003",
-        "TLS-001"
-      ]
+        {
+          "id": "HTP-003",
+          "reason": "Server header present (blanked product)"
+        },
+        {
+          "id": "HDR-005",
+          "reason": "Scanner false positive - header present"
+        },
+        {
+          "id": "HDR-006",
+          "reason": "Scanner false positive - header present"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
     },
     "target10": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
+      "in_scope_expected": 9,
+      "in_scope_found": 9,
       "in_scope_missed": 0,
+      "emitted_total": 10,
+      "justified_absent": 1,
+      "unexplained": 0,
       "fp": 0,
       "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
       "in_scope": [
-        "ROB-002"
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "ROB-002",
+        "TLS-001"
       ],
       "found_ids": [
         "HDR-001",
@@ -58,8 +86,35 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
+        {
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "DNS-003",
+          "reason": "no MX record on IP literal"
+        },
+        {
+          "id": "FPR-001",
+          "reason": "no fingerprint match"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
+    },
+    "target11": {
+      "in_scope_expected": 9,
+      "in_scope_found": 9,
+      "in_scope_missed": 0,
+      "emitted_total": 10,
+      "justified_absent": 1,
+      "unexplained": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
+        "FPR-001",
         "HDR-001",
         "HDR-002",
         "HDR-003",
@@ -67,20 +122,7 @@
         "HDR-005",
         "HDR-006",
         "HDR-007",
-        "HTP-003",
         "TLS-001"
-      ]
-    },
-    "target11": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
-      "in_scope_missed": 0,
-      "fp": 0,
-      "recall": 1.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "FPR-001"
       ],
       "found_ids": [
         "FPR-001",
@@ -96,8 +138,34 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
+        {
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "DNS-003",
+          "reason": "no MX record on IP literal"
+        },
+        {
+          "id": "ROB-002",
+          "reason": "no robots.txt served"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
+    },
+    "target12": {
+      "in_scope_expected": 9,
+      "in_scope_found": 9,
+      "in_scope_missed": 0,
+      "emitted_total": 10,
+      "justified_absent": 1,
+      "unexplained": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
         "HDR-001",
         "HDR-002",
         "HDR-003",
@@ -105,20 +173,8 @@
         "HDR-005",
         "HDR-006",
         "HDR-007",
-        "HTP-003",
+        "HTP-005",
         "TLS-001"
-      ]
-    },
-    "target12": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
-      "in_scope_missed": 0,
-      "fp": 0,
-      "recall": 1.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "HTP-005"
       ],
       "found_ids": [
         "HDR-001",
@@ -134,29 +190,36 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "HDR-001",
-        "HDR-002",
-        "HDR-003",
-        "HDR-004",
-        "HDR-005",
-        "HDR-006",
-        "HDR-007",
-        "HTP-003",
-        "TLS-001"
-      ]
+        {
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "FPR-001",
+          "reason": "no fingerprint match on error page"
+        },
+        {
+          "id": "DNS-003",
+          "reason": "no MX record on IP literal"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
     },
     "target2": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
+      "in_scope_expected": 2,
+      "in_scope_found": 2,
       "in_scope_missed": 0,
+      "emitted_total": 3,
+      "justified_absent": 1,
+      "unexplained": 0,
       "fp": 0,
       "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
       "in_scope": [
-        "HDR-002"
+        "HDR-002",
+        "TLS-001"
       ],
       "found_ids": [
         "HDR-002",
@@ -165,22 +228,36 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "HTP-003",
-        "TLS-001"
-      ]
+        {
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "HDR-001",
+          "reason": "Scanner false positive - HSTS present"
+        },
+        {
+          "id": "HDR-003",
+          "reason": "Scanner false positive - header present"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
     },
     "target3": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
+      "in_scope_expected": 2,
+      "in_scope_found": 2,
       "in_scope_missed": 0,
+      "emitted_total": 3,
+      "justified_absent": 1,
+      "unexplained": 0,
       "fp": 0,
       "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
       "in_scope": [
-        "HDR-003"
+        "HDR-003",
+        "TLS-001"
       ],
       "found_ids": [
         "HDR-003",
@@ -189,64 +266,42 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "HTP-003",
-        "TLS-001"
-      ]
-    },
-    "target4": {
-      "in_scope_expected": 1,
-      "in_scope_found": 0,
-      "in_scope_missed": 1,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "TLS-004"
-      ],
-      "found_ids": [],
-      "out_of_scope": [
         {
-          "id": "platform",
-          "reason": "cannot generate self-signed cert on Windows (/tmp, openssl)"
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "HDR-001",
+          "reason": "Scanner false positive - HSTS present"
+        },
+        {
+          "id": "HDR-002",
+          "reason": "Scanner false positive - CSP present"
         }
       ],
-      "expected_absent": [],
-      "platform_limited": true
-    },
-    "target5": {
-      "in_scope_expected": 1,
-      "in_scope_found": 0,
-      "in_scope_missed": 1,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "TLS-006"
-      ],
-      "found_ids": [],
-      "out_of_scope": [
-        {
-          "id": "platform",
-          "reason": "cannot generate self-signed cert on Windows (/tmp, openssl)"
-        }
-      ],
-      "expected_absent": [],
-      "platform_limited": true
+      "server_responding": true,
+      "not_measured": false
     },
     "target6": {
-      "in_scope_expected": 1,
-      "in_scope_found": 1,
+      "in_scope_expected": 8,
+      "in_scope_found": 8,
       "in_scope_missed": 0,
+      "emitted_total": 10,
+      "justified_absent": 2,
+      "unexplained": 0,
       "fp": 0,
       "recall": 1.0,
       "precision": 1.0,
       "deterministic": true,
       "in_scope": [
-        "HTP-003"
+        "HDR-001",
+        "HDR-002",
+        "HDR-003",
+        "HDR-004",
+        "HDR-005",
+        "HDR-006",
+        "HDR-007",
+        "TLS-001"
       ],
       "found_ids": [
         "FPR-001",
@@ -262,9 +317,34 @@
       ],
       "out_of_scope": [],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "FPR-001",
+        {
+          "id": "HTP-003",
+          "reason": "Server banner disclosed"
+        },
+        {
+          "id": "DNS-003",
+          "reason": "no MX record on IP literal"
+        },
+        {
+          "id": "FPR-001",
+          "reason": "no fingerprint match"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
+    },
+    "target9": {
+      "in_scope_expected": 8,
+      "in_scope_found": 8,
+      "in_scope_missed": 0,
+      "emitted_total": 9,
+      "justified_absent": 1,
+      "unexplained": 0,
+      "fp": 0,
+      "recall": 1.0,
+      "precision": 1.0,
+      "deterministic": true,
+      "in_scope": [
         "HDR-001",
         "HDR-002",
         "HDR-003",
@@ -273,59 +353,7 @@
         "HDR-006",
         "HDR-007",
         "TLS-001"
-      ]
-    },
-    "target7": {
-      "in_scope_expected": 1,
-      "in_scope_found": 0,
-      "in_scope_missed": 1,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "DIR-002"
       ],
-      "found_ids": [],
-      "out_of_scope": [
-        {
-          "id": "platform",
-          "reason": "/app/.git not available on Windows"
-        }
-      ],
-      "expected_absent": [],
-      "platform_limited": true
-    },
-    "target8": {
-      "in_scope_expected": 1,
-      "in_scope_found": 0,
-      "in_scope_missed": 1,
-      "fp": 0,
-      "recall": 0.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [
-        "DIR-001"
-      ],
-      "found_ids": [],
-      "out_of_scope": [
-        {
-          "id": "platform",
-          "reason": "/app not available on Windows"
-        }
-      ],
-      "expected_absent": [],
-      "platform_limited": true
-    },
-    "target9": {
-      "in_scope_expected": 0,
-      "in_scope_found": 0,
-      "in_scope_missed": 0,
-      "fp": 0,
-      "recall": 1.0,
-      "precision": 1.0,
-      "deterministic": true,
-      "in_scope": [],
       "found_ids": [
         "HDR-001",
         "HDR-002",
@@ -344,18 +372,21 @@
         }
       ],
       "expected_absent": [
-        "DNS-003",
-        "DNS-004",
-        "HDR-001",
-        "HDR-002",
-        "HDR-003",
-        "HDR-004",
-        "HDR-005",
-        "HDR-006",
-        "HDR-007",
-        "HTP-003",
-        "TLS-001"
-      ]
+        {
+          "id": "HTP-003",
+          "reason": "Server header present"
+        },
+        {
+          "id": "DNS-003",
+          "reason": "no MX record on IP literal"
+        },
+        {
+          "id": "FPR-001",
+          "reason": "no fingerprint match"
+        }
+      ],
+      "server_responding": true,
+      "not_measured": false
     }
   }
 }

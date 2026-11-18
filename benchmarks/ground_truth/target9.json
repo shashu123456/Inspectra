@@ -1,14 +1,7 @@
 {
   "target": "target9",
   "audited_by": "manual review of lab/targets/target9/server.py",
-  "in_scope": [],
-  "out_of_scope": [
-    {
-      "id": "PRT-003",
-      "reason": "port discovery requires nmap binary"
-    }
-  ],
-  "expected_absent": [
+  "in_scope": [
     "HDR-001",
     "HDR-002",
     "HDR-003",
@@ -16,9 +9,26 @@
     "HDR-005",
     "HDR-006",
     "HDR-007",
-    "HTP-003",
-    "TLS-001",
-    "DNS-003",
-    "DNS-004"
+    "TLS-001"
+  ],
+  "out_of_scope": [
+    {
+      "id": "PRT-003",
+      "reason": "port discovery requires nmap binary"
+    }
+  ],
+  "expected_absent": [
+    {
+      "id": "HTP-003",
+      "reason": "Server header present"
+    },
+    {
+      "id": "DNS-003",
+      "reason": "no MX record on IP literal"
+    },
+    {
+      "id": "FPR-001",
+      "reason": "no fingerprint match"
+    }
   ]
 }

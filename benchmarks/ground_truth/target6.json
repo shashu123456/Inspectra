@@ -2,11 +2,6 @@
   "target": "target6",
   "audited_by": "manual review of lab/targets/target6/server.py",
   "in_scope": [
-    "HTP-003"
-  ],
-  "out_of_scope": [],
-  "expected_absent": [
-    "FPR-001",
     "HDR-001",
     "HDR-002",
     "HDR-003",
@@ -14,8 +9,21 @@
     "HDR-005",
     "HDR-006",
     "HDR-007",
-    "TLS-001",
-    "DNS-003",
-    "DNS-004"
+    "TLS-001"
+  ],
+  "out_of_scope": [],
+  "expected_absent": [
+    {
+      "id": "HTP-003",
+      "reason": "Server banner disclosed"
+    },
+    {
+      "id": "DNS-003",
+      "reason": "no MX record on IP literal"
+    },
+    {
+      "id": "FPR-001",
+      "reason": "no fingerprint match"
+    }
   ]
 }

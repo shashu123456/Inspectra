@@ -59,7 +59,7 @@ SENSITIVE_PATHS: dict[str, Severity] = {
 
 def run(target: Target, context: ScanContext) -> list[Finding]:
     """Probe the wordlist and report accessible paths (opt-in)."""
-    if context.http_response is None or context.client is None:
+    if context.client is None:
         return []
     client = context.client
     base = target.base_url

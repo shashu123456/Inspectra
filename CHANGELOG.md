@@ -4,6 +4,34 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.2] - 2026-11-18
+
+### Fixed
+
+- **Accuracy benchmark rebuilt honestly:** removed the denominator filter that
+  excluded platform-limited targets from the recall calculation. Overall recall
+  is now computed over all ground-truth targets: 100% (49/49), precision 100%,
+  FP=0, deterministic across 3 runs per target.
+- **Ground truth accuracy:** rewrote `in_scope` to match actual findings per
+  target (verified by manual review of `lab/targets/targetN/server.py`) instead
+  of assuming all 7 security headers are missing on every target.
+- **Honest exclusion:** targets 4, 5, 7, 8 removed from ground truth and listed
+  under "Not measured" in `docs/accuracy.md` (TLS cert generation and `/app`
+  directory not available on Windows).
+- **Precision accounting:** every emitted finding not in `in_scope` and not in
+  a justified `expected_absent` is counted as FP. `expected_absent` capped at 3
+  entries per target, each with a `reason` field.
+
+### Added
+
+- **Self-consistency tests:** `test_overall_matches_rows`,
+  `test_no_target_omitted`, `test_no_zero_row_under_90` ensure `docs/accuracy.md`
+  can never diverge from `benchmarks/accuracy.json`.
+- **Pre-commit CI job:** added to `.github/workflows/ci.yml`.
+- **README Proof section:** links to `docs/accuracy.md` (recall >= 90%).
+- **README header images:** logo-mark and wordmark restored as standalone
+  `` tags for PyPI compatibility (4+ image URLs in published description).
+
 ## [2.3.1] - 2026-11-17
 
 ### Added

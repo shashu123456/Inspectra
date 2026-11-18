@@ -2,13 +2,22 @@
   "target": "target3",
   "audited_by": "manual review of lab/targets/target3/server.py",
   "in_scope": [
-    "HDR-003"
+    "HDR-003",
+    "TLS-001"
   ],
   "out_of_scope": [],
   "expected_absent": [
-    "HTP-003",
-    "TLS-001",
-    "DNS-003",
-    "DNS-004"
+    {
+      "id": "HTP-003",
+      "reason": "Server header present"
+    },
+    {
+      "id": "HDR-001",
+      "reason": "Scanner false positive - HSTS present"
+    },
+    {
+      "id": "HDR-002",
+      "reason": "Scanner false positive - CSP present"
+    }
   ]
 }

@@ -1,33 +1,98 @@
 {
   "tool": "inspectra",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "target": "https://127.0.0.1:8004",
-  "started_at": "2026-11-17T18:34:15.636773+00:00",
-  "started_at_ist": "2026-11-18 00:04:15 IST",
+  "started_at": "2026-11-18T17:20:00.231247+00:00",
+  "started_at_ist": "2026-11-18 22:50:00 IST",
   "timezone_display": "Asia/Kolkata (UTC+05:30)",
-  "finished_at": "2026-11-17T18:34:22.553167+00:00",
-  "duration_seconds": 6.916394,
-  "posture_score": 100.0,
-  "grade": "A+",
+  "finished_at": "2026-11-18T17:20:01.044509+00:00",
+  "duration_seconds": 0.813262,
+  "posture_score": 20.8,
+  "grade": "F",
   "summary": {
-    "total": 0,
-    "info": 0,
+    "total": 4,
+    "info": 1,
     "low": 0,
     "medium": 0,
-    "high": 0
+    "high": 3
   },
-  "findings": [],
+  "findings": [
+    {
+      "rule_id": "TLS-003",
+      "title": "TLS certificate expires soon (0 days)",
+      "category": "tls",
+      "severity": "high",
+      "confidence": "high",
+      "description": "The certificate expires on 2026-11-19 (0 days from now).",
+      "why_it_matters": "Certificates that expire cause service outages and break trust for users.",
+      "evidence": [
+        "Not valid after: 2026-11-19"
+      ],
+      "recommendation": "Renew the TLS certificate within 0 day(s). Consider automating renewal with ACME (e.g. Let's Encrypt).",
+      "fingerprint": "e81f18e96e0398fc464c3d03163a82bac0d6ba4920ca78aee1841eec0329f8e2",
+      "evidence_hash": "a3e8e04975ce2793"
+    },
+    {
+      "rule_id": "TLS-004",
+      "title": "TLS certificate is self-signed",
+      "category": "tls",
+      "severity": "high",
+      "confidence": "medium",
+      "description": "The presented certificate is self-signed and not issued by a trusted CA.",
+      "why_it_matters": "Self-signed certificates do not protect against man-in-the-middle attacks unless clients are configured to pin them.",
+      "evidence": [
+        "Issuer: localhost",
+        "Subject: localhost"
+      ],
+      "recommendation": "Obtain a certificate from a public CA (e.g. Let's Encrypt) or pin the certificate on all clients.",
+      "fingerprint": "a6a85541fc165296362dc7373cccb7892dd560e07023b03ef37b976d9fd0e3e3",
+      "evidence_hash": "f3f05249c68380e8"
+    },
+    {
+      "rule_id": "TLS-005",
+      "title": "TLS certificate hostname mismatch",
+      "category": "tls",
+      "severity": "high",
+      "confidence": "medium",
+      "description": "The certificate does not cover the hostname being scanned (SANs: none).",
+      "why_it_matters": "A certificate for the wrong hostname triggers browser warnings and can signal a misconfigured or intercepted connection.",
+      "evidence": [
+        "Subject CN: localhost",
+        "SANs: none"
+      ],
+      "recommendation": "Issue a certificate that includes the scanned hostname in its SANs.",
+      "fingerprint": "d591a6bc94e3b2de49a0c39eca6b411839856a2c8b3e697830e8abac0c1024e7",
+      "evidence_hash": "479d47a24e0dec22"
+    },
+    {
+      "rule_id": "TLS-008",
+      "title": "TLS certificate details",
+      "category": "tls",
+      "severity": "info",
+      "confidence": "high",
+      "description": "Summary of the certificate presented during the TLS handshake.",
+      "why_it_matters": "Certificate details help confirm the identity and health of the service.",
+      "evidence": [
+        "Protocol: TLSv1.3",
+        "Cipher: TLS_AES_256_GCM_SHA384",
+        "Subject CN: localhost",
+        "Issuer: localhost",
+        "Valid from: 2026-11-18",
+        "Valid until: 2026-11-19",
+        "SANs: none"
+      ],
+      "recommendation": "None required; informational.",
+      "fingerprint": "92278764ef90d696842d9ed50c0091b80ce8b9ace6bac854212350ab92dcd2c7",
+      "evidence_hash": "ea16e3aa381e6930"
+    }
+  ],
   "scope": {
     "scope": "private-allowed"
   },
   "skipped": [
     {
-      "check": "tls",
-      "reason": "TLS inspection failed for 127.0.0.1: [WinError 10061] No connection could be made because the target machine actively refused it"
-    },
-    {
       "check": "http",
-      "reason": "Could not reach 127.0.0.1 over HTTP or HTTPS: [WinError 10061] No connection could be made because the target machine actively refused it"
+      "reason": "Could not reach 127.0.0.1 over HTTP or HTTPS: [WinError 10054] An existing connection was forcibly closed by the remote host"
     }
   ]
 }
