@@ -16,6 +16,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from inspectra import __version__
+from inspectra.config import ConfigError, load_config
 from inspectra.models import ScanResult, Severity
 from inspectra.report import html_report, json_report, markdown_report, sarif_report
 from inspectra.utils import TargetValidationError, normalize_target
@@ -48,8 +49,12 @@ SEVERITY_ORDER = {
 }
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build the command-line argument parser."""
+def build_parser(config_defaults: dict[str, object] | None = None) -> argparse.ArgumentParser:
+    """Build the command-line argument parser.
+
+    ``config_defaults`` (from ``--config``) replace the built-in defaults of
+    the ``scan`` options; options given on the command line still win.
+    """
     parser = argparse.ArgumentParser(
         prog="inspectra",
         description=(
@@ -82,6 +87,12 @@ def build_parser() -> argparse.ArgumentParser:
     target_group.add_argument(
         "target",
         help="Domain, IP address or URL to assess (e.g. example.com).",
+    )
+
+    scan.add_argument(
+        "--config",
+        metavar="PATH",
+        help="PATH read default options from a JSON file (command-line options win).",
     )
 
     run_group = scan.add_argument_group("WHAT TO RUN")
@@ -236,12 +247,34 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Accept self-signed / untrusted TLS certificates (lab only).",
     )
+    if config_defaults:
+        scan.set_defaults(**config_defaults)
     return parser
+
+
+def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
+    """Parse ``argv``, applying defaults from ``--config`` when it is given."""
+    parser = build_parser()
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--config")
+    known, _ = pre.parse_known_args(list(argv) if argv is not None else sys.argv[1:])
+    if not known.config:
+        return parser.parse_args(argv)
+    scan_parser = next(
+        action.choices["scan"]
+        for action in parser._actions  # noqa: SLF001
+        if isinstance(action, argparse._SubParsersAction)  # noqa: SLF001
+    )
+    try:
+        defaults = load_config(Path(known.config), scan_parser)
+    except ConfigError as exc:
+        parser.error(str(exc))
+    return build_parser(defaults).parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     """CLI entry point. Returns the process exit code."""
-    args = build_parser().parse_args(argv)
+    args = _parse_args(argv)
     if args.command != "scan":
         return 2
 
