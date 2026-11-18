@@ -18,6 +18,8 @@ SARIF_VERSION = "2.1.0"
 TOOL_NAME = "Inspectra"
 TOOL_INFO_URI = "https://github.com/shashu123456/inspectra"
 
+RULE_HELP_URI = f"{TOOL_INFO_URI}/blob/main/docs/usage.md#reading-the-report"
+
 _SEVERITY_TO_LEVEL = {
     Severity.INFO: "note",
     Severity.LOW: "note",
@@ -42,6 +44,7 @@ def _build_rules(findings: list[Finding]) -> list[dict[str, object]]:
             {
                 "id": finding.rule_id,
                 "name": finding.title,
+                "helpUri": RULE_HELP_URI,
                 "shortDescription": {"text": finding.title},
                 "fullDescription": {"text": finding.why_it_matters},
                 "help": {
