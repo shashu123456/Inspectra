@@ -73,5 +73,13 @@
     "severity_when_present": "low",
     "explanation": "X-XSS-Protection is deprecated: modern browsers ignore it, and in some configurations it can introduce vulnerabilities. Content-Security-Policy is the replacement.",
     "recommendation": "Remove the X-XSS-Protection header and rely on Content-Security-Policy instead."
+  },
+  {
+    "id": "HDR-010",
+    "name": "Strict-Transport-Security",
+    "severity_when_directive_missing": "low",
+    "required_directive": "preload",
+    "explanation": "Without the preload directive the site cannot be submitted to browser HSTS preload lists, so first-time visitors are still exposed to protocol-downgrade attacks before they have seen the header.",
+    "recommendation": "Once every subdomain is served over HTTPS, set Strict-Transport-Security: max-age=31536000; includeSubDomains; preload and submit the domain at hstspreload.org."
   }
 ]

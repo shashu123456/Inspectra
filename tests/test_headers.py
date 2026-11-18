@@ -65,3 +65,38 @@ def test_weak_header_value_reported(fixture_server, target, scan_options) -> Non
 
 def test_headers_check_without_http_context_returns_empty(target) -> None:
     assert headers.run(target, ScanContext()) == []
+
+
+def _hdr010(findings: list) -> list:
+    return [finding for finding in findings if finding.rule_id == "HDR-010"]
+
+
+def test_hsts_without_preload_reported(fixture_server, target, scan_options) -> None:
+    fixture_server.expect_oneshot_request("/").respond_with_data(
+        b"<html></html>",
+        status=200,
+        headers={"Strict-Transport-Security": "max-age=31536000; includeSubDomains"},
+    )
+    findings = _hdr010(_run_headers(fixture_server, target, scan_options))
+    assert len(findings) == 1
+    finding = findings[0]
+    assert finding.severity.value == "low"
+    assert finding.confidence.value == "medium"
+    assert finding.title and finding.description
+    assert finding.why_it_matters and finding.recommendation
+    assert finding.evidence == ["Strict-Transport-Security: max-age=31536000; includeSubDomains"]
+
+
+def test_hsts_with_preload_not_reported(fixture_server, target, scan_options) -> None:
+    fixture_server.expect_oneshot_request("/").respond_with_data(
+        b"<html></html>",
+        status=200,
+        headers={"Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload"},
+    )
+    assert _hdr010(_run_headers(fixture_server, target, scan_options)) == []
+
+
+def test_missing_hsts_does_not_report_preload(fixture_server, target, scan_options) -> None:
+    # An absent header is already covered by HDR-001.
+    findings = _run_headers(fixture_server, target, scan_options)
+    assert _hdr010(findings) == []
