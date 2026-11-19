@@ -4,6 +4,12 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.4] - 2026-11-19
+
+### Fixed
+
+- **PyPI description:** republished as 2.3.4 because PyPI caches the first upload of a version; 2.3.3 was published before the README "Not measured" fix was pushed. 2.3.4 includes the corrected description with "8 lab targets" and "Not measured" text.
+
 ## [2.3.3] - 2026-11-19
 
 ### Fixed
