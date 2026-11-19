@@ -117,7 +117,7 @@ Accuracy is measured against 8 lab targets with hand-audited ground truth; 4
 additional lab targets are present but not measured on this platform.
 Results: 100% in-scope recall (49/49), 100% precision, 0 false positives,
 deterministic across 3 runs per target. See [docs/accuracy.md](docs/accuracy.md)
-for the full table and methodology.
+for the full table, per-target results, and the **Not measured** section.
 
 ## Contributing
 
