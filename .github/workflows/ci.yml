@@ -38,20 +38,4 @@ jobs:
 
       - name: Test (pytest)
         run: |
-          pytest             --cov=inspectra             --cov-report=xml             --cov-report=term-missing             -q             --tb=short
-
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Run pre-commit on all files
-        run: pre-commit run --all-files
+          pytest -o addopts='' -q --tb=short

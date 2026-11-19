@@ -4,6 +4,24 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.3] - 2026-11-19
+
+### Fixed
+
+- **Pre-commit hook injection vulnerability:** replaced `entry: inspectra scan` with `entry: inspectra-precommit` and `pass_filenames: false` so staged filenames are no longer appended as CLI arguments.
+- **GitHub Action injection risk:** all `${{ inputs.* }}` values are now passed through `env:` instead of being interpolated directly into `run:` shell commands. Added `allow-insecure` input (default `false`).
+- **Windows benchmark traceback:** replaced `text=True` with `encoding="utf-8", errors="replace"` in all `subprocess.run` calls to prevent `UnicodeDecodeError` on cp1252 systems.
+
+### Changed
+
+- **Accuracy honesty:** README and PyPI description now state "8 lab targets" with 4 listed under "Not measured" instead of falsely claiming "12 lab targets".
+- **Not measured section:** `docs/accuracy.md` now includes a generated "## Not measured" section sourced from `benchmarks/not_measured.json`.
+
+### Added
+
+- **Console script `inspectra-precommit`:** wrapper that reads `INSPECTRA_TARGET` env var; skips with exit 0 when unset, runs scan when set.
+- **Self-consistency tests:** `test_all_12_targets_accounted`, `test_overall_recall_uses_only_measured_targets`, `test_no_12_lab_targets_claim` ensure accuracy reporting integrity.
+
 ## [2.3.2] - 2026-11-18
 
 ### Fixed

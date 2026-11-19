@@ -107,3 +107,10 @@ Overall: in-scope recall=100.0% (49/49), precision=100.0%, emitted=58, justified
 - Recall: 100%
 - Deterministic: YES
 - Out of scope: PRT-003
+
+## Not measured
+
+- **target4**: TLS cert generation / HTTPS handshake not reliable on Windows
+- **target5**: TLS cert generation / HTTPS handshake not reliable on Windows
+- **target7**: /app/.git path not available on Windows lab harness
+- **target8**: /app path not available on Windows lab harness

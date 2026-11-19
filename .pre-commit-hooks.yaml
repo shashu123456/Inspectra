@@ -1,8 +1,9 @@
 - id: inspectra
   name: Inspectra security scan
   description: Runs Inspectra passive security scan on the target
-  entry: inspectra scan
+  entry: inspectra-precommit
   language: python
-  types: [text]
-  args: ["--yes", "--skip-ports", "--allow-private", "--authorized", "--allow-insecure", "--quiet"]
+  types: []
+  pass_filenames: false
+  always_run: true
   additional_dependencies: ["inspectra-cli>=2.3.0"]

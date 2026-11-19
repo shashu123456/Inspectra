@@ -29,6 +29,16 @@ DOCS_OUTPUT = ROOT / "docs" / "accuracy.md"
 
 MAX_EXPECTED_ABSENT = 3
 
+NOT_MEASURED_FILE = ROOT / "benchmarks" / "not_measured.json"
+
+
+def load_not_measured() -> dict[str, str]:
+    """Load not-measured targets and their reasons from source of truth."""
+    if NOT_MEASURED_FILE.exists():
+        return json.loads(NOT_MEASURED_FILE.read_text(encoding="utf-8"))
+    return {}
+
+
 PORTS = {
     "target1": 8001,
     "target2": 8002,
@@ -85,7 +95,8 @@ def run_scan(target: str, port: int, use_directories: bool = False) -> list[str]
             str(report_path),
         ],
         capture_output=True,
-        text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=120,
         env=env,
     )
@@ -352,14 +363,13 @@ def main() -> int:
             lines.append(f"- Out of scope: {oos}")
         lines.append("")
 
-    # Not measured section
-    not_measured = [(t, r) for t, r in results.items() if r.get("not_measured")]
+    # Not measured section (from source of truth)
+    not_measured = load_not_measured()
     if not_measured:
         lines.append("## Not measured")
         lines.append("")
-        for t, r in not_measured:
-            reason = ", ".join(o["reason"] for o in r["out_of_scope"] if isinstance(o, dict))
-            lines.append(f"- **{t}**: {reason or 'server not responding on this platform'}")
+        for t in sorted(not_measured.keys()):
+            lines.append(f"- **{t}**: {not_measured[t]}")
         lines.append("")
 
     DOCS_OUTPUT.write_text("\n".join(lines), encoding="utf-8")

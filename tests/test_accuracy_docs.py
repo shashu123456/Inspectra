@@ -87,3 +87,59 @@ def test_no_zero_row_under_90() -> None:
         overall_line = [ml for ml in md.splitlines() if ml.startswith("Overall:")]
         assert overall_line, "No overall line found in markdown"
         assert "100%" not in overall_line[0], "Overall claims 100% but some targets are under 90%"
+
+
+def test_no_12_lab_targets_claim() -> None:
+    """README and docs/accuracy.md must not claim '12 lab targets' unless all 12
+    ground-truth targets are measured."""
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    md = DOCS_OUTPUT.read_text(encoding="utf-8")
+    assert "12 lab targets" not in readme, "README must not claim 12 lab targets"
+    assert "12 lab targets" not in md, "docs/accuracy.md must not claim 12 lab targets"
+
+
+def test_all_12_targets_accounted() -> None:
+    """All 12 target numbers must be accounted for as measured or not_measured."""
+    md = DOCS_OUTPUT.read_text(encoding="utf-8")
+    not_measured_path = ROOT / "benchmarks" / "not_measured.json"
+    not_measured = json.loads(not_measured_path.read_text(encoding="utf-8"))
+
+    measured = {p.stem for p in GROUND_TRUTH_DIR.glob("*.json")}
+    not_measured_targets = set(not_measured.keys())
+    all_targets = {f"target{i}" for i in range(1, 13)}
+
+    assert measured | not_measured_targets == all_targets, (
+        f"Missing targets: {all_targets - (measured | not_measured_targets)}"
+    )
+
+    # All measured targets must appear in the table.
+    for t in measured:
+        assert f"| {t} " in md, f"Measured target {t} missing from accuracy.md table"
+
+    # All not_measured targets must appear in the Not measured section.
+    for t in not_measured_targets:
+        assert f"**{t}**:" in md, f"Not measured target {t} missing from accuracy.md"
+
+
+def test_overall_recall_uses_only_measured_targets() -> None:
+    """Overall recall denominator must use only measured targets, not not_measured ones."""
+    data = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    not_measured_path = ROOT / "benchmarks" / "not_measured.json"
+    not_measured = json.loads(not_measured_path.read_text(encoding="utf-8"))
+
+    measured_targets = {p.stem for p in GROUND_TRUTH_DIR.glob("*.json")}
+    total_expected = sum(data["targets"][t]["in_scope_expected"] for t in measured_targets)
+    total_found = sum(data["targets"][t]["in_scope_found"] for t in measured_targets)
+
+    assert total_expected > 0, "No measured targets with in_scope_expected"
+    computed_recall = total_found / total_expected
+    json_recall = data["overall"]["recall"]
+    assert abs(computed_recall - json_recall) < 0.0001, (
+        f"Computed recall {computed_recall:.4%} != JSON recall {json_recall:.4%}"
+    )
+
+    # No not_measured target should appear in the JSON targets.
+    for t in not_measured:
+        assert t not in data["targets"], (
+            f"Not measured target {t} should not appear in accuracy.json targets"
+        )

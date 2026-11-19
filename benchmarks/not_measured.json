@@ -1,0 +1,6 @@
+{
+  "target4": "TLS cert generation / HTTPS handshake not reliable on Windows",
+  "target5": "TLS cert generation / HTTPS handshake not reliable on Windows",
+  "target7": "/app/.git path not available on Windows lab harness",
+  "target8": "/app path not available on Windows lab harness"
+}

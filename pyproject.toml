@@ -55,6 +55,7 @@ dev = [
 [project.scripts]
 inspectra = "inspectra.cli:main"
 inspectra-cli = "inspectra.cli:main"
+inspectra-precommit = "inspectra.precommit:_run"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/inspectra"]

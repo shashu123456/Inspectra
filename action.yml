@@ -16,6 +16,10 @@ inputs:
     description: Directory containing custom check modules (repeatable via multiple inputs not supported; use comma-separated)
     default: ""
     required: false
+  allow-insecure:
+    description: Allow self-signed / untrusted TLS certificates (lab only)
+    default: "false"
+    required: false
 branding:
   icon: shield
   color: purple
@@ -27,17 +31,38 @@ runs:
         python-version: "3.11"
     - run: python -m pip install --quiet "$GITHUB_ACTION_PATH"
       shell: bash
-    - run: |
+    - id: args
+      shell: bash
+      run: |
         BASELINE_ARGS=""
-        if [ -n "${{ inputs.baseline }}" ]; then
-          BASELINE_ARGS="--baseline ${{ inputs.baseline }}"
+        if [ -n "${BASELINE}" ]; then
+          BASELINE_ARGS="--baseline \"${BASELINE}\""
         fi
         RULES_DIR_ARGS=""
-        if [ -n "${{ inputs.rules-dir }}" ]; then
-          RULES_DIR_ARGS="--rules-dir ${{ inputs.rules-dir }}"
+        if [ -n "${RULES_DIR}" ]; then
+          RULES_DIR_ARGS="--rules-dir \"${RULES_DIR}\""
         fi
-        inspectra scan "${{ inputs.target }}" --yes --skip-ports --allow-private --authorized --allow-insecure --directories --format sarif -o inspectra.sarif --fail-on "${{ inputs.fail-on }}" $BASELINE_ARGS $RULES_DIR_ARGS
+        ALLOW_INSECURE_FLAG=""
+        if [ "${ALLOW_INSECURE}" = "true" ]; then
+          ALLOW_INSECURE_FLAG="--allow-insecure"
+        fi
+        echo "baseline_args=${BASELINE_ARGS}" >> $GITHUB_OUTPUT
+        echo "rules_dir_args=${RULES_DIR_ARGS}" >> $GITHUB_OUTPUT
+        echo "allow_insecure_flag=${ALLOW_INSECURE_FLAG}" >> $GITHUB_OUTPUT
+    - run: |
+        inspectra scan "${TARGET}" --yes --skip-ports --allow-private --authorized \
+          ${ALLOW_INSECURE_FLAG} --directories --format sarif -o inspectra.sarif \
+          --fail-on "${FAIL_ON}" ${BASELINE_ARGS} ${RULES_DIR_ARGS}
       shell: bash
+      env:
+        TARGET: ${{ inputs.target }}
+        BASELINE: ${{ inputs.baseline }}
+        RULES_DIR: ${{ inputs.rules-dir }}
+        ALLOW_INSECURE: ${{ inputs.allow-insecure }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        BASELINE_ARGS: ${{ steps.args.outputs.baseline_args }}
+        RULES_DIR_ARGS: ${{ steps.args.outputs.rules_dir_args }}
+        ALLOW_INSECURE_FLAG: ${{ steps.args.outputs.allow_insecure_flag }}
     - uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: inspectra.sarif
