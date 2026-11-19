@@ -74,7 +74,7 @@ authorized targets. Run one command, get a posture score, a findings table
 with rule IDs, and SARIF output for CI. No exploits, no payloads — observe,
 assess, explain, report.
 
-In a recent scan of 12 lab targets, Inspectra achieved 100% in-scope recall
+In a recent scan of 8 measured lab targets, Inspectra achieved 100% in-scope recall
 and 100% precision with zero false positives. All results are deterministic
 across repeated scans.
 
@@ -93,7 +93,7 @@ targets.
 - SARIF output for GitHub Code Scanning
 - SSRF-safe: DNS resolved once, IP pinned, private addresses blocked by default
 
-Measured on 12 lab targets: 100% recall, 100% precision, 0 false positives,
+Measured on 8 lab targets: 100% recall, 100% precision, 0 false positives,
 deterministic across 3 runs each.
 
 https://pypi.org/project/inspectra-cli/
@@ -110,7 +110,7 @@ Features:
 - Custom check extension point via --rules-dir
 
 Benchmarks: 100% in-scope recall, 100% precision, FP=0, deterministic=YES
-across 12 lab targets scanned 3 times each.
+across 8 lab targets scanned 3 times each.
 
 https://pypi.org/project/inspectra-cli/
 
@@ -130,6 +130,6 @@ Key design decisions:
 - Deterministic: sorted findings, bounded concurrency, cached DNS/TLS
 
 Measured accuracy: 100% recall, 100% precision on in-scope findings across
-12 lab targets, zero false positives, deterministic across repeated scans.
+8 lab targets, zero false positives, deterministic across repeated scans.
 
 Read more: https://pypi.org/project/inspectra-cli/

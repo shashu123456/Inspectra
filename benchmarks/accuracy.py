@@ -39,6 +39,18 @@ def load_not_measured() -> dict[str, str]:
     return {}
 
 
+def validate_targets_not_measured(not_measured: dict[str, str]) -> None:
+    """Ensure only allowed targets are marked as not measured."""
+    allowed = {"target4", "target5", "target7", "target8"}
+    actual = set(not_measured.keys())
+    disallowed = actual - allowed
+    if disallowed:
+        raise SystemExit(
+            f"Benchmark error: targets {sorted(disallowed)} are marked as not measured "
+            f"but only {sorted(allowed)} are permitted in not_measured.json."
+        )
+
+
 PORTS = {
     "target1": 8001,
     "target2": 8002,
@@ -175,6 +187,9 @@ def main() -> int:
     overall_unexplained = 0
     all_deterministic = True
 
+    not_measured = load_not_measured()
+    validate_targets_not_measured(not_measured)
+
     for gt_file in sorted(GROUND_TRUTH_DIR.glob("*.json")):
         target = gt_file.stem
         port = PORTS[target]
@@ -184,6 +199,29 @@ def main() -> int:
         absent_ids = {e["id"] for e in expected_absent}
         use_dirs = target in DIRECTORY_TARGETS
 
+        # Skip targets explicitly listed as not measured
+        if target in not_measured:
+            results[target] = {
+                "in_scope_expected": len(in_scope),
+                "in_scope_found": 0,
+                "in_scope_missed": len(in_scope),
+                "emitted_total": 0,
+                "justified_absent": 0,
+                "unexplained": 0,
+                "fp": 0,
+                "recall": 0.0,
+                "precision": 1.0,
+                "deterministic": True,
+                "in_scope": sorted(in_scope),
+                "found_ids": [],
+                "out_of_scope": truth.get("out_of_scope", []),
+                "expected_absent": expected_absent,
+                "server_responding": False,
+                "not_measured": True,
+            }
+            continue
+
+        # Measured target: must start and scan successfully, otherwise FAIL
         server_proc = subprocess.Popen(
             [sys.executable, str(ROOT / "lab" / "targets" / target / "server.py")],
             stdout=subprocess.DEVNULL,
@@ -195,25 +233,16 @@ def main() -> int:
 
             scheme = "https" if target in ("target4", "target5") else "http"
             if not _server_responding(scheme, port):
-                results[target] = {
-                    "in_scope_expected": len(in_scope),
-                    "in_scope_found": 0,
-                    "in_scope_missed": len(in_scope),
-                    "emitted_total": 0,
-                    "justified_absent": 0,
-                    "unexplained": 0,
-                    "fp": 0,
-                    "recall": 0.0,
-                    "precision": 1.0,
-                    "deterministic": True,
-                    "in_scope": sorted(in_scope),
-                    "found_ids": [],
-                    "out_of_scope": truth.get("out_of_scope", []),
-                    "expected_absent": expected_absent,
-                    "server_responding": False,
-                    "not_measured": True,
-                }
-                continue
+                server_proc.terminate()
+                try:
+                    server_proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    server_proc.kill()
+                raise SystemExit(
+                    f"Benchmark error: measured target {target} did not respond on "
+                    f"port {port}. If this target cannot run on this platform, add "
+                    f"it to benchmarks/not_measured.json."
+                )
 
             runs: list[list[str]] = []
             for _ in range(3):

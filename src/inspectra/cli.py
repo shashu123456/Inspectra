@@ -10,6 +10,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
+from typing import Any, cast
 
 from rich.console import Console
 from rich.panel import Panel
@@ -19,6 +20,14 @@ from inspectra import __version__
 from inspectra.models import ScanResult, Severity
 from inspectra.report import html_report, json_report, markdown_report, sarif_report
 from inspectra.utils import TargetValidationError, normalize_target
+
+# Ensure UTF-8 output on Windows legacy console (cp1252 cannot encode
+# box-drawing characters used by Rich tables/panels).
+if sys.platform == "win32":
+    for _stream in (sys.stdout, sys.stderr):
+        _s = cast(Any, _stream)
+        if hasattr(_s, "reconfigure"):
+            _s.reconfigure(encoding="utf-8", errors="replace")
 
 CONFIG_DIR = Path.home() / ".config" / "inspectra"
 CONFIG_FILE = CONFIG_DIR / "config.json"

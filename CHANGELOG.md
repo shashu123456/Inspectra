@@ -4,6 +4,23 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.5] - 2026-11-19
+
+### Fixed
+
+- **Accuracy honesty:** benchmark no longer dynamically relabels measured targets
+  as "not measured"; only benchmarks/not_measured.json (targets 4,5,7,8) may
+  exclude targets. Measured target failures cause the benchmark to exit non-zero.
+- **Docs honesty:** replaced all "12 lab targets" claims in docs/adoption.md
+  with "8 lab targets"; added test that fails on any "12 lab targets" in docs/ or README.md.
+- **Pre-commit validation:** added tests for src/inspectra/precommit.py with >90% coverage.
+- **Release workflow:** added skip-existing to PyPI publish to avoid 400 errors on re-run.
+
+### Added
+
+- **Pre-commit tests:** test_precommit.py covers unset target (skip, exit 0) and set target (scan invoked).
+- **Docs honesty test:** test_no_12_lab_targets_claim checks all docs/ files and README.md.
+
 ## [2.3.4] - 2026-11-19
 
 ### Fixed

@@ -90,12 +90,20 @@ def test_no_zero_row_under_90() -> None:
 
 
 def test_no_12_lab_targets_claim() -> None:
-    """README and docs/accuracy.md must not claim '12 lab targets' unless all 12
-    ground-truth targets are measured."""
+    """README.md and all files under docs/ must not contain '12 lab targets'
+    (excluding historical CHANGELOG lines)."""
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     md = DOCS_OUTPUT.read_text(encoding="utf-8")
     assert "12 lab targets" not in readme, "README must not claim 12 lab targets"
     assert "12 lab targets" not in md, "docs/accuracy.md must not claim 12 lab targets"
+
+    # Check all docs/ files (skip binary files like images)
+    docs_dir = ROOT / "docs"
+    excluded = {".svg", ".png", ".jpg", ".jpeg", ".gif", ".ico"}
+    for doc_file in docs_dir.rglob("*"):
+        if doc_file.is_file() and doc_file.suffix.lower() not in excluded:
+            content = doc_file.read_text(encoding="utf-8")
+            assert "12 lab targets" not in content, f"{doc_file} must not claim 12 lab targets"
 
 
 def test_all_12_targets_accounted() -> None:
