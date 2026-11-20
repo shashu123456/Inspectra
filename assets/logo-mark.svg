@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <path d="M64 12 c-28.8 0-52 23.2-52 52 0 20.8 12.8 38.4 32 46.4V24L64 72l20-48v34.4c19.2-8 32-25.6 32-46.4 0-28.8-23.2-52-52-52" fill="#1f2328"/>
-  <path d="M64 100 c-19.2 0-36-15.2-36-34 0-10.4 6.4-19.2 16-24 9.6-4.8 20-4.8 29.6 0 9.6 4.8 16 13.6 16 24 0 18.8-16.8 34-36 34" fill="none" stroke="#06b6d4" stroke-width="8" stroke-linecap="round"/>
-  <path d="M64 44 c-14.4 0-26 11.2-26 26 0 8 3.2 15.2 9.2 20.8l4 4 4-4c6-6 15.2-9.6 24-8.8s16 14.4 10 23.2" fill="none" stroke="#e6edf3" stroke-width="8" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Inspectra">
+<g transform="scale(1.000000)">
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#0A0A0A" stroke="#06B6D4" stroke-width="3"/>
+  <path d="M64 28 L94 40 V62 C94 82 81 96 64 103 C47 96 34 82 34 62 V40 Z" fill="none" stroke="#E6EDF3" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M46 64 H82" stroke="#06B6D4" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="54" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="64" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="74" cy="64" r="3.4" fill="#06B6D4"/>
+</g>
 </svg>

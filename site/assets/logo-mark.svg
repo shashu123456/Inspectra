@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Inspectra">
+<g transform="scale(1.000000)">
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#0A0A0A" stroke="#06B6D4" stroke-width="3"/>
+  <path d="M64 28 L94 40 V62 C94 82 81 96 64 103 C47 96 34 82 34 62 V40 Z" fill="none" stroke="#E6EDF3" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M46 64 H82" stroke="#06B6D4" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="54" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="64" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="74" cy="64" r="3.4" fill="#06B6D4"/>
+</g>
+</svg>

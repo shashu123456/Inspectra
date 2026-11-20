@@ -2,34 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Inspectra — Explainable Security Assessment</title>
+<title>Inspectra — Passive security assessment, explained</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
-  header { border-bottom: 2px solid #1a1a1a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
-  h1 { font-size: 2rem; margin: 0; }
-  h2 { font-size: 1.25rem; margin-top: 1.5rem; }
-  .btn { display: inline-block; background: #1a1a1a; color: #fff; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 4px; font-weight: 600; margin-top: 1rem; }
-  .btn:hover { background: #0a0a0a; }
-  .disclaimer { background: #f8f8f8; border-left: 4px solid #d32f2f; padding: 1rem; margin-top: 1.5rem; font-size: 0.9rem; }
-  .meta { display: flex; gap: 1rem; margin: 1rem 0; font-size: 0.9rem; color: #666; }
-</style>
+<meta name="description" content="Inspectra is a passive, explainable security assessment CLI for authorized targets. JSON, Markdown, HTML and SARIF reports with evidence hashes.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-<header>
-<h1>Inspectra</h1>
-<p>An open-source explainable security assessment framework</p>
+<header class="masthead">
+  <img src="banner-light.svg" alt="Inspectra — passive security assessment for authorized targets" width="1280" height="320">
 </header>
 
-<p>Inspectra is a single-command CLI tool that performs safe, passive security assessments on authorized targets and produces professional, explainable reports. Every finding answers what was observed, why it matters, the evidence behind it, confidence level, severity, and a concrete recommendation.</p>
+<main>
+<section class="hero">
+  <p class="eyebrow">Passive · Explainable · CI-ready</p>
+  <h1>Security findings you can defend.</h1>
+  <p class="lead">Inspectra is a single-command CLI for systems you own or are authorized to test. It produces a posture score, rule-ID findings with evidence hashes, and reports in JSON, Markdown, HTML and SARIF. No payloads. No exploitation.</p>
+  <div class="actions">
+    <a class="btn primary" href="report.html">View live sample report</a>
+    <a class="btn" href="https://github.com/shashu123456/Inspectra">View on GitHub</a>
+    <a class="btn" href="https://pypi.org/project/inspectra-cli/">Install from PyPI</a>
+  </div>
+</section>
 
-<p>This sample report shows the output of scanning <code>example.com</code> — ten pipeline stages including security headers, TLS configuration, HTTP analysis, robots.txt inspection, and device fingerprinting — computed from a recorded dataset and presented without any live network access.</p>
+<section class="proof">
+  <h2>Measured, not marketed</h2>
+  <div class="grid">
+    <article><strong>49/49</strong><span>in-scope recall across 8 measured lab targets</span></article>
+    <article><strong>100%</strong><span>precision · 0 unexplained false positives</span></article>
+    <article><strong>220</strong><span>tests passing · 89% coverage</span></article>
+    <article><strong>4</strong><span>report formats · JSON, Markdown, HTML, SARIF</span></article>
+  </div>
+  <p class="note">Four additional lab targets are present but not measured on this platform. <a href="https://github.com/shashu123456/Inspectra/blob/main/docs/RESULTS.md">Full results</a>.</p>
+</section>
 
-<a href="report.html" class="btn">View live sample report</a>
+<section class="pipeline">
+  <h2>How a scan flows</h2>
+  <img src="architecture.svg" alt="Inspectra assessment pipeline: authorize, resolve and pin, checks, findings, risk, reports" width="1440" height="760">
+</section>
 
-<div class="disclaimer">
-<p><strong>Disclaimer:</strong> Passive assessment of example.com, run on 2026-11-13. Provided as an example output. Do not scan systems you do not own or are not explicitly authorized to test.</p>
-</div>
+<section class="terminal">
+  <h2>One command, four outputs</h2>
+  <pre><code>$ inspectra scan http://127.0.0.1:8001 --yes --skip-ports --allow-private --authorized --format html
+Target   http://127.0.0.1:8001
+Posture  61.6 / 100 - D
+Summary  3 findings · 0 high · 2 medium · 0 low · 1 info
+medium  HDR-001  Missing security header: Strict-Transport-Security
+info    HTP-003  Web server software disclosed (with version)
+medium  TLS-001  HTTPS not available
+Reports written to inspectra-report</code></pre>
+</section>
 
+<section class="links">
+  <h2>Dig deeper</h2>
+  <ul>
+    <li><a href="https://github.com/shashu123456/Inspectra/blob/main/docs/RESULTS.md">Results and sample output</a></li>
+    <li><a href="https://github.com/shashu123456/Inspectra/blob/main/docs/accuracy.md">Accuracy benchmark</a></li>
+    <li><a href="https://github.com/shashu123456/Inspectra/blob/main/docs/EVIDENCE.md">Evidence log</a></li>
+    <li><a href="https://github.com/shashu123456/Inspectra/blob/main/docs/architecture.md">Architecture</a></li>
+  </ul>
+</section>
+</main>
+
+<footer>
+  <p>Passive assessment only. Do not scan systems you do not own or are not explicitly authorized to test. MIT licensed.</p>
+</footer>
 </body>
 </html>

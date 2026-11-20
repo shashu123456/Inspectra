@@ -1,69 +1,88 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/logo-mark.svg" width="64" alt="Inspectra logo">
-  <img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/wordmark.svg" width="300" alt="Inspectra">
-</p>
+![Inspectra — passive security assessment for authorized targets](https://raw.githubusercontent.com/shashu123456/Inspectra/main/docs/assets/png/banner-light.png)
 
-<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/banner-light.svg" width="100%" alt="Inspectra banner">
+[![CI](https://github.com/shashu123456/Inspectra/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/shashu123456/Inspectra/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/inspectra-cli?color=06B6D4)](https://pypi.org/project/inspectra-cli/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green)](https://github.com/shashu123456/Inspectra/blob/main/LICENSE)
 
-Inspectra performs passive security assessment for authorized targets.
-You get a posture score, a findings table with rule IDs, and SARIF output for CI.
+Inspectra is a passive, explainable security assessment CLI for systems you own or are explicitly authorized to test. One command produces a posture score, rule-ID findings with evidence hashes, and reports in JSON, Markdown, HTML and SARIF. It never sends payloads and never exploits.
 
-```
-$ inspectra scan http://127.0.0.1:9999 --yes --skip-ports --allow-private --authorized
-Scan complete - 127.0.0.1
-Target           127.0.0.1 - http://127.0.0.1:9999
-Posture          4.0 / 100 - F
-HIGH findings    0
-MEDIUM findings  4
-LOW findings     4
-INFO findings    3
-Checks run       7
-Skipped          none
-
-Sev   Rule     Title                                       Where
-medium HDR-001 Missing security header: Strict-Transpo… Header not present in the HT…
-medium HDR-002 Missing security header: Content-Securi… Header not present in the HT…
-medium HDR-003 Missing security header: X-Frame-Optio… Header not present in the HT…
-low    HDR-004 Missing security header: X-Content-Typ… Header not present in the HT…
-… and 7 more - see the report
-Reports written to inspectra-report
-```
-
-## Quick start
+## Install
 
 ```bash
 pip install inspectra-cli
 ```
 
-```bash
-inspectra scan http://127.0.0.1:9999 --yes --skip-ports --allow-private --authorized --format html
-```
+## Run a scan
 
 ```bash
-open inspectra-report/report.html
+inspectra scan http://127.0.0.1:8001 --yes --skip-ports --allow-private --authorized --format html
 ```
+
+Open `inspectra-report/report.html`. A live, recorded sample report is available on the [project site](https://shashu123456.github.io/Inspectra/).
+
+## Example output
+
+```text
+Target   http://127.0.0.1:8001
+Posture  61.6 / 100 - D
+Summary  3 findings · 0 high · 2 medium · 0 low · 1 info
+
+medium  HDR-001  Missing security header: Strict-Transport-Security
+info    HTP-003  Web server software disclosed (with version)
+medium  TLS-001  HTTPS not available
+
+Reports written to inspectra-report
+```
+
+Every finding carries a rule ID, severity, confidence, evidence, why it matters, a recommendation, a fingerprint and a SHA-256 `evidence_hash`. See the [sample JSON report](https://github.com/shashu123456/Inspectra/blob/main/docs/reports/target1.json).
 
 ## What it checks
 
-| Check | What it looks for | Example rule IDs |
-|-------|-------------------|------------------|
-| DNS | DNS resolution and IP pinning | DNS-001 |
-| TLS | Certificate expiry, self-signed, protocol versions | TLS-001 |
-| HTTP | Server disclosure, error states, redirects | HTP-003 |
-| Headers | Missing or weak security headers | HDR-001 |
-| Robots | Disallowed paths in robots.txt | ROB-002 |
-| Directories | Exposed common paths | DIR-001 |
-| Ports | Open ports from Nmap discovery | PRT-003 |
+| Area | Rule prefix | What it looks for |
+|------|-------------|-------------------|
+| DNS | `DNS-` | Resolution and IP pinning |
+| TLS | `TLS-` | Certificate expiry, self-signed, protocol versions |
+| HTTP | `HTP-` | Server disclosure, error states, redirects |
+| Headers | `HDR-` | Missing or weak security headers |
+| Robots | `ROB-` | Disallowed paths in `robots.txt` |
+| Directories | `DIR-` | Exposed common paths (opt-in) |
+| Ports | `PRT-` | Open ports from Nmap (optional) |
+| Fingerprint | `FPR-` | Technology signals from cached responses |
 
 ## How it works
 
-<img src="https://raw.githubusercontent.com/shashu123456/Inspectra/main/assets/architecture.svg" width="100%"/>
+![Inspectra assessment pipeline](https://raw.githubusercontent.com/shashu123456/Inspectra/main/docs/assets/png/architecture.png)
 
-1. Safety gate resolves DNS once and pins the IP.
-2. Checks run with per-host rate limiting and concurrency bounds.
-3. Each finding carries a rule ID, severity, title, and evidence hash.
-4. Severity times confidence yields a posture score and grade.
-5. Reports serialize to JSON, Markdown, HTML, or SARIF.
+1. **Authorize** — `--yes` or a persisted consent gate records the scope.
+2. **Resolve and pin** — DNS is resolved once; the IP is pinned; private targets require `--allow-private`.
+3. **Run checks** — bounded concurrency with per-host rate limiting; the primary response is cached and reused.
+4. **Build findings** — each finding is normalized with a rule ID, severity, confidence, evidence and evidence hash.
+5. **Score risk** — severity × confidence drives the 0–100 posture score and letter grade.
+6. **Write reports** — JSON, Markdown, HTML or SARIF, with optional baseline diffing.
+
+Full detail: [docs/architecture.md](https://github.com/shashu123456/Inspectra/blob/main/docs/architecture.md).
+
+## Results
+
+| Metric | Result |
+|--------|--------|
+| In-scope recall | **49/49 (100%)** across 8 measured lab targets |
+| Precision | **100%** — 0 unexplained false positives; 9 justified absences documented |
+| Determinism | Identical findings across 3 runs per target |
+| Test suite | **220 tests passed, 89% coverage** |
+| Current release | `inspectra-cli` v2.3.6 |
+
+Four additional lab targets are present but **not measured on this platform** (TLS handshake and path fixtures are unreliable on Windows). Nothing is claimed for them. See [docs/accuracy.md](https://github.com/shashu123456/Inspectra/blob/main/docs/accuracy.md) and the full [results page](https://github.com/shashu123456/Inspectra/blob/main/docs/RESULTS.md).
+
+## Reports
+
+| Format | Flag | Use |
+|--------|------|-----|
+| JSON | `--format json` | Stable, machine-readable schema |
+| Markdown | `--format markdown` | Human-readable report |
+| HTML | `--format html` | Self-contained, shareable report |
+| SARIF | `--format sarif` | CI and code-scanning upload |
 
 ## Use in CI
 
@@ -81,48 +100,30 @@ inspectra scan https://example.com --yes --skip-ports --save-baseline baseline.j
 inspectra scan https://example.com --yes --skip-ports --baseline baseline.json --fail-on high
 ```
 
-Compare two scans and fail the run when new findings appear.
+Fail the run when new findings appear; unchanged findings stay quiet.
 
-## Output
+## Safety and scope
 
-| Format | Flag | Purpose |
-|--------|------|---------|
-| JSON | `--format json` | Machine-readable, stable schema |
-| Markdown | `--format markdown` | Human-readable report |
-| HTML | `--format html` | Self-contained, polished report |
-| SARIF | `--format sarif` | CI pipelines and code scanning |
+- GET-only requests, no payloads, no exploitation.
+- SSRF guard: DNS resolved once, IP pinned, private ranges blocked by default.
+- Consent gate required before any scan; `--yes` is an explicit acknowledgement.
+- Secrets and header values are redacted before serialization.
+- Missing Nmap degrades gracefully; it is not a fatal error.
 
-## Scope
-
-| Not supported | Reason |
-|---------------|--------|
-| Exploitation | Passive GET-only assessment, no payloads |
-| Credential cracking | Out of scope for a passive scanner |
-| Vulnerability chaining | Findings are reported, not chained |
-| Unauthorized targets | Consent gate is required before scanning |
-| Authentication bypass | Observes what a target willingly exposes |
-
-## Safety
-
-- SSRF blocking: DNS resolved once, IP pinned, private addresses blocked by default.
-- Consent gate: `--yes` or persisted agreement required before any scan runs.
-- Redaction: secrets and header values redacted before reports serialize.
-- evidence_hash: SHA-256 of each finding's evidence, stored on every finding.
-
-See [THREAT_MODEL.md](THREAT_MODEL.md).
+Out of scope: exploitation, credential cracking, vulnerability chaining, authentication bypass and unauthorized targets. See [THREAT_MODEL.md](https://github.com/shashu123456/Inspectra/blob/main/THREAT_MODEL.md).
 
 ## Proof
 
-Accuracy is measured against 8 lab targets with hand-audited ground truth; 4
-additional lab targets are present but not measured on this platform.
-Results: 100% in-scope recall (49/49), 100% precision, 0 false positives,
-deterministic across 3 runs per target. See [docs/accuracy.md](docs/accuracy.md)
-for the full table, per-target results, and the **Not measured** section.
+- [Results and sample output](https://github.com/shashu123456/Inspectra/blob/main/docs/RESULTS.md)
+- [Accuracy benchmark](https://github.com/shashu123456/Inspectra/blob/main/docs/accuracy.md)
+- [Evidence log](https://github.com/shashu123456/Inspectra/blob/main/docs/EVIDENCE.md)
+- [Live sample report](https://shashu123456.github.io/Inspectra/)
+- [CI workflow](https://github.com/shashu123456/Inspectra/blob/main/.github/workflows/ci.yml)
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome. Start with [CONTRIBUTING.md](https://github.com/shashu123456/Inspectra/blob/main/CONTRIBUTING.md).
 
 ## License
 
-[MIT](LICENSE) — © 2026 Inspectra contributors.
+[MIT](https://github.com/shashu123456/Inspectra/blob/main/LICENSE) — © 2026 Inspectra contributors.

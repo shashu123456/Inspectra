@@ -1,6 +1,6 @@
-"""Inspectra — an open-source, explainable security assessment framework.
+"""Inspectra — a passive, explainable security assessment CLI.
 
 Inspect. Observe. Assess. Explain. Report. Never exploit.
 """
 
-__version__ = "2.3.5"
+__version__ = "2.3.6"

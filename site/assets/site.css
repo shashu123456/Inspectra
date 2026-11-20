@@ -1,0 +1,111 @@
+:root {
+  --ink: #0a0a0a;
+  --surface: #141414;
+  --text: #e6edf3;
+  --muted: #9ca3af;
+  --accent: #06b6d4;
+  --line: #262626;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #1f2937;
+  background: #f7f7f8;
+  line-height: 1.65;
+}
+
+.masthead {
+  background: var(--ink);
+  padding: 0;
+}
+
+.masthead img {
+  display: block;
+  width: min(1280px, 100%);
+  height: auto;
+  margin: 0 auto;
+}
+
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+h1, h2 { color: var(--ink); line-height: 1.2; }
+h1 { font-size: 2.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.6rem; margin: 0 0 1rem; }
+
+.hero { padding: 3rem 0 1rem; }
+.eyebrow {
+  color: #075985;
+  font: 700 0.85rem Consolas, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem;
+}
+.lead { font-size: 1.15rem; max-width: 760px; color: #374151; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+}
+.btn.primary { background: var(--ink); color: #fff; }
+.btn:hover { border-color: var(--accent); color: #075985; }
+
+section { padding: 2.5rem 0; border-top: 1px solid #e5e7eb; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+}
+.grid article {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 1.1rem;
+}
+.grid strong { display: block; font-size: 2rem; color: var(--ink); }
+.grid span { color: #4b5563; font-size: 0.95rem; }
+.note { color: #6b7280; font-size: 0.9rem; }
+
+.pipeline img, .masthead img { max-width: 100%; }
+.pipeline img { border-radius: 10px; border: 1px solid var(--line); }
+
+pre {
+  background: var(--ink);
+  color: var(--text);
+  padding: 1.25rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+code { font-family: Consolas, "Courier New", monospace; }
+
+.links ul { columns: 2; padding-left: 1.2rem; }
+.links a { color: #075985; }
+
+footer {
+  background: var(--ink);
+  color: var(--muted);
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 2rem; }
+  .links ul { columns: 1; }
+}

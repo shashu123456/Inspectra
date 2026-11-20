@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "inspectra-cli"
-description = "An open-source, explainable security assessment framework for safe and authorized security analysis."
+description = "Passive, explainable security assessment CLI for authorized targets — JSON, Markdown, HTML and SARIF reports with evidence hashes and baseline diffing."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Inspectra contributors" }]
 dynamic = ["version"]
-keywords = ["security", "vulnerability-assessment", "security-audit", "cli", "python"]
+keywords = ["security", "vulnerability-assessment", "security-audit", "cli", "python", "sarif", "appsec", "devsecops", "passive-scan"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
@@ -39,6 +39,7 @@ Homepage = "https://github.com/shashu123456/Inspectra"
 Repository = "https://github.com/shashu123456/Inspectra"
 Changelog = "https://github.com/shashu123456/Inspectra/blob/main/CHANGELOG.md"
 Documentation = "https://github.com/shashu123456/Inspectra/tree/main/docs"
+Results = "https://github.com/shashu123456/Inspectra/blob/main/docs/RESULTS.md"
 "Live sample report" = "https://shashu123456.github.io/Inspectra/"
 Issues = "https://github.com/shashu123456/Inspectra/issues"
 

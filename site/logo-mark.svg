@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <!-- Inspectra logo mark: terminal-native square mark, accent + dark neutral -->
-  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
-  <!-- outer scan ring -->
-  <circle cx="256" cy="256" r="176" fill="none" stroke="#06b6d4" stroke-width="14" stroke-dasharray="110 46"/>
-  <!-- inner beam / magnifying glass -->
-  <circle cx="256" cy="256" r="64" fill="none" stroke="#06b6d4" stroke-width="10"/>
-  <line x1="330" y1="330" x2="424" y2="424" stroke="#06b6d4" stroke-width="11" stroke-linecap="round"/>
-  <!-- central dot (target) -->
-  <circle cx="256" cy="256" r="18" fill="#06b6d4"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Inspectra">
+<g transform="scale(1.000000)">
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#0A0A0A" stroke="#06B6D4" stroke-width="3"/>
+  <path d="M64 28 L94 40 V62 C94 82 81 96 64 103 C47 96 34 82 34 62 V40 Z" fill="none" stroke="#E6EDF3" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M46 64 H82" stroke="#06B6D4" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="54" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="64" cy="64" r="3.4" fill="#06B6D4"/>
+  <circle cx="74" cy="64" r="3.4" fill="#06B6D4"/>
+</g>
 </svg>

@@ -4,6 +4,19 @@ All notable changes to Inspectra are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/).
 
+## [2.3.6] - 2026-11-21
+
+### Added
+
+- **Professional brand surface:** vector logo, wordmarks, favicon, banners, social preview, architecture diagram and terminal demo, each rendered to PNG for clients that do not display SVG.
+- **Results page:** `docs/RESULTS.md` records accuracy, benchmark limits, sample output, test evidence and the explicit note that Inspectra has no hosted API health endpoint.
+- **Project site:** refreshed landing page with the new brand, measured proof and direct links to the sample report, GitHub and PyPI.
+
+### Changed
+
+- **PyPI description:** README is now Markdown-only with absolute links and images so the long description renders correctly on PyPI; package metadata and keywords are more precise.
+- **Architecture docs:** now describe the four report renderers, bounded concurrency and graceful Nmap degradation.
+
 ## [2.3.5] - 2026-11-19
 
 ### Fixed

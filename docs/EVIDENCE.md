@@ -285,3 +285,45 @@ All 9 named tests pass:
 - Triggered by OIDC release workflow on tag push
 - Verified: https://pypi.org/pypi/inspectra-cli/json → version 2.3.1
 
+## P17 — Brand and evidence refresh
+
+### Assets
+All text converted to vector paths with `fontTools`; no `<text>` elements remain.
+
+| File | Bytes | Dimensions | `<text>` |
+|------|-------|------------|----------|
+| logo-mark.svg | 652 | 128x128 | 0 |
+| favicon.svg | 701 | 64x64 | 0 |
+| wordmark.svg | 5157 | 457x112 | 0 |
+| wordmark-dark.svg | 5157 | 457x112 | 0 |
+| banner-light.svg | 34377 | 1280x320 | 0 |
+| banner-dark.svg | 34377 | 1280x320 | 0 |
+| social-preview.svg | 67076 | 1200x630 | 0 |
+| architecture.svg | 172924 | 1440x760 | 0 |
+| terminal-demo.svg | 156095 | 1280x440 | 0 |
+
+All PNG counterparts rendered at native SVG dimensions via headless Chrome and verified with PIL.
+
+### Tests
+- `220 passed in 151.15s`
+- Coverage: `TOTAL 1771 statements, 196 missed, 89%`
+
+### Docs
+- `README.md` rewritten as Markdown-only images and tables for PyPI compatibility.
+- `docs/RESULTS.md` added with accuracy, performance, sample output and an explicit note that no API health endpoint exists.
+- `docs/architecture.md` updated to four report renderers and bounded concurrency.
+- `site/index.html` and `site/assets/site.css` redesigned around the new brand.
+
+## P18 — Release 2.3.6
+
+### Version
+- `src/inspectra/__init__.py`: `__version__ = "2.3.6"`
+- `pyproject.toml`: description and keywords refreshed for PyPI
+- `README.md`: Markdown-only long description with absolute links
+
+### Tags
+- `v2.3.6` → pushed to origin
+
+### PyPI publish
+- Triggered by the OIDC release workflow on tag push
+
